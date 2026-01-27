@@ -1,0 +1,54 @@
+.wrapper {
+	@apply mt-40 pt-32 border-t border-neutral-100;
+}
+
+.list {
+	@apply grid gap-20;
+}
+
+.title {
+	@apply text-neutral-800;
+	& > span { @apply text-error-main; }
+}
+
+.name {
+	@apply m-0;
+}
+
+.inn {
+	@apply text-neutral-300 m-0;
+	& > span, & > p { @apply text-neutral-main; }
+}
+
+.phone, .email {
+	@apply text-neutral-300 m-0 cursor-pointer;
+	& > p { @apply text-neutral-300 cursor-pointer; }
+	& > p > span { @apply text-neutral-mainLighten cursor-pointer; }
+	//& > span, & > p { @apply text-neutral-_audio-player; }
+}
+
+.phoneMany, .emailMany {
+	@apply m-0 ml-8;
+}
+
+
+.actions {
+	@apply m-0;
+	& > p {
+		@apply m-0 text-neutral-400 underline transition-all cursor-pointer;
+		&:hover { @apply text-neutral-mainDarken }
+	}
+}
+
+.add {
+	@apply text-primary-mainLighten underline cursor-pointer m-0 mt-8 transition-all;
+	&:hover { @apply text-primary-mainDarken; }
+}
+
+.isAction {
+	@apply cursor-pointer;
+}
+
+.error {
+	@apply text-error-main m-0;
+}

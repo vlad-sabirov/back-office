@@ -1,0 +1,7 @@
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { CsvOrganizationBitrix, CsvContactBitrix } from '../../interfaces';
+
+export type AnalysisNotFoundUserOrganizationsProps = {
+	organizations: CsvOrganizationBitrix[] | null;
+	contacts: CsvContactBitrix[] | null;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;

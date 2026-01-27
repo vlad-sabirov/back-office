@@ -1,0 +1,102 @@
+.root {
+	@apply grid;
+	height: 100%;
+	grid-template-rows: auto 1fr;
+}
+
+.header {
+	@apply grid grid-flow-col outline outline-1 outline-neutral-50;
+}
+
+.headerItem {
+	@apply m-0 select-none py-8 text-center capitalize text-neutral-400;
+}
+
+.gridWrapper {
+	@apply relative grid;
+	grid-template-columns: repeat(7, 1fr);
+
+	&__loading {
+		@apply absolute top-0 left-0 z-1 grid h-full w-full items-center justify-center bg-neutral-white bg-opacity-70;
+	}
+}
+
+.item {
+	@apply relative outline outline-1 outline-neutral-50;
+	min-height: 160px;
+
+	&__disabled {
+		@apply pointer-events-none select-none bg-neutral-bg;
+	}
+}
+
+.itemDayOfMonth {
+	@apply m-8 mb-0 select-none font-weight-500 text-neutral-600;
+
+	&__weekend {
+		@apply text-error-main;
+	}
+
+	&__holiday {
+		@apply text-error-main;
+	}
+
+	&__active {
+		@apply inline-block rounded-small font-weight-500 text-primary-main;
+	}
+
+	&__disabled {
+		@apply text-neutral-300;
+	}
+}
+
+.itemHoliday {
+	@apply absolute top-8 right-8 mb-0 select-none overflow-hidden text-ellipsis font-weight-500 text-info-main;
+	max-width: 80%;
+	display: -moz-box;
+	display: -webkit-box;
+	-moz-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	line-clamp: 1;
+	box-orient: vertical;
+}
+
+.itemHolidayIcon {
+	@apply -mt-2 mr-4 inline-block;
+	width: 16px;
+}
+
+.itemTransfer {
+	@apply absolute top-8 right-8 mb-0 select-none overflow-hidden text-ellipsis font-weight-500 text-neutral-300;
+}
+
+.event {
+	@apply absolute z-1 mx-8 grid grid-flow-col items-center justify-start;
+	height: 28px;
+	white-space: nowrap;
+
+	&__manyDay {
+		@apply rounded-small py-4 px-8;
+	}
+
+	&__icon {
+		@apply mr-4;
+	}
+
+	&__itemOne {
+		top: 28px;
+	}
+
+	&__itemTwo {
+		top: 64px;
+	}
+
+	&__itemThree {
+		top: 100px;
+	}
+
+	&__vacation {
+		@apply bg-warning-50 text-warning-600;
+	}
+}

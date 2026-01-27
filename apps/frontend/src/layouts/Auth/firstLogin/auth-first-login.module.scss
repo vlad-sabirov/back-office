@@ -1,0 +1,43 @@
+.form {
+	&__one,
+	&__three,
+	&__four {
+		@apply grid gap-20;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	&__two {
+		@apply grid items-center gap-40;
+		grid-template-columns: auto 112px;
+	}
+}
+
+.buttons {
+	@apply mt-40 grid gap-20;
+	grid-template-columns: 1fr auto auto 1fr;
+	grid-template-areas: '. prev next .';
+}
+
+.avatar {
+	@apply h-100 min-h-min w-100 min-w-min;
+
+	& > [class*='mantine-Avatar-placeholder'] {
+		font-size: 3rem;
+	}
+}
+
+.info {
+	@apply mb-20;
+
+	& span {
+		@apply text-error-main;
+	}
+}
+
+.prev {
+	grid-area: prev;
+}
+
+.next {
+	grid-area: next;
+}

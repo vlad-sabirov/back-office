@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Download database from production server",
+      "type": "shell",
+      "command": "ssh -t 192.168.25.235 -p 2222 'sh /app/sh/backup_db/backup.sh'; scp -P 2222 -r 192.168.25.235:/app/apps/db/backup/last.sql ../../apps/db/backup; sh ../../sh/backup_db/restore.sh",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "close": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Download uploads folder from production server",
+      "type": "shell",
+      "command": "scp -P 2222 -r 192.168.25.235:/app/apps/api/uploads ../../apps/api/",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "close": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Restart servers on development mode",
+      "type": "shell",
+      "command": "sh ../../sh/stop ;sh ../../sh/start.dev",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Restart servers on production mode",
+      "type": "shell",
+      "command": "sh ../../sh/stop; sh ../../sh/start.prod",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+.root {
+	width: 440px;
+}
+
+.avatar {
+	@apply absolute top-0 left-0 z-2;
+	transform: translate(-15px, -50%);
+}
+
+.date {
+	@apply absolute top-0 right-0 z-2 text-neutral-300 italic;
+	transform: translate(-8px, -20px)
+}
+
+.label {
+	@apply m-0 text-neutral-300;
+}
+
+.log {
+	@apply m-0 italic text-neutral-300;
+}
+
+.personFound {
+	@apply text-neutral-500 underline cursor-pointer;
+}
+
+.personNotFound {
+	@apply text-neutral-500;
+}
+
+.notAnswered {
+	@apply text-error-200 inline-block;
+}
+
+.audio {
+	@apply mt-8;
+}

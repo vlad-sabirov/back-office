@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  todo:
+     container_name: ${TODO_CONTAINER_NAME}
+     networks:
+         - erp_network
+
+  db_todo:
+     container_name: ${TODO_PSQL_CONTAINER_NAME}
+     networks:
+         - erp_network
+     volumes:
+        - vol_db_todo:/app/data/
+
+  db_todo_migrator:
+     container_name: ${TODO_PSQL_MIGRATOR_CONTAINER_NAME}
+     restart: on-failure
+     build:
+        context: ../../
+        dockerfile: ./deploy/docker/migrator.Dockerfile
+     environment:
+        PSQL_CONTAINER_NAME: ${TODO_PSQL_CONTAINER_NAME}
+        PSQL_PORT: ${TODO_PSQL_PORT}
+        PSQL_USER: ${TODO_PSQL_USER}
+        PSQL_PASS: ${TODO_PSQL_PASS}
+        PSQL_DB: ${TODO_PSQL_DB}

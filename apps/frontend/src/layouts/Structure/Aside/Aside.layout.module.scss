@@ -1,0 +1,23 @@
+@import './../../../../styles/vars.scss';
+@import './scss/header.scss';
+
+.wrapper {
+	position: relative;
+	background: $color-neutral-white;
+	display: grid;
+	grid-template-rows: 72px auto 1fr;
+	grid-template-areas:
+		'header'
+		'navigation'
+		'staff';
+	height: 100vh;
+}
+
+.navigation {
+	grid-area: navigation;
+}
+
+.staff {
+	grid-area: staff;
+	overflow: hidden;
+}

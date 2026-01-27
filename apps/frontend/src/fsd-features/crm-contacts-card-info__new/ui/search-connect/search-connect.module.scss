@@ -1,0 +1,50 @@
+.description {
+	@apply text-neutral-300 text-center italic;
+}
+
+.result {
+	@apply my-20 grid gap-12;
+}
+
+.contactWrapper {
+	@apply bg-neutral-bg rounded-medium cursor-pointer grid;
+	grid-template-columns: 1fr 40px;
+
+	&:hover {
+		& .contactConnect { @apply opacity-100 }
+	}
+}
+
+.contactInfo {
+	@apply p-20 rounded-r-medium;
+}
+
+.contactConnect {
+	@apply px-12 transition-all bg-primary-main rounded-r-medium flex opacity-10;
+
+	& svg { @apply text-neutral-white; }
+}
+
+.name {
+	@apply m-0 font-weight-500 text-neutral-800;
+}
+
+.workPosition {
+	@apply m-0 text-neutral-500 italic;
+}
+
+.phones {
+	@apply m-0 text-neutral-500;
+}
+
+.organizationsTitle {
+	@apply m-0 mt-12 text-neutral-700;
+}
+
+.organizationsItem {
+	@apply m-0 text-neutral-400 italic;
+}
+
+.wrapper {
+
+}

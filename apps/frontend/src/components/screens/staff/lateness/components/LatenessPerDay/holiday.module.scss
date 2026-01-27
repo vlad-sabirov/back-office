@@ -1,0 +1,16 @@
+.wrapper  {
+  @apply grid grid-flow-col items-center justify-center;
+  height: 120px;
+
+  & > div {
+    @apply grid grid-flow-col items-center gap-20;
+  }
+}
+
+.icon {
+  height: 60px;
+}
+
+.text {
+  @apply font-weight-500 m-0 text-success-mainDarken;
+}

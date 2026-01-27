@@ -1,0 +1,42 @@
+.root {
+	@apply grid gap-12;
+}
+
+.title {
+	@apply m-0;
+	&__error { @apply text-error-main; }
+	& span { @apply text-error-main; }
+}
+
+.actions {
+	@apply grid grid-flow-col justify-start gap-8;
+
+	& p {
+		@apply m-0 mb-4 text-neutral-400 cursor-pointer underline;
+		&:hover { @apply text-neutral-700; }
+	}
+}
+
+.add {
+	@apply text-primary-mainLighten cursor-pointer underline m-0;
+	&:hover { @apply text-primary-mainDarken; }
+}
+
+.name {
+	@apply m-0;
+}
+
+.workPosition {
+	@apply m-0 text-neutral-400 italic;
+}
+
+.phone {
+	&__title {
+		@apply m-0;
+	}
+
+	&__item {
+		@apply m-0;
+		& span { @apply text-neutral-400 italic; font-size: .875rem; }
+	}
+}

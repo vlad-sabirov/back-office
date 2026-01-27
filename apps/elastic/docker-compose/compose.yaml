@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+   elastic:
+      container_name: ${ELASTIC_CONTAINER_NAME}
+      networks:
+         - erp_network

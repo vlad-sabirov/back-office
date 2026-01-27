@@ -1,0 +1,14 @@
+.description {
+	@apply text-neutral-300 italic text-center;
+}
+
+.wrapper {
+	@apply mt-20 grid gap-12;
+	grid-template-columns: 1fr 1fr;
+}
+
+.wrapper > :nth-child(1) {
+	grid-column: span 2;
+}
+
+

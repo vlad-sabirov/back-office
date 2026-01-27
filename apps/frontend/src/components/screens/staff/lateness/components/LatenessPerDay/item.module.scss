@@ -1,0 +1,52 @@
+.root {
+  @apply relative cursor-pointer select-none;
+}
+
+.title {
+  @apply inline-block;
+}
+
+.subtitle {
+  @apply text-neutral-400 mt-8 mb-4;
+}
+
+.staff {
+  @apply grid grid-flow-col justify-start gap-8 items-center;
+
+  &__name {
+    @apply text-neutral-black m-0;
+  }
+
+  &__description {
+    @apply text-neutral-300 m-0;
+  }
+
+}
+
+.avatarGroup {
+  @apply absolute right-20 top-0;
+}
+
+.skeleton {
+  @apply relative;
+
+  &__title {
+    @apply mb-8;
+  }
+
+  &__subtitle {
+    @apply mb-4;
+  }
+
+  &__staff {
+    @apply grid grid-flow-col justify-start gap-8;
+
+    & div {
+      @apply grid gap-4;
+    }
+  }
+
+  &__avatarGroup {
+    @apply absolute top-0 right-20;
+  }
+}

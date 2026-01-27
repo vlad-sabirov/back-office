@@ -1,0 +1,23 @@
+.label {
+	@apply grid mb-4;
+	grid-template-columns: 1fr auto;
+}
+
+.title {
+	@apply m-0 ml-8;
+	& span { @apply text-error-main; }
+}
+
+.add {
+	@apply m-0 mr-8 transition-all text-primary-mainLighten cursor-pointer underline;
+	&:hover { @apply text-primary-mainDarken; }
+}
+
+.forms {
+	@apply grid gap-8;
+}
+
+.formItem {
+	@apply grid gap-8;
+	grid-template-columns: 1fr 1fr;
+}

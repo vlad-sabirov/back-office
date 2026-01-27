@@ -1,0 +1,35 @@
+.root {
+	@apply mt-8 cursor-pointer grid gap-8;
+	grid-template-columns: auto 1fr;
+}
+
+//.wrapper {
+//	@apply grid gap-12;
+//	grid-template-columns: 1fr auto;
+//}
+
+.name {
+	@apply text-neutral-700 m-0;
+}
+
+.bottom {
+	@apply grid pr-20 gap-12;
+	grid-template-columns: auto 1fr;
+}
+
+.date, .pick {
+	@apply text-neutral-400 m-0 inline-block;
+	& svg { @apply w-12 inline-block -mt-2 mr-4; }
+}
+
+.nameArrived {
+	@apply text-error-main;
+}
+
+.dateArrived, .pickArrived {
+	@apply text-error-200;
+}
+
+.pick {
+	@apply truncate;
+}

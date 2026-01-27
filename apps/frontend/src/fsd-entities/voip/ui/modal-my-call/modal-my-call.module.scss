@@ -1,0 +1,62 @@
+.root {
+	@apply absolute -translate-x-1/2 -translate-y-1/2;
+	top: 50%;
+	left: 50%;
+	z-index: 1001;
+	width: 360px;
+}
+
+.wrapper {
+	@apply  items-center bg-neutral-white rounded-medium p-20;
+}
+
+.header {
+	@apply grid mb-4 px-8;
+	grid-template-columns: 1fr auto;
+}
+
+.type, .timer {
+	@apply m-0 text-neutral-50 font-weight-500;
+}
+
+.enemy {
+	@apply grid gap-8 items-center;
+	grid-template-columns: auto 1fr;
+}
+
+.enemyName {
+	@apply m-0 text-neutral-800 overflow-hidden text-ellipsis whitespace-nowrap font-weight-500;
+	font-size: 16px;
+	width: 260px;
+}
+.enemyNumber {
+	@apply m-0 text-neutral-500;
+}
+
+.buttons {
+	@apply grid mt-20 gap-8;
+	grid-template-columns: 40px 40px 40px 1fr 40px;
+}
+
+.button {
+	@apply m-0 p-0 rounded-circle;
+}
+
+.avatarIcon {
+	@apply bg-neutral-50 rounded-circle;
+	padding: 15px;
+
+	& svg {
+		@apply text-neutral-mainLighten w-20;
+	}
+}
+
+.pointer {
+	@apply cursor-pointer;
+}
+
+.close {
+	@apply text-neutral-white absolute cursor-pointer;
+	right: -32px;
+	top: 24px;
+}

@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="07e37571-4dce-4a71-a7e7-327ce9772db2" name="Changes" comment="feat: Отображение и добавление задачи">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-entities/crm-contact/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-entities/crm-contact/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-entities/todo/model/todo-slice-init.types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-entities/todo/model/todo-slice-init.types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-entities/todo/model/todo-slice.init.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-entities/todo/model/todo-slice.init.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-entities/todo/model/todo.slice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-entities/todo/model/todo.slice.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-shared/ui-kit/checkbox/ui/_checkbox/Checkbox.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-shared/ui-kit/checkbox/ui/_checkbox/Checkbox.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-widgets/todo-header/ui/_header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-widgets/todo-header/ui/_header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/_list-my/ListMy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/_list-my/ListMy.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/group/Group.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/group/Group.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/group/group.props.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/group/group.props.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/task/Task.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/task/Task.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/task/task.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/task/task.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/task/task.props.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui/task/task.props.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/layouts/Structure/Header/Header.layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/layouts/Structure/Header/Header.layout.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Dmitriy Basenko &lt;d.basenko.it@gmail.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="voip" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2Vc7jO69RtJ6WFhyR2zrHEA4Maq" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showModules" value="false" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/dsbasko/Develop/projects/back-office.uz/apps/frontend/src/fsd-features/todo-modal-task-info/ui/_modal&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/dsbasko/Develop/projects/back-office.uz/apps/frontend/node_modules/prettier&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/dsbasko/Develop/projects/back-office.uz/apps/frontend/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/fsd-features/todo-modal-task-info/ui/_modal" />
+      <recent name="$PROJECT_DIR$/src/fsd-widgets/todo-list-my/ui" />
+      <recent name="$PROJECT_DIR$/src/fsd-widgets" />
+      <recent name="$PROJECT_DIR$/pages/sandbox" />
+      <recent name="$PROJECT_DIR$/src/fsd-entities/todo/api/res" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/fsd-widgets/todo-create-modal/ui/_create-modal" />
+      <recent name="$PROJECT_DIR$/src/fsd-widgets/todo-create-modal/ui/create-modal.module.scss" />
+      <recent name="$PROJECT_DIR$/src/fsd-entities/todo/api/req" />
+      <recent name="$PROJECT_DIR$/src/fsd-widgets" />
+      <recent name="$PROJECT_DIR$/src/fsd-widgets/crm-realization-analytics/lib/math" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="Back Office. Frontend" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="Back Office. Frontend" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Back Office. Frontend" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Back Office. Frontend" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="07e37571-4dce-4a71-a7e7-327ce9772db2" name="Changes" comment="" />
+      <created>1695123649294</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695123649294</updated>
+      <workItem from="1695123650281" duration="242000" />
+      <workItem from="1695123954081" duration="3000" />
+      <workItem from="1695123965109" duration="1000" />
+      <workItem from="1695124098434" duration="208000" />
+      <workItem from="1695183139675" duration="2000" />
+      <workItem from="1695183157388" duration="114000" />
+      <workItem from="1695183308536" duration="239000" />
+      <workItem from="1695183590846" duration="170000" />
+      <workItem from="1695183856514" duration="21000" />
+      <workItem from="1695183970827" duration="7000" />
+      <workItem from="1695184117073" duration="10074000" />
+      <workItem from="1695615782743" duration="24409000" />
+      <workItem from="1695719768557" duration="2000" />
+      <workItem from="1695817425244" duration="7000" />
+      <workItem from="1695817458908" duration="17127000" />
+      <workItem from="1695980864444" duration="23181000" />
+      <workItem from="1696329413489" duration="7172000" />
+      <workItem from="1697002816947" duration="903000" />
+      <workItem from="1697003981924" duration="378000" />
+      <workItem from="1697004710433" duration="513000" />
+      <workItem from="1697009230120" duration="279000" />
+      <workItem from="1697018521200" duration="11088000" />
+      <workItem from="1697082689231" duration="10219000" />
+      <workItem from="1697093397094" duration="574000" />
+      <workItem from="1697095429333" duration="3619000" />
+      <workItem from="1697114472409" duration="4000" />
+      <workItem from="1697171457641" duration="4459000" />
+      <workItem from="1697545540260" duration="448000" />
+      <workItem from="1697546753026" duration="955000" />
+      <workItem from="1697627832457" duration="1000" />
+      <workItem from="1697709430770" duration="3973000" />
+      <workItem from="1699012360454" duration="1746000" />
+      <workItem from="1699442919831" duration="1938000" />
+      <workItem from="1699524641478" duration="11417000" />
+      <workItem from="1699589812944" duration="6535000" />
+      <workItem from="1699597141474" duration="7858000" />
+      <workItem from="1699848945998" duration="12517000" />
+      <workItem from="1699864333927" duration="712000" />
+      <workItem from="1699942046637" duration="3467000" />
+      <workItem from="1700223691874" duration="2000" />
+      <workItem from="1700225569853" duration="630000" />
+      <workItem from="1700461108890" duration="16336000" />
+      <workItem from="1700481894368" duration="4098000" />
+      <workItem from="1700542927764" duration="120000" />
+      <workItem from="1700543066601" duration="2800000" />
+      <workItem from="1700547248792" duration="8487000" />
+      <workItem from="1700628137974" duration="6052000" />
+      <workItem from="1700634524991" duration="2866000" />
+      <workItem from="1700638045712" duration="21739000" />
+      <workItem from="1700719086603" duration="23644000" />
+      <workItem from="1700804303983" duration="3705000" />
+      <workItem from="1700821360629" duration="8236000" />
+      <workItem from="1700830988351" duration="711000" />
+      <workItem from="1701058042787" duration="5303000" />
+      <workItem from="1701068805645" duration="8212000" />
+      <workItem from="1701077312278" duration="7297000" />
+      <workItem from="1701152138246" duration="19907000" />
+      <workItem from="1701236774667" duration="2717000" />
+      <workItem from="1701753994249" duration="5326000" />
+      <workItem from="1701759330706" duration="4934000" />
+      <workItem from="1702275801460" duration="92000" />
+      <workItem from="1702276059756" duration="649000" />
+      <workItem from="1702278536682" duration="56000" />
+      <workItem from="1702278598476" duration="272000" />
+      <workItem from="1702279067388" duration="1235000" />
+      <workItem from="1702287353265" duration="1000" />
+      <workItem from="1702287486731" duration="135000" />
+      <workItem from="1702287627909" duration="45000" />
+      <workItem from="1702287682885" duration="15000" />
+      <workItem from="1702287705254" duration="1099000" />
+      <workItem from="1702291682405" duration="8513000" />
+      <workItem from="1702357340855" duration="5000" />
+      <workItem from="1702357352350" duration="17458000" />
+      <workItem from="1702444997380" duration="175000" />
+      <workItem from="1702451488178" duration="2572000" />
+      <workItem from="1702527088634" duration="1608000" />
+      <workItem from="1702961243715" duration="341000" />
+      <workItem from="1704531879183" duration="32000" />
+      <workItem from="1704686613222" duration="1000" />
+      <workItem from="1704688728424" duration="219000" />
+      <workItem from="1704688955345" duration="4573000" />
+      <workItem from="1704696807395" duration="80000" />
+      <workItem from="1704804796436" duration="188000" />
+      <workItem from="1704805215156" duration="483000" />
+      <workItem from="1704805707380" duration="520000" />
+      <workItem from="1704807900597" duration="5568000" />
+      <workItem from="1704871854091" duration="133000" />
+      <workItem from="1704872156393" duration="11260000" />
+      <workItem from="1704950853756" duration="1046000" />
+      <workItem from="1704953012099" duration="1108000" />
+      <workItem from="1704971504560" duration="4263000" />
+      <workItem from="1704976117138" duration="5469000" />
+      <workItem from="1705033271545" duration="1789000" />
+      <workItem from="1705036635550" duration="710000" />
+      <workItem from="1705038674994" duration="8683000" />
+      <workItem from="1705056432954" duration="544000" />
+      <workItem from="1705296818072" duration="7273000" />
+      <workItem from="1706077005808" duration="116000" />
+      <workItem from="1706094779947" duration="2000" />
+      <workItem from="1706249690562" duration="12540000" />
+      <workItem from="1706264467929" duration="1061000" />
+      <workItem from="1706266068063" duration="2950000" />
+      <workItem from="1706519578973" duration="301000" />
+      <workItem from="1706519920509" duration="1189000" />
+      <workItem from="1708400103154" duration="11453000" />
+      <workItem from="1708515005441" duration="314000" />
+      <workItem from="1708515636795" duration="2770000" />
+      <workItem from="1708582020179" duration="12201000" />
+      <workItem from="1708667157127" duration="16000" />
+      <workItem from="1708668433487" duration="2565000" />
+      <workItem from="1711954842840" duration="731000" />
+      <workItem from="1712028150763" duration="6244000" />
+      <workItem from="1712038639025" duration="5944000" />
+      <workItem from="1712052387820" duration="4587000" />
+      <workItem from="1712117376823" duration="7680000" />
+      <workItem from="1712140086390" duration="49000" />
+    </task>
+    <task id="LOCAL-00022" summary="feat: Превратить звонок в конференцию">
+      <option name="closed" value="true" />
+      <created>1697022559064</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1697022559064</updated>
+    </task>
+    <task id="LOCAL-00023" summary="fix: Провести редизайн звонилки">
+      <option name="closed" value="true" />
+      <created>1697025390248</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1697025390248</updated>
+    </task>
+    <task id="LOCAL-00024" summary="fix: Допилить редизайн звонилки">
+      <option name="closed" value="true" />
+      <created>1697026244762</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1697026244762</updated>
+    </task>
+    <task id="LOCAL-00025" summary="feat: Запретить фиксацию опозданий за пределами оффиса">
+      <option name="closed" value="true" />
+      <created>1697085712076</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1697085712076</updated>
+    </task>
+    <task id="LOCAL-00026" summary="fix: Исправить работу websocket">
+      <option name="closed" value="true" />
+      <created>1697090248841</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1697090248841</updated>
+    </task>
+    <task id="LOCAL-00027" summary="feat: Добавить звонилку для всех элементов">
+      <option name="closed" value="true" />
+      <created>1697092839171</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1697092839171</updated>
+    </task>
+    <task id="LOCAL-00028" summary="fix: Причесать проект">
+      <option name="closed" value="true" />
+      <created>1697093944284</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1697093944284</updated>
+    </task>
+    <task id="LOCAL-00029" summary="fix: Кажется починил блеат">
+      <option name="closed" value="true" />
+      <created>1697095675483</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1697095675483</updated>
+    </task>
+    <task id="LOCAL-00030" summary="fix: Кажется починил блеат">
+      <option name="closed" value="true" />
+      <created>1697096024641</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1697096024641</updated>
+    </task>
+    <task id="LOCAL-00031" summary="fix: Тестикулус">
+      <option name="closed" value="true" />
+      <created>1697096749858</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1697096749858</updated>
+    </task>
+    <task id="LOCAL-00032" summary="fix: Тестикулус">
+      <option name="closed" value="true" />
+      <created>1697097279384</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1697097279384</updated>
+    </task>
+    <task id="LOCAL-00033" summary="fix: Починил запрет фиксации">
+      <option name="closed" value="true" />
+      <created>1697102081894</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1697102081894</updated>
+    </task>
+    <task id="LOCAL-00034" summary="fix: Поправил косяк с авторизацией">
+      <option name="closed" value="true" />
+      <created>1697172229630</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1697172229630</updated>
+    </task>
+    <task id="LOCAL-00035" summary="fix: Поправил косяк с авторизацией">
+      <option name="closed" value="true" />
+      <created>1697173721825</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1697173721825</updated>
+    </task>
+    <task id="LOCAL-00036" summary="feat: Список звонков в истории организации\контакта">
+      <option name="closed" value="true" />
+      <created>1700481807793</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1700481807793</updated>
+    </task>
+    <task id="LOCAL-00037" summary="feat: Новые организации">
+      <option name="closed" value="true" />
+      <created>1700485271114</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1700485271114</updated>
+    </task>
+    <task id="LOCAL-00038" summary="fix: Косяк с фильтрами">
+      <option name="closed" value="true" />
+      <created>1700486670368</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1700486670368</updated>
+    </task>
+    <task id="LOCAL-00039" summary="fix: Косяк с фильтрами и иконкой звонка">
+      <option name="closed" value="true" />
+      <created>1700487985081</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1700487985081</updated>
+    </task>
+    <task id="LOCAL-00040" summary="feat: Разделить поле name в организациях на nameEn и nameRu">
+      <option name="closed" value="true" />
+      <created>1700553985248</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1700553985248</updated>
+    </task>
+    <task id="LOCAL-00041" summary="feat: При открытии \ закрытии организации или контакта добавлять в адресную строку его id">
+      <option name="closed" value="true" />
+      <created>1700635749139</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1700635749139</updated>
+    </task>
+    <task id="LOCAL-00042" summary="fix: Починить добавление комментариев к организациям и контактам">
+      <option name="closed" value="true" />
+      <created>1700639280068</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1700639280068</updated>
+    </task>
+    <task id="LOCAL-00043" summary="fix: Поправить сортировку организаций по названию">
+      <option name="closed" value="true" />
+      <created>1700644226693</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1700644226693</updated>
+    </task>
+    <task id="LOCAL-00044" summary="feat: Добавить архив организаций">
+      <option name="closed" value="true" />
+      <created>1700649500275</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1700649500275</updated>
+    </task>
+    <task id="LOCAL-00045" summary="feat: Входящие звонки. Шапка">
+      <option name="closed" value="true" />
+      <created>1700655496967</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1700655496967</updated>
+    </task>
+    <task id="LOCAL-00046" summary="feat: Плитки с краткой анатиликой входящих звонков">
+      <option name="closed" value="true" />
+      <created>1700716064356</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1700716064356</updated>
+    </task>
+    <task id="LOCAL-00047" summary="feat: Список входящих звонков">
+      <option name="closed" value="true" />
+      <created>1700739790405</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1700739790405</updated>
+    </task>
+    <task id="LOCAL-00048" summary="feat: Постраничная навигация для отчета по звонкам">
+      <option name="closed" value="true" />
+      <created>1700742013848</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1700742013848</updated>
+    </task>
+    <task id="LOCAL-00049" summary="fix: Поправить доступы к разделу телефонии">
+      <option name="closed" value="true" />
+      <created>1700742571903</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1700742571903</updated>
+    </task>
+    <task id="LOCAL-00050" summary="fix: Заголовок на таблицу">
+      <option name="closed" value="true" />
+      <created>1700743947928</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1700743947929</updated>
+    </task>
+    <task id="LOCAL-00051" summary="feat: Ссылка поделиться огранизацией и контактом">
+      <option name="closed" value="true" />
+      <created>1700807929358</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1700807929358</updated>
+    </task>
+    <task id="LOCAL-00052" summary="feat: Отображение пропущенных звонков">
+      <option name="closed" value="true" />
+      <created>1700830922723</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1700830922723</updated>
+    </task>
+    <task id="LOCAL-00053" summary="feat: Отображение пропущенных звонков">
+      <option name="closed" value="true" />
+      <created>1701167891275</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1701167891276</updated>
+    </task>
+    <task id="LOCAL-00054" summary="feat: Пропущенные звонки">
+      <option name="closed" value="true" />
+      <created>1701175133006</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1701175133006</updated>
+    </task>
+    <task id="LOCAL-00055" summary="feat: Пропущенные звонки собственные">
+      <option name="closed" value="true" />
+      <created>1701760485370</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1701760485370</updated>
+    </task>
+    <task id="LOCAL-00056" summary="feat: Развернул пропущенные звонки">
+      <option name="closed" value="true" />
+      <created>1701761247366</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1701761247366</updated>
+    </task>
+    <task id="LOCAL-00057" summary="feat: Развернул пропущенные звонки">
+      <option name="closed" value="true" />
+      <created>1701761526471</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1701761526471</updated>
+    </task>
+    <task id="LOCAL-00058" summary="feat: Возможность перезвонить с перезвона">
+      <option name="closed" value="true" />
+      <created>1702299297768</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1702299297768</updated>
+    </task>
+    <task id="LOCAL-00059" summary="feat: Переходить из звонка в карточку организации\контакта">
+      <option name="closed" value="true" />
+      <created>1702364606712</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1702364606713</updated>
+    </task>
+    <task id="LOCAL-00060" summary="feat: Всплывающая модалка со звонком">
+      <option name="closed" value="true" />
+      <created>1702371497922</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1702371497922</updated>
+    </task>
+    <task id="LOCAL-00061" summary="feat: Создать модальное окно с добавлением задачи (фасад)">
+      <option name="closed" value="true" />
+      <created>1704693519905</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1704693519905</updated>
+    </task>
+    <task id="LOCAL-00062" summary="Допилил...">
+      <option name="closed" value="true" />
+      <created>1704808354663</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1704808354663</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Опять что-то пофиксил...">
+      <option name="closed" value="true" />
+      <created>1704859478310</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1704859478310</updated>
+    </task>
+    <task id="LOCAL-00064" summary="И опять и опять...">
+      <option name="closed" value="true" />
+      <created>1704861206504</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1704861206504</updated>
+    </task>
+    <task id="LOCAL-00065" summary="part: Добавить интерактивность в форму добавления задачи">
+      <option name="closed" value="true" />
+      <created>1704891794968</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1704891794968</updated>
+    </task>
+    <task id="LOCAL-00066" summary="part: Добавить интерактивность в форму добавления задачи">
+      <option name="closed" value="true" />
+      <created>1704891824175</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1704891824175</updated>
+    </task>
+    <task id="LOCAL-00067" summary="part: Добавить ответственного">
+      <option name="closed" value="true" />
+      <created>1704953426441</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1704953426442</updated>
+    </task>
+    <task id="LOCAL-00068" summary="feat: Добавить всякие графики, и что-если">
+      <option name="closed" value="true" />
+      <created>1706268417482</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1706268417483</updated>
+    </task>
+    <task id="LOCAL-00069" summary="fix: Переименовать компании">
+      <option name="closed" value="true" />
+      <created>1706521101155</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1706521101155</updated>
+    </task>
+    <task id="LOCAL-00070" summary="feat: Отображение и добавление задачи">
+      <option name="closed" value="true" />
+      <created>1712040226633</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1712040226633</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: Добавить архив организаций" />
+    <MESSAGE value="feat: Входящие звонки. Шапка" />
+    <MESSAGE value="feat: Плитки с краткой анатиликой входящих звонков" />
+    <MESSAGE value="feat: Список входящих звонков" />
+    <MESSAGE value="feat: Постраничная навигация для отчета по звонкам" />
+    <MESSAGE value="fix: Поправить доступы к разделу телефонии" />
+    <MESSAGE value="fix: Заголовок на таблицу" />
+    <MESSAGE value="feat: Ссылка поделиться огранизацией и контактом" />
+    <MESSAGE value="feat: Отображение пропущенных звонков" />
+    <MESSAGE value="feat: Пропущенные звонки" />
+    <MESSAGE value="feat: Пропущенные звонки собственные" />
+    <MESSAGE value="feat: Развернул пропущенные звонки" />
+    <MESSAGE value="feat: Возможность перезвонить с перезвона" />
+    <MESSAGE value="feat: Переходить из звонка в карточку организации\контакта" />
+    <MESSAGE value="feat: Всплывающая модалка со звонком" />
+    <MESSAGE value="feat: Создать модальное окно с добавлением задачи (фасад)" />
+    <MESSAGE value="Допилил..." />
+    <MESSAGE value="Опять что-то пофиксил..." />
+    <MESSAGE value="И опять и опять..." />
+    <MESSAGE value="part: Добавить интерактивность в форму добавления задачи" />
+    <MESSAGE value="part: Добавить ответственного" />
+    <MESSAGE value="part: Добавил поиск по базе" />
+    <MESSAGE value="feat: Добавить всякие графики, и что-если" />
+    <MESSAGE value="fix: Переименовать компании" />
+    <MESSAGE value="feat: Отображение и добавление задачи" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Отображение и добавление задачи" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

@@ -1,0 +1,32 @@
+.item {
+  @apply grid gap-8 items-end ml-48;
+  grid-template-columns: auto 1fr;
+}
+
+.hoverCard {
+  &__name {
+    @apply text-neutral-black;
+  }
+
+  &__data {
+    @apply grid gap-12;
+  }
+
+  &__date {
+    @apply m-0 text-neutral-600 font-weight-500;
+  }
+
+  &__number {
+    @apply m-0 text-neutral-400;
+    .realization { @apply font-weight-500 text-primary-main; }
+    //.plan { @apply text-info-_audio-player; }
+    .percent {
+      @apply ml-8 px-4 py-2 rounded-small font-weight-500;
+      font-size: 12px;
+
+      &__red { @apply bg-error-50 text-error-main; }
+      &__yellow { @apply bg-warning-100 text-warning-600; }
+      &__green { @apply bg-success-100 text-success-600; }
+    }
+  }
+}

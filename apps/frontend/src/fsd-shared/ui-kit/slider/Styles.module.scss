@@ -1,0 +1,41 @@
+@import './../../../../styles/vars.scss';
+@import './styles/Sizes.part.scss';
+@import './styles/States.part.scss';
+
+.root {
+	width: 100%;
+
+	& [class*='mantine-Slider-track'] {
+		&::before {
+			background-color: $color-neutral-50;
+		}
+	}
+
+	& [class*='mantine-Slider-bar'] {
+		background-color: $color-primary-main;
+	}
+
+	& [class*='mantine-Slider-thumb'] {
+		border: 2px solid rgba($color-neutral-main, 0.3);
+
+		& svg {
+			color: $color-primary-main;
+		}
+	}
+
+	& [class*='mantine-Slider-dragging'] {
+		border-color: $color-primary-main;
+	}
+
+	& [class*='mantine-Slider-mark'] {
+		border-color: $color-neutral-100;
+	}
+
+	& [class*='mantine-Slider-markFilled'] {
+		border-color: $color-primary-main;
+	}
+}
+
+.label {
+	margin-left: 10px;
+}

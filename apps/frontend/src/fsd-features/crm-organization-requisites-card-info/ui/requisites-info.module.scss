@@ -1,0 +1,29 @@
+.wrapper {
+
+}
+
+.requisites {
+	@apply grid gap-12;
+}
+
+.name {
+	@apply m-0 text-neutral-mainDarken;
+}
+
+.inn {
+	@apply m-0 text-neutral-300;
+	& span {
+		@apply text-neutral-mainDarken;
+	}
+}
+
+.action {
+	@apply underline cursor-pointer text-neutral-300;
+}
+
+.add {
+	@apply text-primary-mainLighten underline transition-all cursor-pointer;
+	&:hover {
+		@apply text-primary-mainDarken;
+	}
+}

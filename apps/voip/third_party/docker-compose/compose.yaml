@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+   voip:
+      container_name: ${VOIP_CONTAINER_NAME}
+      networks:
+         - erp_network

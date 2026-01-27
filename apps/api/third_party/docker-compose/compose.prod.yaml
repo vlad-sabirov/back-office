@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: ../../
+      dockerfile: ./third_party/docker/prod.dockerfile
+    restart: always
+    volumes:
+      - ../../uploads:/app/uploads
+    command: npm run start
+    env_file:
+      - ../../../../env/.env.local
+      - ../../../../env/.env.prod
+
+  db_api:
+    restart: always
+    env_file:
+      - ../../../../env/.env.local

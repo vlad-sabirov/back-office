@@ -1,0 +1,26 @@
+.sizeSmall {
+	& [class*='mantine-Tabs-tabLabel'] {
+		@apply font-weight-500;
+		font-size: 0.875rem;
+	}
+}
+
+.sizeMedium {
+	& [class*='mantine-Tabs-tabLabel'] {
+		@apply p-2 font-weight-500;
+		font-size: 1rem;
+	}
+}
+
+.sizeLarge {
+	& [class*='mantine-Tabs-tabLabel'] {
+		@apply self-center py-4 align-middle;
+		font-size: 1.125rem;
+	}
+}
+
+.vertical {
+	& [class*='mantine-Tabs-panel'] {
+		@apply m-0 p-0 pl-20;
+	}
+}

@@ -1,0 +1,6 @@
+.badgeUnverified {
+	@apply absolute bg-warning-main text-warning-700 px-6 py-0 rounded-small;
+	bottom: -4px;
+	right: -4px;
+	font-size: 14px;
+}

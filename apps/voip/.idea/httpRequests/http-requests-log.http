@@ -1,0 +1,721 @@
+PATCH http://localhost/api/voip/analytics/missing/check
+Content-Length: 33
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+   "uuid": "1699245805.52199"
+}
+
+<> 2023-11-08T160947.200.json
+
+###
+
+PATCH http://localhost/api/voip/analytics/missing/check
+Content-Length: 33
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+   "uuid": "1699245805.52199"
+}
+
+<> 2023-11-08T160922.400.json
+
+###
+
+PATCH http://localhost/api/voip/analytics/missing/check
+Content-Length: 33
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+   "uuid": "1699245805.52199"
+}
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 154
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+   "date_end": "2023-11-07T00:00:00Z",
+   "date_start": "2023-11-06T00:00:00Z",
+   "input": true,
+   "output": true,
+   "phones": ["129", "909125829"]
+}
+
+<> 2023-11-08T160634.200.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 154
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+   "date_end": "2023-11-07T00:00:00Z",
+   "date_start": "2023-11-06T00:00:00Z",
+   "input": true,
+   "output": true,
+   "phones": ["129", "909125829"]
+}
+
+<> 2023-11-08T160626.200.json
+
+###
+
+POST http://localhost/api/voip/analytics/missing
+Content-Length: 126
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_start": "2023-11-08T00:00:00Z",
+  "date_end": "2023-11-09T00:00:00Z",
+  "skip_checked": false,
+  "phones": ["101"]
+}
+
+<> 2023-11-08T154759.200.json
+
+###
+
+POST http://localhost/api/voip/analytics/missing
+Content-Length: 126
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "skip_checked": false,
+  "phones": ["101"]
+}
+
+<> 2023-11-08T154629.201.json
+
+###
+
+POST http://localhost/api/voip/analytics/missing
+Content-Length: 125
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "skip_checked": true,
+  "phones": ["101"]
+}
+
+<> 2023-11-08T154615.201.json
+
+###
+
+POST http://localhost/api/voip/analytics/missing
+Content-Length: 126
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "skip_checked": false,
+  "phones": ["101"]
+}
+
+<> 2023-11-08T154558.400.txt
+
+###
+
+POST http://localhost/api/voip/analytics/missing
+Content-Length: 126
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "skip_checked": false,
+  "phones": ["101"]
+}
+
+<> 2023-11-08T154441.400.txt
+
+###
+
+POST http://localhost/api/voip/analytics/missing
+Content-Length: 126
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "skip_checked": false,
+  "phones": ["101"]
+}
+
+<> 2023-11-08T154351.400.txt
+
+###
+
+POST http://localhost/api/voip/analytics/missing
+Content-Length: 126
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "skip_checked": false,
+  "phones": ["101"]
+}
+
+<> 2023-11-08T154252.404.txt
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 157
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "129", "909125829"
+  ]
+}
+
+<> 2023-11-08T152243.201.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 157
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "129", "909125829"
+  ]
+}
+
+<> 2023-11-08T152205.201.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 157
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "129", "909125829"
+  ]
+}
+
+<> 2023-11-08T152134.502.html
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 157
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "129", "909125829"
+  ]
+}
+
+<> 2023-11-08T152131.502.html
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 157
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "129", "909125829"
+  ]
+}
+
+<> 2023-11-08T152042.201.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 157
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "129", "909125829"
+  ]
+}
+
+<> 2023-11-08T151910.201.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 147
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "string"
+  ]
+}
+
+<> 2023-11-08T151501.201.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 147
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "string"
+  ]
+}
+
+<> 2023-11-08T151402.400.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 147
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "string"
+  ]
+}
+
+<> 2023-11-08T151311.400.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 147
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "string"
+  ]
+}
+
+<> 2023-11-08T151013.400.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 147
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "string"
+  ]
+}
+
+<> 2023-11-08T150954.400.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 147
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "string"
+  ]
+}
+
+<> 2023-11-08T150926.400.json
+
+###
+
+POST http://localhost/api/voip/analytics
+Content-Length: 147
+Content-Type: */*; charset=UTF-8
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "date_end": "2023-11-07T00:00:00Z",
+  "date_start": "2023-11-06T00:00:00Z",
+  "input": true,
+  "output": true,
+  "phones": [
+    "string"
+  ]
+}
+
+<> 2023-11-08T150808.400.json
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T154253.200.txt
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T154252.502.html
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T154243.201.txt
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T152521.404.txt
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T152511.404.txt
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T152436.404.txt
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T152430.404.txt
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T152401.404.txt
+
+###
+
+GET http://localhost/api/voip/ping
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-11-07T152348.404.txt
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142248.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485830
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142244.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142234.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142132.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/909726611
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142129.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142025.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/909726611
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142023.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T142020.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141934.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/909726611
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141931.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141905.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141716.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141715.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/881485829
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141658.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/909726611
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141640.200.json
+
+###
+
+GET http://back-office.uz/api/voip/search/909726611
+Authorization: Basic voip 5qClHKyR0DijZQ7Eecxn
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.8.1)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2023-10-27T141636.200.json
+
+###
+

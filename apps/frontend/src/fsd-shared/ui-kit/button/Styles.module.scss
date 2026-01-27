@@ -1,0 +1,15 @@
+@import './../../../../styles/vars.scss';
+@import './styles/Sizes.part.scss';
+@import './styles/Colors.part.scss';
+@import './styles/States.part.scss';
+
+.root {
+	font-weight: 500;
+	border: 0;
+	outline-width: 0;
+
+	&,
+	& div {
+		backdrop-filter: none !important;
+	}
+}

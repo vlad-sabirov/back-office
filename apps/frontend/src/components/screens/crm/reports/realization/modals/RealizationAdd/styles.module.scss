@@ -1,0 +1,42 @@
+.wrapper {
+	@apply grid gap-20;
+
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'date date'
+		'realization realization'
+		'customerCount customerNew'
+		'customerShipment shipmentCount';
+}
+
+.formUser {
+	grid-area: user;
+}
+
+.formDate {
+	grid-area: date;
+}
+
+.formPlan {
+	grid-area: plan;
+}
+
+.formRealization {
+	grid-area: realization;
+}
+
+.formCustomerCount {
+	grid-area: customerCount;
+}
+
+.formCustomerNew {
+	grid-area: customerNew;
+}
+
+.formCustomerShipment {
+	grid-area: customerShipment;
+}
+
+.formShipmentCount {
+	grid-area: shipmentCount;
+}

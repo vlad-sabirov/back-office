@@ -1,0 +1,37 @@
+@import './../../../../../styles/vars.scss';
+
+.itemWrapper {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	align-items: center;
+	gap: 8px;
+}
+
+.itemName {
+	margin: 0;
+}
+
+.itemAvatar {
+	border-radius: 50%;
+}
+
+.valueWrapper {
+	background-color: $color-neutral-50;
+	padding: 2px 0 2px 4px;
+	display: grid;
+	grid-template-columns: auto auto auto;
+	align-items: center;
+	gap: 8px;
+	border-radius: 100px;
+}
+
+.valueName {
+	margin: 0;
+}
+
+.valueAvatar {
+	border-radius: 50%;
+}
+
+.valueClose {
+}

@@ -1,0 +1,45 @@
+.mode__paragraph {
+	&__small {
+		font-size: 0.875rem;
+		line-height: 1.125rem;
+		color: $color-neutral-main;
+		margin-bottom: 5px;
+	}
+
+	&__medium {
+		font-size: 1rem;
+		line-height: 1.25rem;
+		color: $color-neutral-main;
+		margin-bottom: 10px;
+	}
+
+	&__large {
+		font-size: 1.125rem;
+		line-height: 1.375rem;
+		color: $color-neutral-main;
+		margin-bottom: 10px;
+	}
+}
+
+.mode__heading {
+	&__small {
+		font-size: 1.5rem;
+		line-height: 1.75rem;
+		color: $color-neutral-black;
+		margin-bottom: 5px;
+	}
+
+	&__medium {
+		font-size: 1.75rem;
+		line-height: 2rem;
+		color: $color-neutral-black;
+		margin-bottom: 10px;
+	}
+
+	&__large {
+		font-size: 2rem;
+		line-height: 2.25rem;
+		color: $color-neutral-black;
+		margin-bottom: 10px;
+	}
+}

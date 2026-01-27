@@ -1,0 +1,30 @@
+.wrapper {
+	@apply z-2 grid w-320 gap-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'state state'
+		'department territory'
+		'search search'
+		'buttonWrapper buttonWrapper';
+}
+
+.search {
+	grid-area: search;
+}
+
+.department {
+	grid-area: department;
+}
+
+.territory {
+	grid-area: territory;
+}
+
+.state {
+	grid-area: state;
+}
+
+.buttonWrapper {
+	@apply grid justify-end;
+	grid-area: buttonWrapper;
+}

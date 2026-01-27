@@ -1,0 +1,39 @@
+.none {
+	&,
+	&::before,
+	&::after {
+		@apply rounded-none;
+	}
+}
+
+.small {
+	&,
+	&::before,
+	&::after {
+		@apply rounded-small;
+	}
+}
+
+.medium {
+	&,
+	&::before,
+	&::after {
+		@apply rounded-medium;
+	}
+}
+
+.large {
+	&,
+	&::before,
+	&::after {
+		@apply rounded-large;
+	}
+}
+
+.circle {
+	&,
+	&::before,
+	&::after {
+		@apply rounded-circle;
+	}
+}

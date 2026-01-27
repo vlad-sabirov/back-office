@@ -1,0 +1,42 @@
+.wrapper {
+	@apply grid gap-12 grid-flow-col;
+}
+
+.item {
+	@apply outline outline-neutral-50 outline-1 rounded-medium h-40 px-12 opacity-50
+		grid items-center gap-8 grid-flow-col bg-neutral-white cursor-pointer transition-all;
+
+	&:hover { @apply opacity-100; }
+	& p { @apply m-0; }
+}
+
+.total {
+	& svg { @apply text-neutral-400; }
+	&[data-active=true] {
+		@apply opacity-100;
+	}
+}
+
+.empty {
+	& svg { @apply text-error-600; }
+	&[data-active=true] {
+		@apply opacity-100 bg-error-mainDarken;
+		& p, & svg { @apply text-neutral-white; }
+	}
+}
+
+.low {
+	& svg { @apply text-error-main; }
+	&[data-active=true] {
+		@apply opacity-100 bg-error-mainLighten;
+		& p, & svg { @apply text-neutral-white; }
+	}
+}
+
+.medium {
+	& svg { @apply text-warning-main; }
+	&[data-active=true] {
+		@apply opacity-100 bg-warning-mainLighten;
+		& p, & svg { @apply text-warning-700; }
+	}
+}

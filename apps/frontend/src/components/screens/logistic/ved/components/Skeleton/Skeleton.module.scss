@@ -1,0 +1,12 @@
+.kanban {
+	@apply mt-20 grid grid-flow-col items-start gap-20;
+	width: 300px;
+
+	& .col {
+		@apply grid gap-20;
+	}
+}
+
+.list {
+	@apply grid gap-12;
+}

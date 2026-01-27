@@ -1,0 +1,9 @@
+.services {
+	@apply grid grid-flow-col gap-12;
+	grid-area: services;
+}
+
+.servicesButton {
+	width: 20px;
+	color: $color-neutral-400;
+}

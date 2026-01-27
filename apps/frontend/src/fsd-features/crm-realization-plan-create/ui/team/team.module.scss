@@ -1,0 +1,51 @@
+.item {
+	@apply grid items-end gap-8;
+	grid-template-columns: 40px 2fr 1fr 1fr;
+}
+
+.iconTeam {
+	@apply ml-8 mb-8 w-28 cursor-pointer text-neutral-300;
+	&__active {
+		@apply text-primary-main;
+	}
+}
+
+.hoverCard {
+	&__name {
+		@apply text-neutral-black;
+	}
+
+	&__data {
+		@apply grid gap-12;
+	}
+
+	&__date {
+		@apply m-0 font-weight-500 text-neutral-600;
+	}
+
+	&__customers {
+		@apply m-0 text-neutral-600;
+	}
+
+	&__number {
+		@apply m-0 text-neutral-400;
+		.realization {
+			@apply font-weight-500 text-primary-main;
+		}
+		//.plan { @apply text-info-_audio-player; }
+		.percent {
+			@apply ml-8 rounded-small px-4 py-2 font-weight-500;
+			font-size: 12px;
+
+			&__red {
+				@apply bg-error-50 text-error-main;
+			}
+			&__yellow {
+				@apply bg-warning-100 text-warning-600;
+			}
+			&__green {
+				@apply bg-success-100 text-success-600;
+			}
+		}
+	}
+}

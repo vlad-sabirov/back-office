@@ -1,0 +1,25 @@
+.wrapper {
+	@apply h-40 mb-20 grid items-center gap-20 relative;
+	grid-template-columns: auto auto auto 1fr auto;
+}
+
+.title {
+	@apply m-0;
+}
+
+.contentLeft {
+	@apply grid grid-flow-col justify-start gap-12;
+}
+
+.contentRight {
+	@apply grid grid-flow-col justify-end gap-12;
+}
+
+.contentCenter {
+	@apply grid grid-flow-col justify-center gap-12;
+}
+
+.loader {
+	@apply absolute m-0 p-0;
+	transform: translateY(-50%);
+}

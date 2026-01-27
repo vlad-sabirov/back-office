@@ -1,0 +1,58 @@
+.year {
+	@apply relative grid gap-y-20 gap-x-40  border-t border-solid border-neutral-50 pt-12;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+
+	&__loading {
+		@apply absolute top-0 left-0 z-1 grid h-full w-full items-center justify-center bg-neutral-white bg-opacity-70;
+	}
+}
+
+.month {
+	&__wrapper {
+		@apply relative grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		min-height: 185px;
+	}
+
+	&__name {
+		@apply m-0 mb-8 text-center  capitalize text-neutral-black;
+	}
+}
+
+.dayName {
+	@apply m-0 mb-8 text-center font-weight-500 text-neutral-300;
+}
+
+.day {
+	@apply relative m-0 my-2 grid items-center justify-center py-2 text-center;
+	min-height: 28px;
+
+	&__active {
+		@apply font-weight-500 text-primary-main;
+	}
+
+	&__weekend {
+		@apply text-error-main;
+	}
+
+	&__shortDay {
+		@apply text-info-mainLighten;
+	}
+
+	&__holiday {
+		@apply bg-neutral-50;
+
+		&Start {
+			@apply rounded-l-small;
+		}
+
+		&End {
+			@apply rounded-r-small;
+		}
+	}
+
+	&__icon {
+		width: 14px;
+		margin-top: 2px;
+	}
+}

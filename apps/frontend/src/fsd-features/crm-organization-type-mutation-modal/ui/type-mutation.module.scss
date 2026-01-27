@@ -1,0 +1,11 @@
+.description {
+	@apply text-neutral-300 italic text-center m-0;
+}
+
+.form {
+	@apply mt-20;
+}
+
+.buttons {
+	grid-template-columns: auto 1fr auto auto;
+}

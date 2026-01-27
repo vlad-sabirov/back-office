@@ -1,0 +1,57 @@
+.wrapper {
+	@apply grid;
+}
+
+.item {
+	@apply grid cursor-pointer grid-flow-col rounded-medium  p-8 px-16 pr-20;
+	grid-template-columns: 1fr auto;
+
+	&:hover {
+		@apply bg-neutral-bg;
+	}
+}
+
+.date {
+	@apply m-0 font-weight-500 capitalize text-neutral-800;
+}
+
+.plan {
+	@apply m-0;
+
+	> span {
+		@apply ml-4 rounded-small px-4 py-2 font-weight-500 text-neutral-white;
+		font-size: 0.75rem;
+	}
+}
+
+.percent {
+	&__green {
+		@apply bg-success-main;
+	}
+
+	&__yellow {
+		@apply bg-warning-300;
+	}
+
+	&__red {
+		@apply bg-error-200;
+	}
+}
+
+.addTop,
+.addTop:hover,
+.addTop:focus {
+	@apply absolute left-1/2 -top-32;
+	transform: translateX(-50%) !important;
+
+	& button {
+		@apply rounded-circle p-20;
+		outline-width: 20px !important;
+		outline-style: solid !important;
+		outline-color: rgba($color: #fff, $alpha: 0.5) !important;
+	}
+}
+.addTop > button:hover {
+	outline-width: 28px !important;
+	outline-color: rgba($color: #fff, $alpha: 0.75) !important;
+}

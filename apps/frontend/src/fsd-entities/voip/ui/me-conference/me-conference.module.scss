@@ -1,0 +1,25 @@
+.header {
+	@apply grid mb-4 px-8;
+	grid-template-columns: 1fr auto;
+}
+
+.type, .timer {
+	@apply m-0 text-neutral-400;
+}
+
+.wrapper {
+  @apply p-20 items-center bg-neutral-bg rounded-medium;
+}
+
+.users {
+	@apply flex flex-wrap gap-4;
+}
+
+.buttons {
+	@apply grid mt-20 gap-8;
+	grid-template-columns: 40px 40px 1fr 40px;
+}
+
+.button {
+	@apply m-0 p-0 rounded-circle;
+}

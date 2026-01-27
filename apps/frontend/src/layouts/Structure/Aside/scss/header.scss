@@ -1,0 +1,19 @@
+.header {
+	grid-area: header;
+	padding: 0 16px;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-areas: 'logo burger';
+	align-items: center;
+	max-height: 70px;
+}
+
+.logo {
+	grid-area: logo;
+	display: grid;
+	align-items: center;
+
+	& svg {
+		width: 150px;
+	}
+}

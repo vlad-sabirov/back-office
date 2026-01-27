@@ -1,0 +1,55 @@
+.wrapper {
+	@apply grid gap-20;
+	grid-template-columns: 120px 1fr;
+	grid-template-areas:
+		'name name'
+		'template file'
+		'comment comment';
+}
+
+.name {
+	grid-area: name;
+}
+
+.template {
+	@apply grid justify-items-center rounded-medium bg-excel p-0 px-10 no-underline transition-all;
+	height: 90px;
+	grid-area: template;
+	grid-template-rows: 1fr auto auto 1fr;
+	grid-template-areas: '.' 'icon' 'text' '.';
+
+	& svg {
+		@apply mb-4 text-neutral-white;
+		grid-area: icon;
+		width: 20px;
+	}
+
+	& p {
+		@apply m-0 text-center font-weight-500 text-neutral-white;
+		grid-area: text;
+	}
+
+	&:hover,
+	&:focus {
+		background-color: darken(rgb(62 192 130), 10);
+	}
+
+	&:focus {
+		outline: 2px solid lighten(rgb(62 192 130), 10);
+		outline-offset: 0;
+	}
+}
+
+.file {
+	@apply grid items-center;
+	grid-area: file;
+	height: 70px;
+
+	& p {
+		@apply m-0 text-center;
+	}
+}
+
+.comment {
+	grid-area: comment;
+}

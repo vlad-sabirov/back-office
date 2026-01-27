@@ -1,0 +1,21 @@
+.root {
+  @apply grid;
+}
+
+.header {
+  @apply mt-40 grid grid-flow-col;
+  grid-template-columns: 1fr auto;
+
+  &__title {
+    @apply m-0;
+  }
+
+  &__datePicker {
+    width: 200px;
+  }
+}
+
+.body {
+  @apply grid gap-20 grid-flow-col;
+  grid-template-columns: 1fr 1fr;
+}

@@ -1,0 +1,26 @@
+.call {
+	@apply grid gap-12 px-20 py-12;
+	grid-template-columns: 150px 1fr auto;
+
+	&:nth-child(odd) { @apply bg-neutral-bg rounded-medium; }
+}
+
+.checkbox {
+	@apply inline-block mr-4 -mt-2;
+}
+
+.date {
+	@apply m-0 text-neutral-400;
+}
+
+.callerName {
+	@apply m-0 truncate;
+}
+
+.callerPhone {
+	@apply m-0 text-neutral-400;
+}
+
+.pointer {
+	@apply cursor-pointer;
+}

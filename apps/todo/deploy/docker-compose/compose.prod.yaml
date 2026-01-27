@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  todo:
+    restart: always
+    build:
+      context: ../../../../
+      dockerfile: ./apps/todo/deploy/docker/prod.Dockerfile
+
+  db_todo:
+    restart: always
+    build:
+      context: ../../
+      dockerfile: ./deploy/docker/psql.Dockerfile

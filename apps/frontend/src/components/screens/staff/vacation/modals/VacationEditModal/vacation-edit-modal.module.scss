@@ -1,0 +1,34 @@
+.wrapper {
+	@apply grid gap-20;
+	grid-template-columns: 2fr 1fr 1fr;
+	grid-template-areas:
+		'staff staff isFake'
+		'dateStart dateEnd dateEnd'
+		'comment comment comment'
+		'buttons buttons buttons';
+}
+
+.staff {
+	grid-area: staff;
+}
+
+.dateStart {
+	grid-area: dateStart;
+}
+
+.dateEnd {
+	grid-area: dateEnd;
+}
+
+.comment {
+	grid-area: comment;
+}
+
+.buttons {
+	grid-area: buttons;
+}
+
+.isFake {
+	@apply justify-self-end;
+	grid-area: isFake;
+}

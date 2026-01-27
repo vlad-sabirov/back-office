@@ -1,0 +1,13 @@
+.root {
+	& [class*='mantine-Switch-body'] {
+		@apply flex-col;
+	}
+
+	& [class*='mantine-Switch-track'] {
+		@apply cursor-pointer;
+	}
+
+	& [class*='mantine-Switch-label'] {
+		@apply block text-neutral-main;
+	}
+}

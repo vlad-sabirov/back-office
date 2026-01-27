@@ -1,0 +1,27 @@
+@import './../../../../styles/vars.scss';
+@import './styles/Sizes.part.scss';
+@import './styles/States.part.scss';
+@import './styles/Colors.part.scss';
+
+.root {
+	& [class*='mantine-MultiSelect-label'] {
+		font-weight: normal;
+		margin-left: 10px;
+	}
+
+	& [class*='mantine-MultiSelect-wrapper'] {
+		border-radius: $border-radius-medium;
+		outline-width: 1px;
+		outline-style: solid;
+
+		&:hover {
+			outline-width: 2px;
+			outline-offset: -1px;
+		}
+	}
+
+	& [class*='mantine-MultiSelect-input'] {
+		border-radius: $border-radius-medium;
+		border: 0;
+	}
+}

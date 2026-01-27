@@ -1,0 +1,11 @@
+.button {
+	@apply inline-block;
+	p { @apply m-0; }
+}
+
+.modal {
+	&__info {
+		@apply m-0;
+		& span { @apply font-weight-500; }
+	}
+}

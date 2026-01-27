@@ -1,0 +1,97 @@
+@import './../../../../styles/vars.scss';
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 0;
+}
+
+.header {
+	& tr {
+	}
+
+	& th {
+		font-weight: 400;
+		font-size: 1rem;
+		text-transform: uppercase;
+		color: $color-neutral-main-darken;
+		text-align: left;
+		padding: 0 20px 12px 0;
+		margin: 0;
+
+		& > div {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+
+	& th:first-child {
+		padding-left: 20px;
+	}
+}
+
+.body {
+	//& tr {
+	//	background-color: $color-neutral-bg;
+	//}
+	//
+	//& tr:nth-of-type(even) {
+	//	background-color: $color-neutral-white;
+	//}
+
+	& td {
+		color: $color-neutral-main;
+		padding: 12px 20px 12px 0;
+
+		& > p {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+
+	& td:first-child {
+		padding-left: 20px;
+	}
+}
+
+.headSortable {
+	cursor: pointer;
+}
+
+.sortIcon {
+	@apply inline-block;
+
+	width: 10px;
+	vertical-align: middle;
+	margin: -4px 4px 0px 0px;
+	transition: $transition-medium;
+	transform: scaleY(-100%);
+
+	&Reverse {
+		transform: scaleY(100%);
+	}
+}
+
+.headSortActive {
+	font-weight: 500 !important;
+	color: $color-neutral-700 !important;
+}
+
+.color {
+	&__tr1 { @apply bg-neutral-white; }
+	&__tr2 { @apply bg-neutral-bg; }
+
+	&__red1 { background-color: transparentize($color-error-100, 0.7); }
+	&__red2 { background-color: transparentize($color-error-100, 0.5); }
+
+	&__yellow1 { background-color: transparentize($color-warning-100, 0.6); }
+	&__yellow2 { background-color: transparentize($color-warning-100, 0.3); }
+
+	&__purple1 { background-color: transparentize($color-primary-100, 0.6); }
+	&__purple2 { background-color: transparentize($color-primary-100, 0.4); }
+
+	&__green1 { background-color: transparentize($color-success-100, 0.5); }
+	&__green2 { background-color: transparentize($color-success-100, 0.2); }
+}

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: ../../
+      dockerfile: ./third_party/docker/dev.dockerfile
+    command: npm run start:dev
+    restart: "no"
+    volumes:
+      - ../../:/app/
+      - /app/node_modules
+    ports:
+      - '${API_PORT}:3000'
+    env_file:
+      - ../../../../env/.env.local
+      - ../../../../env/.env.dev
+
+  db_api:
+    restart: "no"
+    env_file:
+      - ../../../../env/.env.local

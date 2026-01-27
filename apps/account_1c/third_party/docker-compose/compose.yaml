@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+   account_1c:
+      container_name: ${ACCOUNT_1C_CONTAINER_NAME}
+      networks:
+         - erp_network
+
+   db_account_1c:
+      container_name: ${ACCOUNT_1C_MONGO_CONTAINER_NAME}
+      image: mongo:8
+      environment:
+         MONGO_INITDB_ROOT_USERNAME: ${ACCOUNT_1C_MONGO_AUTH_LOGIN}
+         MONGO_INITDB_ROOT_PASSWORD: ${ACCOUNT_1C_MONGO_AUTH_PASSWORD}
+      networks:
+         - erp_network
+      volumes:
+         - ../db/backup/:/app/backup/
+         - vol_db_account_1c:/data/db/
+      ports:
+         - '${ACCOUNT_1C_MONGO_PORT}:27017'

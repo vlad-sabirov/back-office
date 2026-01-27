@@ -1,0 +1,7 @@
+.root {
+	@apply grid grid-flow-col gap-12;
+}
+
+.disabled {
+	@apply opacity-30;
+}

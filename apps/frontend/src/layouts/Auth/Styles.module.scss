@@ -1,0 +1,136 @@
+@import './../../../styles/vars.scss';
+
+.wrapper {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	display: grid;
+	justify-items: center;
+	grid-template-rows: 1fr auto auto auto 1fr;
+	grid-template-areas:
+		'.'
+		'error'
+		'info'
+		'form'
+		'.';
+}
+
+.bgImg {
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background-image: url(/img/auth/bg.webp);
+	background-size: cover;
+	background-position: center;
+	filter: blur(50px);
+}
+
+.info {
+	position: relative;
+	grid-area: info;
+	max-width: 440px;
+	margin-bottom: 20px;
+	padding: 0 20px;
+}
+
+.form {
+	grid-area: form;
+	position: relative;
+	z-index: 1;
+	background-color: $color-neutral-white;
+	border-radius: $border-radius-large;
+	padding: 68px 60px;
+	width: 450px;
+	display: grid;
+	gap: 20px;
+
+	&__firstLogin {
+		width: 560px;
+	}
+}
+
+.logo {
+	justify-self: center;
+	margin-bottom: 10px;
+	width: 300px;
+}
+
+.stepOneWrapper {
+	display: grid;
+	gap: 20px;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'inputLogin inputLogin'
+		'inputPassword inputPassword'
+		'stepOneSubmit .';
+}
+
+.inputLogin {
+	grid-area: inputLogin;
+}
+
+.inputPassword {
+	grid-area: inputPassword;
+}
+
+.stepOneSubmit {
+	margin-top: 15px;
+	grid-area: stepOneSubmit;
+	width: 100%;
+}
+
+.arrow {
+	transform: rotate(-90deg);
+	width: 16px !important;
+}
+
+.stepTwoWrapper {
+	display: grid;
+	gap: 20px;
+	grid-template-columns: 1fr;
+	grid-template-areas:
+		'stepTwoDescription'
+		'pinCode'
+		'stepTwoSubmit';
+}
+
+.stepTwoDescription {
+	grid-area: stepTwoDescription;
+	padding: 0 20px;
+	text-align: center;
+	margin: 0;
+}
+
+.pinCode {
+	grid-area: pinCode;
+}
+
+.stepTwoSubmit {
+	margin: 20px 60px 0;
+	grid-area: stepTwoSubmit;
+}
+
+.stepThreeWrapper {
+	display: grid;
+	gap: 20px;
+	grid-template-columns: 1fr;
+	grid-template-areas:
+		'stepThreeDescription'
+		'stepThreeInput'
+		'stepThreeSubmit';
+}
+
+.stepThreeDescription {
+	grid-area: stepThreeDescription;
+	text-align: center;
+	margin: 0;
+}
+
+.stepThreeInput {
+	grid-area: stepThreeInput;
+}
+
+.stepThreeSubmit {
+	margin: 20px 40px 0;
+	grid-area: stepThreeSubmit;
+}

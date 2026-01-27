@@ -1,0 +1,9 @@
+.root {
+	&::before {
+		@apply bg-neutral-100 opacity-30;
+	}
+
+	&::after {
+		@apply bg-neutral-100;
+	}
+}

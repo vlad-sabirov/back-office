@@ -1,0 +1,9 @@
+.wrapper {
+  @apply grid;
+}
+
+.item {
+  @apply m-0 py-8 px-16 capitalize cursor-pointer transition-all h-36;
+  &__second { @apply bg-neutral-bg; }
+  &:hover { @apply bg-neutral-50 font-weight-500; }
+}

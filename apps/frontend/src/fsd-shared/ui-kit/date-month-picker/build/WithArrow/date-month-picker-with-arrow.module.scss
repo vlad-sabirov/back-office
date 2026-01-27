@@ -1,0 +1,19 @@
+.wrapper {
+  @apply grid grid-flow-col items-center gap-4;
+
+  & svg {
+    @apply text-neutral-400 cursor-pointer;
+  }
+
+  &__picker {
+    width: 200px;
+  }
+
+  &__iconPrev {
+    @apply rotate-90;
+  }
+
+  &__iconNext {
+    @apply -rotate-90;
+  }
+}

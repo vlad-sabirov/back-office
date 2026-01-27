@@ -1,0 +1,5 @@
+.root {
+	@apply grid gap-20;
+	grid-template-columns: 450px auto;
+	grid-template-areas: 'leftSide rightSide';
+}

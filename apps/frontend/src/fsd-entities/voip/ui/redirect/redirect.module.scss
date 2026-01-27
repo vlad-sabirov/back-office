@@ -1,0 +1,8 @@
+.form {
+	@apply grid gap-8 items-end;
+	grid-template-columns: 1fr auto;
+}
+
+.callButton {
+	@apply p-0 w-40
+}

@@ -1,0 +1,45 @@
+.date {
+  @apply text-neutral-400 m-0;
+}
+
+.time {
+  @apply font-weight-500 m-0;
+
+  &__arrived {
+    @apply text-success-mainDarken;
+  }
+
+  &__late {
+    @apply text-warning-mainDarken;
+  }
+
+  &__didCome {
+    @apply text-error-main font-weight-400;
+  }
+
+  &__isSkipped {
+    @apply text-info-main;
+  }
+
+  &__isHoliday {
+    @apply text-primary-main;
+  }
+}
+
+.comments {
+  @apply grid gap-8;
+
+  &__item {
+    @apply grid grid-flow-col items-start justify-start gap-8 cursor-pointer;
+  }
+
+  &__text {
+    @apply m-0 text-neutral-400;
+  }
+}
+
+.actionMenu {
+  & svg {
+    @apply h-16 text-neutral-400 cursor-pointer;
+  }
+}

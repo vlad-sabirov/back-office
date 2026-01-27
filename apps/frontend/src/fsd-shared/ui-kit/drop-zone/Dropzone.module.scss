@@ -1,0 +1,51 @@
+@import './../../../../styles/vars.scss';
+@import './styles/States.part.scss';
+
+.root {
+	width: 100%;
+}
+
+.label {
+	margin-left: 10px;
+	margin-bottom: 0;
+
+	& span {
+		margin-left: 4px;
+		color: $color-error-main;
+	}
+}
+
+.wrapper {
+	border: 1px dashed $color-neutral-300;
+	background-color: $color-neutral-bg;
+	border-radius: $border-radius-medium;
+	padding: 8px;
+
+	&:hover {
+		background-color: $color-neutral-50;
+	}
+}
+
+.active {
+	background-color: $color-success-50;
+	border-color: $color-success-500;
+}
+
+.reject {
+	background-color: $color-error-50;
+	border-color: $color-error-main;
+}
+
+.children {
+	pointer-events: none;
+	margin: 0;
+}
+
+.childrenIcon {
+	margin-bottom: -2px;
+}
+
+.error {
+	margin: 4px 0 0;
+	color: $color-error-main;
+}

@@ -1,0 +1,95 @@
+.wrapper {
+	@apply mt-40;
+}
+
+.name {
+	@apply font-weight-500 text-neutral-black;
+}
+
+.staff,
+.dateInfo,
+.dateFiles {
+	@apply mt-20;
+}
+
+.author,
+.performer {
+	@apply mb-8 grid items-center gap-8;
+	grid-template-columns: auto auto auto auto 1fr;
+
+	&__icon {
+		@apply text-neutral-300;
+	}
+
+	&__title {
+		@apply m-0;
+	}
+
+	&__name {
+		@apply mb-0 cursor-pointer text-neutral-black;
+	}
+}
+
+.dateInfo {
+	&__item {
+		@apply mb-8 grid items-center gap-8;
+		grid-template-columns: auto auto 1fr;
+	}
+
+	&__icon {
+		@apply text-neutral-300;
+	}
+
+	&__key {
+		@apply m-0;
+	}
+
+	&__value {
+		@apply m-0 text-neutral-black;
+
+		& span {
+			@apply text-neutral-300;
+		}
+
+		&__warning,
+		&__warning span {
+			@apply text-warning-500;
+		}
+
+		&__error,
+		&__error span {
+			@apply text-error-main;
+		}
+	}
+}
+
+.dateFiles {
+	&__item {
+		@apply grid items-center gap-4;
+		grid-template-columns: auto auto auto auto auto 1fr;
+	}
+
+	&__icon {
+		@apply mr-4 text-neutral-300;
+	}
+
+	&__key {
+		@apply m-0 mr-4;
+	}
+
+	&__download {
+		@apply mr-4 font-weight-500 text-excel no-underline;
+
+		& svg {
+			@apply mr-4 -mb-3;
+		}
+	}
+
+	&__update {
+		@apply m-0 font-weight-500 text-primary-main no-underline;
+
+		& svg {
+			@apply -mb-3;
+		}
+	}
+}

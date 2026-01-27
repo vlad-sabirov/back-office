@@ -1,0 +1,22 @@
+.root {
+	@apply grid gap-20 items-start;
+	grid-template-columns: 1fr 520px;
+	grid-template-areas: 
+		'history detail'
+		'staff staff';
+}
+
+.history {
+	@apply m-0;
+	grid-area: history;
+}
+
+.detail {
+	@apply m-0;
+	grid-area: detail;
+}
+
+.staff {
+	@apply m-0;
+	grid-area: staff;
+}

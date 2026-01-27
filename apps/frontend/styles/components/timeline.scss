@@ -1,0 +1,15 @@
+[class*='mantine-Timeline-item'] {
+  &::before {
+    border-left-width: 2px;
+    left: -3px;
+  }
+}
+
+[class*='mantine-Timeline-itemBullet'] {
+  border-width: 2px;
+
+  &[data-active='true'] {
+    border-color: $color-primary-main;
+    border-width: 3px;
+  }
+}

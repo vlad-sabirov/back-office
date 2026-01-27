@@ -1,0 +1,16 @@
+export const UserTerritoryConstants = {
+	ERROR_ID_NOTFOUND: 'Территория с таким id не найдена',
+	ERROR_NAME_NOT_FOUND: 'Территория с таким названием не найдена',
+	ERROR_NAME_DUPLICATE: 'Территория с таким названием уже существует',
+	ERROR_ADDRESS_DUPLICATE: 'Территория с таким адресом уже существует',
+	ERROR_IT_IS_LAST_TERRITORY: 'Нельзя удалить единственную территорию',
+	VALIDATION_NAME_TYPE: 'Поле name должно быть типа String',
+	VALIDATION_NAME_LENGTH: 'Минимальная длина имени: 3 символа',
+	VALIDATION_ADDRESS_TYPE: 'Поле address должно быть типа String',
+	VALIDATION_ADDRESS_LENGTH: 'Минимальная длина адреса: 4 символа',
+	VALIDATION_STAFF_COUNT_TYPE: 'Поле staffCount должно быть типа Number',
+	VALIDATION_STAFF_COUNT_MALE_TYPE: 'Поле staffMaleCount должно быть типа Number',
+	VALIDATION_STAFF_COUNT_FEMALE_TYPE: 'Поле staffFemaleCount должно быть типа Number',
+	VALIDATION_POSITION_TYPE: 'Поле position должно быть типа Number',
+	VALIDATION_IS_HIDE_TYPE: 'Поле isHide должно быть типа Boolean',
+};

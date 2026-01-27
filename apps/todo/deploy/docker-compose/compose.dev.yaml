@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  todo:
+    restart: "no"
+    build:
+      context: ../../../../
+      dockerfile: ./apps/todo/deploy/docker/dev.Dockerfile
+    volumes:
+      - ../../:/app
+      - ../../../../core/go:/core/go
+    ports:
+       - "${TODO_PORT}:3000"
+
+  db_todo:
+    restart: "no"
+    build:
+      context: ../../
+      dockerfile: ./deploy/docker/psql.Dockerfile
+    ports:
+      - "${TODO_PSQL_PORT}:${TODO_PSQL_PORT}"

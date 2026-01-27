@@ -1,0 +1,15 @@
+.tooltip {
+	@apply bg-neutral-white px-20 py-12 shadow-2xl rounded-medium;
+
+	& p {
+		@apply m-0;
+	}
+
+	&__date {
+		@apply capitalize text-neutral-black;
+	}
+
+	&__plan span { @apply text-warning-600; }
+	&__realization span { @apply text-success-600; }
+	&__percent span { @apply text-primary-main; }
+}

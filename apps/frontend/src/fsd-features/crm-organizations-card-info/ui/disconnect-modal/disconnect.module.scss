@@ -1,0 +1,7 @@
+.description {
+	@apply text-neutral-300 italic;
+	
+	& > span {
+		@apply whitespace-nowrap text-neutral-main;
+	}
+}

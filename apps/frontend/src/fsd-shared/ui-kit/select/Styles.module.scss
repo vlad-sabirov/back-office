@@ -1,0 +1,54 @@
+@import './../../../../styles/vars.scss';
+@import './styles/Sizes.part.scss';
+@import './styles/Variants.part.scss';
+@import './styles/States.part.scss';
+
+.root {
+	position: relative;
+	width: 100%;
+	transition: $transition-medium;
+
+	& [class*='-input'] {
+		position: relative;
+		border-radius: $border-radius-medium;
+		border: 0;
+		outline-width: 1px;
+		outline-style: solid;
+		outline-offset: -1px;
+	}
+	& input {
+		height: 100%;
+	}
+
+	& [class*='-label'] {
+		margin: 0;
+		padding: 0;
+		font-weight: 400;
+		font-size: 0.875rem;
+		line-height: 1rem;
+		margin-left: 10px;
+	}
+
+	& svg {
+		width: 16px;
+	}
+
+	&:hover {
+		& [class*='-input'] {
+			outline-width: 2px;
+			outline-offset: -1px;
+		}
+	}
+
+	& [class*='mantine-Select-dropdown'] {
+		@apply -mt-10 rounded-large;
+	}
+
+	& [class*='mantine-Select-item'] {
+		@apply rounded-medium;
+
+		&[data-selected='true'] {
+			@apply bg-primary-50 font-weight-500 text-primary-mainDarken;
+		}
+	}
+}

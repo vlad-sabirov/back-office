@@ -1,0 +1,56 @@
+import { Context, FC, createContext, useContext, useEffect, useState } from 'react';
+import CalendarStore from './Calendar.store';
+import { Grid, Header, Navigation } from './components';
+import cn from 'classnames';
+import { observer } from 'mobx-react-lite';
+import { CalendarProps } from '.';
+import css from './Calendar.module.scss';
+
+const calendarStore = new CalendarStore();
+
+const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
+	({ date, events, min, max, startDay, view, views, ctx, loading, className, ...props }) => {
+		const [isLoaded, setIsLoaded] = useState<boolean>(false);
+		const CalendarStore = useContext(ctx);
+
+		useEffect(() => {
+			if (events) CalendarStore.setEvents(events);
+			if (!date)
+				CalendarStore.setDate(min && new Date() < min ? min : max && new Date() > max ? max : new Date());
+			if (date) CalendarStore.setDate(min && date < min ? min : max && date > max ? max : date);
+			if (min) CalendarStore.setMin(min);
+			if (max) CalendarStore.setMax(max);
+			if (startDay) CalendarStore.setStartDay(startDay);
+			if (view) CalendarStore.setView(view);
+			if (!view && views) CalendarStore.setView(views[0]);
+			if (views) CalendarStore.setViews(views);
+			if (loading) CalendarStore.setLoading(loading);
+			setIsLoaded(true);
+		}, [CalendarStore, events, date, max, min, startDay, view, views, loading]);
+
+		if (!isLoaded) return <div></div>;
+
+		return (
+			<div className={cn(css.root, className)} {...props}>
+				<Header className={css.header} ctx={ctx} />
+				<Navigation className={css.navigation} ctx={ctx} />
+				<Grid className={css.grid} ctx={ctx} />
+			</div>
+		);
+	}
+);
+
+const withHOC = <T extends CalendarProps>(Component: FC<T & { ctx: Context<CalendarStore> }>) => {
+	return function withHOCComponent(props: T) {
+		const CalendarContext = createContext(calendarStore);
+		const newProps: T & { ctx: Context<CalendarStore> } = { ...props, ctx: CalendarContext };
+
+		return (
+			<CalendarContext.Provider value={calendarStore}>
+				<Component {...newProps} />
+			</CalendarContext.Provider>
+		);
+	};
+};
+
+export const Calendar = withHOC(Component);

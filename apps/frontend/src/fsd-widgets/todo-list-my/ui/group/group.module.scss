@@ -1,0 +1,8 @@
+.title {
+	@apply text-neutral-700 font-weight-500 mb-0;
+	& span { @apply text-neutral-400 font-weight-400 mb-0; }
+}
+
+.tasks {
+	@apply grid gap-4;
+}

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# shellcheck disable=SC2046
+if [ $(docker ps -q | wc -l) = "0" ]; then
+	exit 1
+fi
+
+SCRIPT=$(readlink -f "$0")
+ROOT_PATH=$(realpath "${SCRIPT%/*/*/*}")
+ENV=$(docker exec api env | awk -F= '/NODE_ENV/ {print $2}')
+
+
+ARGS=""
+for arg do
+    ARGS="$ARGS $arg"
+done
+
+if [ "$ENV" = "production" ]; then
+	ENV_COMPOSE="$ROOT_PATH"/docker-compose.prod.yml
+	fi
+
+if [ "$ENV" = "development" ]; then
+	ENV_COMPOSE="$ROOT_PATH"/docker-compose.dev.yml
+fi
+
+if [ -n "$ENV" ]; then
+	sh "$ROOT_PATH"/bin/backup_db/backup.sh
+	docker compose \
+		-f "$ROOT_PATH"/docker-compose.yml \
+		-f "$ENV_COMPOSE" \
+		--env-file "$ROOT_PATH"/env/.env.local \
+		down $ARGS
+fi

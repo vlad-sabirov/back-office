@@ -1,0 +1,42 @@
+.root {
+	@apply mt-20 grid gap-32;
+}
+
+.wrapper {
+	@apply grid items-center gap-y-4 gap-x-8;
+	grid-template-columns: auto auto 1fr auto;
+	grid-template-areas:
+		'authorPhoto authorNDate . menu'
+		'body body body body';
+}
+
+.authorPhoto {
+	grid-area: authorPhoto;
+}
+
+.authorNDate {
+	grid-area: authorNDate;
+
+	&__name {
+		@apply m-0 text-neutral-black;
+	}
+
+	&__date {
+		@apply m-0 text-neutral-300;
+	}
+}
+
+.menu {
+	grid-area: menu;
+
+	&__icon {
+		@apply cursor-pointer p-7 text-neutral-300;
+		height: 30px;
+		width: 20px;
+	}
+}
+
+.body {
+	@apply m-0 text-neutral-400;
+	grid-area: body;
+}

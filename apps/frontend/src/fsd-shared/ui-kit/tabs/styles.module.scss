@@ -1,0 +1,7 @@
+.wrapper {
+	width: 100%;
+
+	& [class*='mantine-Tabs-panel'] {
+		@apply pt-20;
+	}
+}

@@ -1,0 +1,15 @@
+.wrapper {
+	@apply grid gap-y-12 gap-x-20;
+}
+
+.buttons {
+	@apply grid justify-items-end;
+}
+
+.clearButton {
+	@apply mt-20;
+}
+
+.clearIcon {
+	@apply rotate-45
+}

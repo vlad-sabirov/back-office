@@ -1,0 +1,33 @@
+.wrapper {
+	@apply grid gap-20;
+}
+
+.item {
+	@apply grid items-center;
+
+	grid-template-columns: 1fr auto auto;
+	grid-template-areas:
+		'alias avatars menu'
+		'description description description';
+}
+
+.alias {
+	@apply m-0 font-weight-500 text-neutral-900;
+	grid-area: alias;
+}
+
+.avatars {
+	@apply leading-4;
+	grid-area: avatars;
+}
+
+.menu {
+	@apply m-0 ml-8 text-neutral-300;
+	grid-area: menu;
+	height: 20px;
+}
+
+.description {
+	@apply m-0;
+	grid-area: description;
+}

@@ -1,0 +1,83 @@
+.root {
+	@apply pb-40;
+	min-height: 500px;
+}
+
+.wrapper {
+	@apply mt-20 grid grid-flow-col 
+  items-start justify-start justify-items-start gap-24;
+}
+
+.stage {
+	width: 300px;
+
+	&:hover .stageTitle p {
+		@apply text-neutral-black;
+	}
+
+	&__empty {
+		width: 220px;
+	}
+}
+
+.stageTitle {
+	@apply grid items-center gap-8;
+	grid-template-columns: auto 1fr;
+
+	& p {
+		@apply m-0 font-weight-500 uppercase transition-all;
+	}
+
+	& svg {
+		@apply text-neutral-main;
+		width: 14px;
+		height: 14px;
+	}
+}
+
+.orderCard {
+	@apply relative cursor-pointer;
+
+	&__name {
+		@apply m-0 font-weight-500 text-neutral-black;
+	}
+
+	&__date {
+		@apply mb-20 text-neutral-400;
+	}
+
+	&__lastUpdate {
+		@apply m-0 text-neutral-400;
+
+		& svg {
+			@apply inline-block;
+		}
+
+		&__warning {
+			@apply text-warning-500;
+		}
+
+		&__error {
+			@apply text-error-main;
+		}
+	}
+
+	&__comments {
+		@apply m-0 text-neutral-400;
+
+		& svg {
+			@apply inline-block;
+		}
+	}
+
+	&__users {
+		@apply bottom-20 right-20;
+		position: absolute !important;
+		line-height: 1;
+	}
+
+	&__isModification {
+		@apply inline-block rounded-large 
+    bg-info-mainDarken py-8 px-12 text-neutral-white;
+	}
+}

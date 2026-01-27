@@ -1,0 +1,20 @@
+.form {
+	@apply grid gap-20;
+}
+
+.buttons {
+	@apply grid grid-flow-col gap-8;
+}
+
+.switch {
+	height: 20px;
+	margin: 0;
+
+	& [class*="mantine-Switch-body"] {
+		@apply flex-row;
+	}
+
+	& [class*="mantine-Switch-labelWrapper"] {
+		order: 10;
+	}
+}

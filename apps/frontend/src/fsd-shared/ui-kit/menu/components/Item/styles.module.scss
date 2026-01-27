@@ -1,0 +1,60 @@
+.root {
+	@apply m-0 rounded-medium px-12 py-8;
+	font-size: 0.875rem;
+
+	& [class*='mantine-Menu-itemIcon'] {
+		@apply mr-8;
+	}
+
+	&:hover {
+		@apply bg-neutral-bg;
+	}
+}
+
+.colorStandard {
+	@apply text-neutral-main;
+
+	& [class*='mantine-Menu-itemIcon'] {
+		@apply text-neutral-300;
+
+		& svg {
+			width: 16px;
+			height: 16px;
+		}
+	}
+}
+
+.colorOrange {
+	@apply text-neutral-main;
+
+	& [class*='mantine-Menu-itemIcon'] {
+		@apply text-warning-500;
+
+		& svg {
+			width: 16px;
+			height: 16px;
+		}
+	}
+}
+
+.colorBlue {
+	@apply text-info-main;
+
+	& [class*='mantine-Menu-itemIcon'] {
+		& svg {
+			width: 16px;
+			height: 16px;
+		}
+	}
+}
+
+.colorRed {
+	@apply text-error-main;
+
+	& [class*='mantine-Menu-itemIcon'] {
+		& svg {
+			width: 16px;
+			height: 16px;
+		}
+	}
+}

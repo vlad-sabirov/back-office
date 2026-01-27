@@ -1,0 +1,18 @@
+@import './../../../../styles/vars.scss';
+@import 'scss/settings.scss';
+@import 'scss/services.scss';
+@import 'scss/search.scss';
+
+.wrapper {
+	background-color: $color-neutral-white;
+	display: grid;
+	padding: 0 24px;
+	grid-template-columns: 275px 1fr auto auto;
+	grid-template-areas: 'search . services settings';
+	gap: 20px;
+	align-items: center;
+}
+
+.search {
+	grid-area: search;
+}

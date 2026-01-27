@@ -1,0 +1,11 @@
+.root {
+	@apply m-0 p-0;
+}
+
+.grid {
+	@apply mb-20;
+}
+
+.blur {
+	filter: blur(5px);
+}

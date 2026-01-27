@@ -1,0 +1,11 @@
+.root {
+	@apply grid grid-flow-col gap-20;
+}
+
+.item {
+	@apply cursor-pointer select-none;
+}
+
+.active {
+	@apply font-weight-500 text-primary-main;
+}

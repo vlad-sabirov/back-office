@@ -1,0 +1,34 @@
+.colorWhite {
+	& [class*='mantine-MultiSelect-wrapper'] {
+		outline-color: $color-neutral-200;
+	}
+
+	& [class*='mantine-MultiSelect-value '] {
+		background-color: $color-neutral-50;
+		color: $color-neutral-main;
+	}
+
+	&Filled,
+	&Focused {
+		& [class*='mantine-MultiSelect-wrapper'] {
+			outline-color: $color-primary-main;
+		}
+	}
+}
+
+.colorGray {
+	& [class*='mantine-MultiSelect-wrapper'] {
+		outline-color: $color-neutral-300;
+		background-color: $color-neutral-bg;
+	}
+
+	& [class*='mantine-MultiSelect-input'] {
+		background-color: $color-neutral-bg;
+	}
+
+	& [class*='mantine-MultiSelect-value '] {
+		outline: 1px solid $color-neutral-100;
+		background-color: $color-neutral-white;
+		color: $color-neutral-main;
+	}
+}

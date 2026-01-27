@@ -1,0 +1,83 @@
+.root {
+	@apply relative w-full;
+
+	& [class*='-separator'] {
+		@apply m-0 bg-neutral-50;
+	}
+	& [class*='-separatorActive'] {
+		@apply m-0 -mt-2 h-4 bg-primary-main;
+	}
+
+	& [class*='mantine-Stepper-step'] {
+		& [class*='mantine-Stepper-stepIcon'],
+		& [class*='mantine-Stepper-stepCompletedIcon'] {
+			@apply bg-neutral-50 font-weight-400 text-neutral-600 outline-primary-main;
+		}
+
+		&[data-completed='true'] {
+			@apply border-none;
+
+			& > div,
+			& > div > div {
+				@apply rounded-circle bg-primary-main text-neutral-white outline-none;
+			}
+		}
+
+		&[data-progress='true'] {
+			@apply border-none;
+
+			& > div {
+				@apply rounded-circle outline outline-6 outline-primary-200;
+			}
+
+			& > div,
+			& > div > div {
+				@apply bg-primary-main text-neutral-white;
+			}
+		}
+	}
+
+	& [class*='-stepCompleted'] {
+		& [class*='-stepIcon'] {
+			@apply text-primary-main;
+		}
+	}
+
+	& [class*='-stepProgress'] {
+		& [class*='-stepIcon'] {
+			@apply border-none bg-primary-main text-neutral-white outline-none;
+		}
+	}
+}
+
+.wrapper {
+	@apply relative;
+}
+
+.loading {
+	@apply absolute top-0 right-0 z-2 grid h-full w-full items-center justify-center;
+}
+
+.buttons {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: 1fr auto auto auto;
+	grid-template-areas: '. buttonPrev buttonNext buttonsSave';
+	margin-top: 40px;
+}
+
+.buttonPrev {
+	grid-area: buttonPrev;
+}
+
+.buttonNext {
+	grid-area: buttonNext;
+}
+
+.buttonsSave {
+	grid-area: buttonsSave;
+}
+
+.disabled {
+	@apply pointer-events-none select-none opacity-30;
+}

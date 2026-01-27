@@ -1,0 +1,21 @@
+.wrapper {
+	@apply grid;
+	grid-template-columns: 1fr auto;
+}
+
+.pagination {
+	@apply grid grid-flow-col gap-8 justify-start;
+}
+
+.limit {
+	@apply grid grid-flow-col items-center gap-12;
+}
+
+.limitInfo {
+	@apply m-0;
+}
+
+.limitButton {
+	@apply py-0 w-56;
+	& svg { @apply w-12 mr-4; }
+}

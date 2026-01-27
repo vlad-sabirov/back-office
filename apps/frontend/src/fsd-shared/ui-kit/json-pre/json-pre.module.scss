@@ -1,0 +1,11 @@
+.wrapper {
+	@apply fixed top-0 left-0 m-8 rounded-medium bg-neutral-800 p-12 text-neutral-100 opacity-50 transition-all;
+	z-index: 1000;
+	font-size: 8px;
+
+	&:hover {
+		@apply opacity-100;
+		font-size: 14px;
+		font-weight: bolder;
+	}
+}

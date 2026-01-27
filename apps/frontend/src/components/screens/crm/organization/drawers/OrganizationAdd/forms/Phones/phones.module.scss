@@ -1,0 +1,13 @@
+.root { @apply grid gap-4; }
+
+.description {
+	@apply mx-10 grid grid-flow-col;
+	grid-template-columns: 1fr auto;
+}
+.label { @apply m-0; }
+.add { 
+	@apply text-primary-mainLighten cursor-pointer underline m-0;
+	&:hover { @apply text-primary-mainDarken; }
+}
+
+.item { @apply grid grid-flow-col gap-4; }

@@ -1,0 +1,17 @@
+.tableHead, .tableBody {
+  @apply grid grid-flow-col;
+  grid-template-columns: 1fr repeat(5, 100px);
+}
+
+.date {
+  @apply text-neutral-800;
+}
+
+.workingBaseReverse {
+  & [class*="_red_"] {
+    @apply text-success-mainDarken;
+  }
+  & [class*="_green_"] {
+    @apply text-error-main;
+  }
+}

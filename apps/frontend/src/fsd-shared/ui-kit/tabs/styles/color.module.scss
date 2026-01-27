@@ -1,0 +1,26 @@
+.colorPrimary {
+	& [class*='mantine-Tabs-tabLabel'] {
+		@apply font-weight-500 text-neutral-main;
+	}
+
+	& [class*='mantine-Tabs-tabIcon'] {
+		@apply text-neutral-300;
+	}
+
+	& [class*='mantine-Group-child']:disabled {
+		@apply font-weight-400 opacity-50;
+	}
+
+	& [aria-selected='true'],
+	& [aria-selected='true']:hover {
+		@apply border-primary-main text-primary-main;
+
+		& [class*='mantine-Tabs-tabLabel'],
+		& [class*='mantine-Tabs-tabIcon'] {
+			@apply text-primary-main;
+		}
+		& svg {
+			@apply text-primary-main;
+		}
+	}
+}

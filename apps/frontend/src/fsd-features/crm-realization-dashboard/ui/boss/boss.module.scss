@@ -1,0 +1,69 @@
+.root {
+	@apply grid grid-flow-col gap-20 mb-20 items-start;
+	grid-template-columns: 1fr 400px;
+	height: 585px;
+
+	& > div {
+		@apply w-full relative;
+	}
+}
+
+.history, .todayTotal, .todayChart, .todayDetail {
+	@apply m-0;
+}
+
+.leftSection {
+	@apply grid gap-20;
+	grid-template-columns: 4fr 3fr;
+	grid-template-areas:
+		'history history'
+		'total chart';
+}
+
+.history {
+	grid-area: history;
+}
+
+.todayChartEmptyWrapper {
+	//@apply grid items-center h-full;
+}
+
+.todayChartEmptyText {
+	@apply px-20 text-center italic text-neutral-300;
+}
+
+.workingBaseAll {
+	@apply mt-16 mb-12 flex gap-4 text-neutral-400;
+	& span { @apply text-neutral-800 font-weight-500 }
+}
+
+.workingBase {
+	@apply mb-8 flex gap-4 text-neutral-400;
+	& span { @apply text-neutral-800 }
+}
+
+.workingBaseReverse {
+	& [class*="_red_"] {
+		@apply text-success-mainDarken;
+	}
+	& [class*="_green_"] {
+		@apply text-error-main;
+	}
+}
+
+.chart {
+	@apply absolute bottom-20 right-20;
+}
+
+.progress {
+	@apply cursor-pointer;
+
+	&__text {
+		@apply m-0 text-neutral-400;
+
+		& span {
+			@apply text-neutral-800 font-weight-500;
+		}
+	}
+}
+

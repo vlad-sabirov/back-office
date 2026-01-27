@@ -1,0 +1,40 @@
+.colorNeutral {
+	@apply bg-neutral-50;
+}
+
+.colorPrimary {
+	@apply bg-primary-50;
+
+	& .data {
+		@apply text-primary-main;
+	}
+}
+
+.colorInfoHard {
+	@apply bg-info-main;
+
+	& .data,
+	& p {
+		@apply text-info-50;
+	}
+}
+
+.colorMale {
+	@apply bg-male-bg;
+
+	& .data {
+		@apply text-male-main;
+	}
+}
+
+.colorFemale {
+	@apply bg-female-bg;
+
+	& .data {
+		@apply text-female-main;
+	}
+}
+
+.colorOther .data {
+	@apply text-neutral-mainLighten;
+}

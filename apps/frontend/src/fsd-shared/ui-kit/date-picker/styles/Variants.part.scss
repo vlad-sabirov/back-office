@@ -1,0 +1,114 @@
+.variantWhite {
+	& [class*='-input'] {
+		background-color: $color-neutral-white;
+		outline-color: $color-neutral-200;
+	}
+	& input {
+		color: $color-neutral-main;
+
+		&::placeholder {
+			color: $color-neutral-300;
+		}
+	}
+
+	& [class*='-label'] {
+		color: $color-neutral-main;
+	}
+
+	& svg {
+		color: $color-neutral-300;
+	}
+}
+
+.variantWhiteFilled {
+	& [class*='-input'] {
+		outline-color: $color-primary-main;
+	}
+	& svg {
+		color: $color-primary-200;
+	}
+}
+
+.variantWhiteFocused {
+	& [class*='-input'] {
+		outline-width: 2px;
+		outline-offset: -1px;
+		outline-color: $color-primary-main;
+	}
+	& svg {
+		color: $color-primary-main;
+	}
+}
+
+.variantGray {
+	& [class*='-input'] {
+		background-color: $color-neutral-bg;
+		outline-color: $color-neutral-100;
+	}
+	& input {
+		color: $color-neutral-main;
+
+		&::placeholder {
+			color: $color-neutral-300;
+		}
+	}
+
+	& [class*='-label'] {
+		color: $color-neutral-main;
+	}
+
+	& svg {
+		color: $color-neutral-200;
+	}
+}
+
+.variantGrayFilled {
+	& [class*='-input'] {
+		outline-color: $color-neutral-300;
+	}
+	& svg {
+		color: $color-neutral-400;
+	}
+}
+
+.variantGrayFocused {
+	& [class*='-input'] {
+		outline-width: 2px;
+		outline-offset: -1px;
+		outline-color: $color-neutral-400;
+	}
+	& svg {
+		color: $color-neutral-400;
+	}
+}
+
+.variantDarkGray {
+	& [class*='-input'] {
+		background-color: lighten($color-neutral-100, 5);
+		outline-color: lighten($color-neutral-100, 5);
+	}
+	& input {
+		color: $color-neutral-800;
+
+		&::placeholder {
+			color: $color-neutral-800;
+		}
+	}
+
+	& [class*='-label'] {
+		color: $color-neutral-main;
+	}
+
+	& svg {
+		color: $color-neutral-800;
+	}
+}
+
+.variantDarkGrayFilled {
+	& [class*='-input'] {
+		outline-color: lighten($color-neutral-100, 5);
+	}
+	& svg {
+		color: $color-neutral-800;
+	}
+}

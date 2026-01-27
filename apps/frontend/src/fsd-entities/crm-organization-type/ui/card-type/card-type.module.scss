@@ -1,0 +1,4 @@
+.type {
+	@apply text-neutral-300;
+	& > span { @apply text-neutral-mainDarken; }
+}

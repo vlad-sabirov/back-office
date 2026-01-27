@@ -1,0 +1,29 @@
+.chart {
+	height: 100px;
+}
+
+.date {
+	@apply m-0 mb-4 leading-5;
+	font-size: 1rem;
+}
+
+.plan {
+	@apply m-0 leading-5;
+	> span {
+		@apply text-warning-600;
+	}
+}
+
+.realization {
+	@apply m-0 leading-5;
+	> span {
+		@apply text-success-600;
+	}
+}
+
+.percent {
+	@apply m-0 leading-5;
+	> span {
+		@apply text-primary-main;
+	}
+}

@@ -1,0 +1,10 @@
+.info {
+	@apply absolute bottom-20;
+	width: 240px;
+	left: 50%;
+	margin-left: -120px;
+
+	& p {
+		@apply m-0 text-center;
+	}
+}

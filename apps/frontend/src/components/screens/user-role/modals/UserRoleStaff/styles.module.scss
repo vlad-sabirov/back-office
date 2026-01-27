@@ -1,0 +1,21 @@
+.description {
+	> span {
+		@apply font-weight-500 text-neutral-900;
+	}
+}
+
+.transferList {
+	@apply mt-40;
+}
+
+.itemWrapper {
+	@apply grid grid-flow-col items-center gap-8;
+	grid-template-columns: auto 1fr auto;
+}
+
+.name {
+	@apply m-0 text-neutral-900;
+}
+.workPosition {
+	@apply m-0 text-neutral-300;
+}

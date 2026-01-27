@@ -1,0 +1,31 @@
+.disabled {
+	pointer-events: none !important;
+	opacity: 0.5 !important;
+}
+
+.stateError {
+	& .label {
+		color: $color-error-main;
+	}
+
+	& .wrapper {
+		background-color: $color-error-50;
+		border-color: $color-error-main;
+
+		& p {
+			color: $color-error-main-darken;
+		}
+	}
+}
+
+.fileSelected {
+	& .wrapper {
+		background-color: $color-primary-50;
+		border-color: $color-primary-main;
+
+		& .children {
+			color: $color-primary-main-darken;
+			text-align: center;
+		}
+	}
+}

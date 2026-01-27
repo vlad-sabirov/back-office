@@ -1,0 +1,18 @@
+.wrapper {
+	@apply overflow-hidden overflow-y-scroll flex gap-32 flex-col-reverse items-start;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	height: calc(100vh - 320px);
+	&::-webkit-scrollbar {
+			display: none;
+	}
+}
+
+.historyItem {
+	@apply m-2 ml-20 mt-20 p-16 outline outline-1 outline-neutral-100 rounded-medium relative;
+}
+
+.loader {
+	margin: 40px auto 20px;
+}

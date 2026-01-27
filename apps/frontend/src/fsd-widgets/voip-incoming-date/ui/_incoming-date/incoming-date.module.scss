@@ -1,0 +1,12 @@
+.root {
+  @apply grid grid-flow-col gap-8 items-center;
+  grid-template-columns: auto 200px auto;
+}
+
+.arrowLeft {
+  @apply rotate-90 text-neutral-main cursor-pointer;
+}
+
+.arrowRight {
+  @apply -rotate-90 text-neutral-main cursor-pointer;
+}

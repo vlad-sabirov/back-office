@@ -1,0 +1,25 @@
+.sizeMedium {
+	& [class*='-input'] {
+		height: 40px;
+	}
+	& input {
+		font-size: 1rem;
+
+		&::placeholder {
+			font-size: 0.875rem;
+		}
+	}
+}
+
+.sizeLarge {
+	& [class*='-input'] {
+		height: 50px;
+	}
+	& input {
+		font-size: 1.125rem;
+
+		&::placeholder {
+			font-size: 1rem;
+		}
+	}
+}

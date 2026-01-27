@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AIAssistantCustomInstructionsStorage">
+    <option name="instructions">
+      <map>
+        <entry key="AIAssistant.VCS.GenerateCommitMessage">
+          <value>
+            <AIAssistantStoredInstruction>
+              <option name="actionId" value="AIAssistant.VCS.GenerateCommitMessage" />
+              <option name="content" value="Запросить контекст коммита и git diff, а затем сформировать из него отличный commit message полностью следуя Conventional Commits (www.conventionalcommits.org).&#10;&#10;- Коммит ДОЛЖЕН быть разделен на две части: &quot;Summary&quot; и &quot;Description&quot;.&#10;- Summary ДОЛЖЕН быть написан на английском языке.&#10;- Summary ДОЛЖЕН быть написан в нижнем регистре.&#10;- Приписка `feat:` `fix:` и т.д. по конвенции для Summary ОБЯЗАТЕЛЬНА.&#10;- Максимальная длинна Summary 42 символа.&#10;- Description ДОЛЖЕН быть написан на Русском языке.&#10;- Description ДОЛЖЕН кратко освещать суть изменений, для полного понимания сути коммита." />
+            </AIAssistantStoredInstruction>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="89ac6c89-add9-4c92-8205-c6a2f483a9dd" name="Changes" comment="feat: add support for 1c code field&#10;&#10;Добавлена поддержка поля &quot;Код 1С&quot; в обработке CSV-данных организаций. Изменения включают обновление типов, добавление парсинга нового поля, а также передачу данного поля в соответствующем `requisiteDto`.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/frontend/src/fsd-entities/crm-organization-requisite/ui/create-modal/CreateModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/frontend/src/fsd-entities/crm-organization-requisite/ui/create-modal/CreateModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/frontend/src/fsd-entities/crm-organization-requisite/ui/update-modal/UpdateModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/frontend/src/fsd-entities/crm-organization-requisite/ui/update-modal/UpdateModal.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="repository" />
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2edSl4UG17kD9kCvUY0YGcaG33A" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenDatabaseViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/dsbasko/Develop/bascode/back-office&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/dsbasko/Develop/bascode/back-office/apps/api/node_modules/prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.AIAssistantPromptsLibrary&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/dsbasko/Develop/bascode/back-office/apps/api/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/frontend/src/fsd-entities/crm-organization-requisite/ui" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-WS-251.25410.117" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="89ac6c89-add9-4c92-8205-c6a2f483a9dd" name="Changes" comment="" />
+      <created>1746083052754</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746083052754</updated>
+      <workItem from="1746466932918" duration="1429000" />
+      <workItem from="1746468490071" duration="2947000" />
+      <workItem from="1746503836216" duration="445000" />
+      <workItem from="1746552922565" duration="9148000" />
+      <workItem from="1747034422656" duration="1041000" />
+      <workItem from="1747035808142" duration="17498000" />
+      <workItem from="1747113590733" duration="15000" />
+      <workItem from="1747129708378" duration="3620000" />
+      <workItem from="1747136494292" duration="5957000" />
+    </task>
+    <task id="LOCAL-00001" summary="Поддержка кода 1С для получения актуальной реализации.">
+      <option name="closed" value="true" />
+      <created>1747043051737</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747043051737</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: add form-code1c component and updates&#10;&#10;Введён новый компонент FormCode1c для работы с кодом 1С. Добавлены валидация данных и методы обработки ошибок. Обновлены CreateModal и UpdateModal: улучшена обработка полей INN. Расширен Makefile новыми командами для сборки и запуска на Mac.">
+      <option name="closed" value="true" />
+      <created>1747053110055</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1747053110055</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: enhance inn validation logic&#10;&#10;Обновлена логика валидации поля ИНН, добавлено приведение значения к пустой строке при отсутствии данных. Также изменен файл voip, однако изменения требуют уточнения цели.">
+      <option name="closed" value="true" />
+      <created>1747053828751</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747053828751</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat: add user id validation in service&#10;&#10;Добавлена проверка на наличие user id перед добавлением сотрудника в команду. Это предотвращает возможные ошибки, связанные с отсутствием идентификатора пользователя.">
+      <option name="closed" value="true" />
+      <created>1747131376835</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1747131376835</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: remove local data source config&#10;&#10;Удален файл конфигурации локального источника данных, связанного с PostgreSQL. Это очищает проект от неиспользуемых файлов и упрощает структуру кода.">
+      <option name="closed" value="true" />
+      <created>1747143470827</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747143470827</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: add support for 1c code field&#10;&#10;Добавлена поддержка поля &quot;Код 1С&quot; в обработке CSV-данных организаций. Изменения включают обновление типов, добавление парсинга нового поля, а также передачу данного поля в соответствующем `requisiteDto`.">
+      <option name="closed" value="true" />
+      <created>1747143903853</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747143903853</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Поддержка кода 1С для получения актуальной реализации." />
+    <MESSAGE value="feat: add validation and input for form-code-1c&#10;&#10;Добавлен компонент `FormCode1c` для обработки и валидирования кода 1С, включая логику проверки дублирования, обновление Makefile и сопутствующие типы." />
+    <MESSAGE value="feat: add form-code1c component and updates&#10;&#10;Введён новый компонент FormCode1c для работы с кодом 1С. Добавлены валидация данных и методы обработки ошибок. Обновлены CreateModal и UpdateModal: улучшена обработка полей INN. Расширен Makefile новыми командами для сборки и запуска на Mac." />
+    <MESSAGE value="feat: enhance inn validation logic&#10;&#10;Обновлена логика валидации поля ИНН, добавлено приведение значения к пустой строке при отсутствии данных. Также изменен файл voip, однако изменения требуют уточнения цели." />
+    <MESSAGE value="feat: add user id validation in service&#10;&#10;Добавлена проверка на наличие user id перед добавлением сотрудника в команду. Это предотвращает возможные ошибки, связанные с отсутствием идентификатора пользователя." />
+    <MESSAGE value="feat: remove local data source config&#10;&#10;Удален файл конфигурации локального источника данных, связанного с PostgreSQL. Это очищает проект от неиспользуемых файлов и упрощает структуру кода." />
+    <MESSAGE value="feat: add support for 1c code field&#10;&#10;Добавлена поддержка поля &quot;Код 1С&quot; в обработке CSV-данных организаций. Изменения включают обновление типов, добавление парсинга нового поля, а также передачу данного поля в соответствующем `requisiteDto`." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add support for 1c code field&#10;&#10;Добавлена поддержка поля &quot;Код 1С&quot; в обработке CSV-данных организаций. Изменения включают обновление типов, добавление парсинга нового поля, а также передачу данного поля в соответствующем `requisiteDto`." />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

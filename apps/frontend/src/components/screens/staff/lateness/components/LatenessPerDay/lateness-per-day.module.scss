@@ -1,0 +1,20 @@
+.root {
+  @apply grid w-full h-full items-end;
+  grid-template-rows: auto 1fr;
+  height: 120px;
+  max-height: 160px;
+}
+
+.wrapper {
+  @apply grid grid-flow-col gap-20;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  & > div {
+    @apply border-r pr-40 block border-neutral-100;
+  }
+
+  & > div:last-child {
+    @apply border-none;
+  }
+}
+

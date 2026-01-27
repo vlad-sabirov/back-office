@@ -1,0 +1,89 @@
+.root {
+	@apply grid gap-2;
+}
+
+.heading {
+	@apply grid grid-flow-col px-12;
+	grid-template-columns: 260px 150px 150px 140px 100px 125px 1fr;
+
+	& .item {
+		@apply font-weight-500 text-neutral-600
+	}
+}
+
+.team {
+	@apply grid grid-flow-col items-center bg-neutral-white p-12 rounded-medium;
+	grid-template-columns: 260px 150px 150px 140px 100px 125px 1fr;
+
+	&:hover {
+		@apply bg-neutral-50;
+	}
+
+	& .staff {
+		@apply grid grid-flow-col justify-start items-center gap-4;
+	}
+
+	& .name {
+		@apply m-0 text-neutral-black;
+	}
+
+	& .realization {
+		@apply m-0 font-weight-500 text-primary-main;
+	}
+
+	& .plan {
+		@apply m-0 text-neutral-400;
+	}
+
+	& .averageOrderValue, & .depthOfSales, & .workingBasePercent {
+		@apply m-0 text-neutral-700;
+	}
+}
+
+.employee {
+	@apply grid grid-flow-col items-center bg-neutral-white px-12 py-2 rounded-medium;
+	grid-template-columns: 30px 230px 150px 150px 140px 100px 125px 1fr;
+
+	.arrow {
+		@apply pl-12
+	}
+
+	&:hover {
+		@apply bg-neutral-50;
+	}
+
+	& .staff {
+		@apply grid grid-flow-col justify-start items-center gap-4;
+	}
+
+	& .name {
+		@apply m-0 text-neutral-600;
+		font-size: 14px;
+	}
+
+	& .realization {
+		@apply m-0 font-weight-500 text-primary-200;
+	}
+
+	& .plan {
+		@apply m-0 text-neutral-300;
+	}
+
+	& .averageOrderValue, & .depthOfSales, & .workingBasePercent {
+		@apply m-0 text-neutral-500;
+	}
+}
+
+.hoverCard {
+	@apply bg-primary-main px-16 py-8;
+	& p {
+		@apply m-0 text-primary-50;
+		& span { @apply font-weight-500 text-neutral-white; }
+	}
+}
+
+.sup {
+	@apply ml-2 font-weight-500;
+	&__positive { @apply text-success-mainDarken; }
+	&__negative { @apply text-error-mainLighten; }
+}

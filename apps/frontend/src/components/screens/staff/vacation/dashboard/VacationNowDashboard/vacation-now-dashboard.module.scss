@@ -1,0 +1,23 @@
+.root {
+	@apply relative m-0;
+
+	& > div {
+		@apply grid items-end;
+		grid-template-rows: auto 1fr;
+		min-height: 160px;
+	}
+}
+
+.avatars {
+	@apply absolute top-20 right-20;
+}
+
+.text {
+	@apply grid;
+	& p {
+		@apply m-0;
+	}
+	& span {
+		@apply text-neutral-300 font-weight-500;
+	}
+}

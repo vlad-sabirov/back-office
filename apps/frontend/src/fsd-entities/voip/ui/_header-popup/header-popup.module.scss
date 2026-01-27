@@ -1,0 +1,5 @@
+.mainIcon {
+	@apply text-neutral-300 cursor-pointer;
+
+	&__active { @apply text-primary-main animate-jello; }
+}

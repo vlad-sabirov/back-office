@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+   voip:
+      build:
+         context: ../../
+         dockerfile: ./third_party/docker/prod.dockerfile
+      restart: always
+      env_file:
+         - ../../../../env/.env.local
+         - ../../../../env/.env.prod

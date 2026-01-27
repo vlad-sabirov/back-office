@@ -1,0 +1,83 @@
+.root {
+	& [class*='react-calendar__navigation'] {
+		@apply grid grid-flow-col items-center justify-items-center;
+		grid-template-columns: auto 1fr auto;
+	}
+
+	& [class*='react-calendar__navigation__label__labelText'] {
+		@apply font-weight-500;
+		font-size: 14px;
+		font-family: 'Fira Sans', sans-serif;
+	}
+
+	& [class*='react-calendar__navigation__prev-button'],
+	& [class*='react-calendar__navigation__next-button'] {
+		@apply bg-neutral-white p-12;
+
+		&:hover {
+			@apply bg-neutral-bg;
+		}
+
+		&:disabled {
+			@apply pointer-events-none;
+
+			& svg {
+				@apply text-neutral-300;
+			}
+		}
+
+		& svg {
+			@apply text-neutral-800;
+			width: 10px;
+		}
+	}
+
+	& [class*='react-calendar__navigation__prev-button'] svg {
+		transform: rotate(90deg);
+	}
+
+	& [class*='react-calendar__navigation__next-button'] svg {
+		transform: rotate(-90deg);
+	}
+
+	& [class*='react-calendar__navigation__prev2-button'],
+	& [class*='react-calendar__navigation__next2-button'] {
+		@apply hidden;
+	}
+
+	& [class*='react-calendar__year-view__months__month'] {
+		@apply p-8 capitalize text-neutral-800;
+		font-size: 14px;
+		font-family: 'Fira Sans', sans-serif;
+
+		&:hover {
+			@apply bg-neutral-bg;
+		}
+
+		&:disabled {
+			@apply text-neutral-400;
+		}
+	}
+
+	& [class*='react-calendar__tile--active'] {
+		@apply font-weight-500 text-primary-main;
+	}
+}
+
+.input div,
+.input input,
+.input svg,
+.input__wrapper {
+	@apply cursor-pointer select-none;
+}
+
+.input {
+	&__wrapper {
+		@apply relative w-full;
+	}
+
+	&__fill {
+		@apply absolute z-1 h-full w-full;
+		background: transparent;
+	}
+}

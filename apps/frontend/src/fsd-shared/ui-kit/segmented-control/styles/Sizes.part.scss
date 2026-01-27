@@ -1,0 +1,53 @@
+.size_medium {
+	border-radius: $border-radius-medium;
+
+	& [class*='-control'] {
+		height: 32px;
+	}
+
+	& [class*='-active'] {
+		height: 32px;
+		border-radius: $border-radius-small;
+	}
+
+	& [class*='-label'] {
+		font-size: 0.875rem;
+		height: 32px;
+	}
+}
+
+.size_large {
+	border-radius: $border-radius-medium;
+
+	& [class*='-control'] {
+		height: 42px;
+	}
+
+	& [class*='-active'] {
+		height: 42px;
+		border-radius: $border-radius-small;
+	}
+
+	& [class*='-label'] {
+		font-size: 1rem;
+		height: 42px;
+	}
+}
+
+.size_extraLarge {
+	border-radius: $border-radius-large;
+
+	& [class*='-control'] {
+		height: 72px;
+	}
+
+	& [class*='-active'] {
+		height: 72px;
+		border-radius: $border-radius-medium;
+	}
+
+	& [class*='-label'] {
+		font-size: 1rem;
+		height: 72px;
+	}
+}

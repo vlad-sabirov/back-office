@@ -1,0 +1,50 @@
+.disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.error {
+	& [class*='-error'] {
+		color: $color-error-main !important;
+		font-size: 0.875rem !important;
+		line-height: 1rem !important;
+	}
+
+	& [class*='mantine-MultiSelect-wrapper'] {
+		outline-color: $color-error-main !important;
+		background-color: lighten($color-error-50, 4) !important;
+	}
+
+	& [class*='-input'] {
+		background-color: lighten($color-error-50, 4) !important;
+		outline-color: $color-error-200 !important;
+	}
+	& input {
+		color: $color-error-main !important;
+		font-weight: 500 !important;
+
+		&::placeholder {
+			color: $color-error-main !important;
+			font-weight: 400 !important;
+		}
+	}
+
+	& [class*='-label'] {
+		color: $color-error-main !important;
+	}
+
+	& svg {
+		color: $color-error-200 !important;
+	}
+}
+
+.errorFocused {
+	& [class*='-input'] {
+		outline-width: 2px !important;
+		outline-offset: -1px !important;
+		outline-color: $color-error-main !important;
+	}
+	& svg {
+		color: $color-error-main !important;
+	}
+}

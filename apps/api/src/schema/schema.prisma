@@ -1,0 +1,457 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("API_DB_CONNECTION_STRING")
+}
+
+model User {
+  id                        Int                    @id @default(autoincrement())
+  username                  String                 @unique
+  password                  String
+  firstName                 String
+  lastName                  String
+  surName                   String?
+  workPosition              String
+  birthday                  DateTime
+  sex                       String
+  photo                     String?
+  color                     String?
+  telegramId                String?
+  phoneVoip                 String
+  phoneMobile               String?
+  email                     String?
+  telegram                  String?
+  facebook                  String?
+  instagram                 String?
+  isFixLate                 Boolean                @default(false)
+  isFired                   Boolean?               @default(false)
+  position                  Int?                   @default(0)
+  lastLogin                 DateTime               @default(now())
+  isFirstLogin              Boolean?               @default(true)
+  // -------
+  roles                     UserRole[]
+  child                     User[]                 @relation("user_child")
+  childRelation             User[]                 @relation("user_child")
+  department                UserDepartment?        @relation(fields: [departmentId], references: [id])
+  departmentId              Int?
+  territory                 UserTerritory?         @relation(fields: [territoryId], references: [id])
+  territoryId               Int?
+  auth                      Auth[]
+  pincode                   AuthPinCode[]
+  lateness                  AuthLateness[]
+  latenessComment           AuthLatenessComment[]  @relation("auth_lateness_comment")
+  logisticVedOrderAuthor    LogisticVedOrder[]     @relation("logistic_ved_order_author")
+  logisticVedOrderPerformer LogisticVedOrder[]     @relation("logistic_ved_order_performer")
+  logisticVedComment        LogisticVedComment[]   @relation("logistic_ved_order_user_comments")
+  logisticVedHistory        LogisticVedHistory[]   @relation("logistic_ved_order_user_history")
+  logisticVedFile           LogisticVedFile[]      @relation("logistic_ved_order_user_file")
+  crmOrganizations          CrmOrganization[]      @relation("crm_organization")
+  crmContacts               CrmContact[]           @relation("crm_contact")
+  crmHistory                CrmHistory[]           @relation("crm_history_user")
+  crmReportRealizaiton      CrmReportRealization[] @relation("crm_report_realization")
+  vacationCalendar          VacationCalendar[]     @relation("calendar_vacation")
+  // -------
+  createdAt                 DateTime               @default(now())
+  updatedAt                 DateTime               @updatedAt
+
+  @@map("user")
+}
+
+model UserRole {
+  id                Int                @id @default(autoincrement())
+  alias             String             @unique
+  description       String
+  // -------
+  users             User[]
+  logisticVedStages LogisticVedStage[] @relation("logistic_ved_stage_action_expected")
+  // -------
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@map("user_role")
+}
+
+model UserDepartment {
+  id               Int              @id @default(autoincrement())
+  name             String           @unique
+  staffCount       Int              @default(0)
+  staffMaleCount   Int              @default(0)
+  staffFemaleCount Int              @default(0)
+  position         Int              @default(0)
+  isHide           Boolean          @default(false)
+  // -------
+  child            UserDepartment[] @relation("userDepartment_child")
+  childRelation    UserDepartment[] @relation("userDepartment_child")
+  users            User[]
+  // -------
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@map("user_department")
+}
+
+model UserTerritory {
+  id               Int      @id @default(autoincrement())
+  name             String   @unique
+  address          String   @unique
+  staffCount       Int      @default(0)
+  staffMaleCount   Int      @default(0)
+  staffFemaleCount Int      @default(0)
+  position         Int      @default(0)
+  isHide           Boolean  @default(false)
+  // -------
+  users            User[]
+  // -------
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("user_territory")
+}
+
+model Auth {
+  id         Int      @id @default(autoincrement())
+  token      String
+  lifeTimeAt DateTime
+  // -------
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  // -------
+  createdAt  DateTime @default(now())
+
+  @@map("auth")
+}
+
+model AuthPinCode {
+  id        Int      @id @default(autoincrement())
+  pinCode   Int
+  // -------
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  // -------
+  createdAt DateTime @default(now())
+
+  @@map("auth_pincode")
+}
+
+model AuthLateness {
+  id        Int                   @id @default(autoincrement())
+  type      String
+  comment   String
+  metaInfo  String
+  isSkipped Boolean?              @default(false)
+  // -------
+  user      User                  @relation(fields: [userId], references: [id])
+  userId    Int
+  comments  AuthLatenessComment[] @relation("lateness_to_comment")
+  // -------
+  createdAt DateTime              @default(now())
+
+  @@map("auth_lateness")
+}
+
+model AuthLatenessComment {
+  id         Int           @id @default(autoincrement())
+  type       String
+  comment    String
+  // -------
+  user       User?         @relation("auth_lateness_comment", fields: [userId], references: [id])
+  userId     Int?
+  lateness   AuthLateness? @relation("lateness_to_comment", fields: [latenessId], references: [id])
+  latenessId Int?
+  // -------
+  createdAt  DateTime      @default(now())
+
+  @@map("auth_lateness_comment")
+}
+
+model LogisticVedOrder {
+  id             Int                  @id @default(autoincrement())
+  name           String
+  fileOrder      String?
+  fileCalculate  String?
+  isModification Boolean?             @default(false) // Заявка на доработке?
+  position       Int                  @default(0)
+  isDone         Boolean?             @default(false)
+  isClose        Boolean?             @default(false)
+  isHide         Boolean?             @default(false)
+  // -------
+  author         User?                @relation("logistic_ved_order_author", fields: [authorId], references: [id])
+  authorId       Int? // Автор
+  performer      User?                @relation("logistic_ved_order_performer", fields: [performerId], references: [id])
+  performerId    Int? // Исполнитель
+  stage          LogisticVedStage?    @relation("logistic_ved_order_stage", fields: [stageId], references: [id])
+  stageId        Int?
+  comments       LogisticVedComment[] @relation("logistic_ved_order_comments")
+  history        LogisticVedHistory[] @relation("logistic_ved_order_history")
+  file           LogisticVedFile[]    @relation("logistic_ved_order_file")
+  // -------
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@map("logistic_ved_order")
+}
+
+model LogisticVedStage {
+  id               Int                @id @default(autoincrement())
+  name             String
+  description      String
+  alias            String             @unique
+  warningTime      Int                @default(1)
+  errorTime        Int                @default(2)
+  orderCount       Int?               @default(0)
+  position         Int?               @default(0)
+  isHide           Boolean?           @default(false)
+  // -------
+  actionExpected   UserRole?          @relation("logistic_ved_stage_action_expected", fields: [actionExpectedId], references: [id])
+  actionExpectedId Int?
+  orders           LogisticVedOrder[] @relation("logistic_ved_order_stage")
+  // -------
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@map("logistic_ved_stage")
+}
+
+model LogisticVedComment {
+  id        Int              @id @default(autoincrement())
+  comment   String
+  isHide    Boolean          @default(false)
+  // -------
+  author    User             @relation("logistic_ved_order_user_comments", fields: [authorId], references: [id])
+  authorId  Int
+  order     LogisticVedOrder @relation("logistic_ved_order_comments", fields: [orderId], references: [id])
+  orderId   Int
+  // -------
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("logistic_ved_comment")
+}
+
+model LogisticVedHistory {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String
+  secret      String?
+  isHide      Boolean          @default(false)
+  // -------
+  author      User             @relation("logistic_ved_order_user_history", fields: [authorId], references: [id])
+  authorId    Int
+  order       LogisticVedOrder @relation("logistic_ved_order_history", fields: [orderId], references: [id])
+  orderId     Int
+  // -------
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("logistic_ved_history")
+}
+
+model LogisticVedFile {
+  id        Int              @id @default(autoincrement())
+  type      String
+  url       String
+  comment   String?
+  isHide    Boolean          @default(false)
+  // -------
+  author    User             @relation("logistic_ved_order_user_file", fields: [authorId], references: [id])
+  authorId  Int
+  order     LogisticVedOrder @relation("logistic_ved_order_file", fields: [orderId], references: [id])
+  orderId   Int
+  // -------
+  createdAt DateTime         @default(now())
+
+  @@map("logistic_ved_file")
+}
+
+model CrmOrganization {
+  id            Int                        @id @default(autoincrement())
+  nameRu        String?
+  nameEn        String?
+  firstDocument String                     @unique
+  website       String?
+  comment       String?
+  color         String?
+  // -------
+  user          User?                      @relation("crm_organization", fields: [userId], references: [id])
+  userId        Int?
+  type          CrmOrganizationType?       @relation("crm_organization_type", fields: [typeId], references: [id])
+  typeId        Int?
+  requisites    CrmOrganizationRequisite[] @relation("crm_organization_requisite")
+  contacts      CrmContact[]
+  phones        CrmPhone[]                 @relation("crm_phone_organization")
+  emails        CrmEmail[]                 @relation("crm_email_organization")
+  tags          CrmOrganizationTag[]       @relation("crm_organization_tag")
+  history       CrmHistory[]               @relation("crm_history_organization")
+  // -------
+  isVerified    Boolean                    @default(false)
+  isReserve     Boolean                    @default(false)
+  isArchive     Boolean                    @default(false)
+  last1CUpdate  DateTime?                  @db.Date
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+
+  @@map("crm_organization")
+}
+
+model CrmContact {
+  id            Int               @id @default(autoincrement())
+  name          String
+  workPosition  String
+  birthday      DateTime?         @db.Date
+  comment       String?
+  // -------
+  user          User?             @relation("crm_contact", fields: [userId], references: [id])
+  userId        Int?
+  organizations CrmOrganization[]
+  phones        CrmPhone[]        @relation("crm_phone_contact")
+  emails        CrmEmail[]        @relation("crm_email_contact")
+  history       CrmHistory[]      @relation("crm_history_contact")
+  // -------
+  isVerified    Boolean           @default(false)
+  isArchive     Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@map("crm_contact")
+}
+
+model CrmPhone {
+  id             Int              @id @default(autoincrement())
+  type           String
+  value          String
+  comment        String?
+  // -------
+  organization   CrmOrganization? @relation("crm_phone_organization", fields: [organizationId], references: [id])
+  organizationId Int?
+  contact        CrmContact?      @relation("crm_phone_contact", fields: [contactId], references: [id])
+  contactId      Int?
+  // -------
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@map("crm_phone")
+}
+
+model CrmEmail {
+  id             Int              @id @default(autoincrement())
+  type           String
+  value          String
+  comment        String?
+  // -------
+  organization   CrmOrganization? @relation("crm_email_organization", fields: [organizationId], references: [id])
+  organizationId Int?
+  contact        CrmContact?      @relation("crm_email_contact", fields: [contactId], references: [id])
+  contactId      Int?
+  // -------
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@map("crm_email")
+}
+
+model CrmOrganizationType {
+  id            Int               @id @default(autoincrement())
+  name          String
+  organizations CrmOrganization[] @relation("crm_organization_type")
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@map("crm_organization_type")
+}
+
+model CrmOrganizationTag {
+  id            Int               @id @default(autoincrement())
+  name          String
+  organizations CrmOrganization[] @relation("crm_organization_tag")
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@map("crm_organization_tag")
+}
+
+model CrmOrganizationRequisite {
+  id             Int              @id @default(autoincrement())
+  name           String
+  inn            Int?
+	code1c         String?
+  organization   CrmOrganization? @relation("crm_organization_requisite", fields: [organizationId], references: [id])
+  organizationId Int?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@map("crm_organization_requisite")
+}
+
+model CrmHistory {
+  id             Int              @id @default(autoincrement())
+  type           String
+  payload        String
+  isSystem       Boolean          @default(false)
+  // -------
+  user           User?            @relation("crm_history_user", fields: [userId], references: [id])
+  userId         Int?
+  organization   CrmOrganization? @relation("crm_history_organization", fields: [organizationId], references: [id])
+  organizationId Int?
+  contact        CrmContact?      @relation("crm_history_contact", fields: [contactId], references: [id])
+  contactId      Int?
+  // -------
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@map("crm_history")
+}
+
+model CrmReportRealization {
+  id               Int      @id @default(autoincrement())
+  year             Int
+  month            Int
+  plan             Int
+  realization      Int
+  customerCount    Int
+  customerNew      Int
+  customerShipment Int
+  shipmentCount    Int
+  // -------
+  user             User?    @relation("crm_report_realization", fields: [userId], references: [id])
+  userId           Int?
+  // -------
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("crm_report_realization")
+}
+
+model ProductionCalendar {
+  id          Int      @id @default(autoincrement())
+  ctx         String?
+  type        String
+  name        String
+  description String?
+  dateStart   DateTime
+  dateEnd     DateTime
+  isHide      Boolean? @default(false)
+  // -------
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("calendar_production")
+}
+
+model VacationCalendar {
+  id        Int      @id @default(autoincrement())
+  comment   String?
+  dateStart DateTime
+  dateEnd   DateTime
+  isFake    Boolean  @default(false)
+  // -------
+  user      User     @relation("calendar_vacation", fields: [userId], references: [id])
+  userId    Int
+  // -------
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("calendar_vacation")
+}

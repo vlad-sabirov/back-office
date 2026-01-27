@@ -1,0 +1,49 @@
+.color_lighten {
+	& [class*='-active'] {
+		background-color: $color-neutral-white;
+	}
+
+	& [class*='-labelActive'] {
+		color: $color-neutral-black !important;
+	}
+}
+
+.color_darken {
+	& [class*='-active'] {
+		background-color: desaturate(darken($color-neutral-50, 6), 40);
+	}
+
+	& [class*='-labelActive'] {
+		color: $color-neutral-black !important;
+	}
+}
+
+.color_primary {
+	& [class*='-active'] {
+		background-color: $color-primary-main;
+	}
+
+	& [class*='-labelActive'] {
+		color: $color-neutral-white !important;
+	}
+}
+
+.color_male {
+	& [class*='-active'] {
+		background-color: lighten($color-male-main, 10);
+	}
+
+	& [class*='-labelActive'] {
+		color: $color-neutral-white !important;
+	}
+}
+
+.color_female {
+	& [class*='-active'] {
+		background-color: lighten($color-female-main, 10);
+	}
+
+	& [class*='-labelActive'] {
+		color: $color-neutral-white !important;
+	}
+}

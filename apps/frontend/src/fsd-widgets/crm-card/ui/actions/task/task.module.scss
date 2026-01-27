@@ -1,0 +1,17 @@
+.panel {
+	@apply relative h-120;
+}
+
+.wrapper {
+	@apply grid gap-12;
+	grid-template-columns: 1fr 150px;
+}
+
+.button {
+	@apply h-full;
+}
+
+.comment textarea {
+	height: 70px !important;
+}
+	

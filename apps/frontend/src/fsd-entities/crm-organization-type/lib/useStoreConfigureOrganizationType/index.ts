@@ -1,0 +1,1 @@
+export { useStoreConfigureOrganizationType } from './useStoreConfigureOrganizationType'

@@ -1,0 +1,30 @@
+.wrapper {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'name name'
+		'description description'
+		'dateStart dateEnd'
+		'transfer transfer';
+}
+
+.name {
+	grid-area: name;
+}
+
+.description {
+	grid-area: description;
+}
+
+.dateStart {
+	grid-area: dateStart;
+}
+
+.dateEnd {
+	grid-area: dateEnd;
+}
+
+.transfer {
+	@apply grid gap-12;
+	grid-area: transfer;
+}

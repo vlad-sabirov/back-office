@@ -1,0 +1,30 @@
+.root {
+  @apply grid;
+}
+
+.date {
+  @apply grid grid-flow-col items-center;
+
+  &__picker {
+    width: 200px;
+  }
+
+  &__arrowPrev {
+    @apply rotate-90 cursor-pointer py-4 text-neutral-500;
+    width: 24px;
+    height: 24px;
+  }
+
+  &__arrowNext {
+    @apply -rotate-90 cursor-pointer p-4 text-neutral-500;
+    width: 24px;
+    height: 24px;
+  }
+
+  &__restore {
+    @apply  cursor-pointer py-4 text-neutral-500 mr-4;
+    @apply  cursor-pointer py-4 text-neutral-500 mr-4;
+    width: 24px;
+    height: 24px;
+  }
+}

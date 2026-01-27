@@ -1,0 +1,57 @@
+@import './../../../../styles/vars.scss';
+
+.root {
+	& [class*='mantine-Modal-modal'] {
+		margin-top: 100px;
+		border-radius: $border-radius-large;
+		padding: 40px;
+	}
+
+	& [class*='mantine-Modal-inner'] {
+		&:last-child {
+			opacity: 1;
+		}
+	}
+
+	& [class*='mantine-Modal-overlay'] {
+		opacity: 0.5;
+	}
+
+	& [class*='Modal-close'] {
+		width: 35px;
+		height: 35px;
+
+		& svg {
+			width: 30px;
+			height: 30px;
+		}
+	}
+}
+
+.modalButtons {
+	margin-top: 40px;
+	display: grid;
+	gap: 10px;
+	grid-auto-flow: column;
+	justify-content: end;
+}
+
+.centered {
+	& [class*='mantine-Paper-root'] {
+		margin: 0;
+	}
+}
+
+.title {
+	@apply grid grid-flow-col items-center gap-8;
+
+	& h2 {
+		@apply m-0;
+	}
+}
+
+.body {
+	&__disabled {
+		@apply pointer-events-none select-none opacity-40;
+	}
+}

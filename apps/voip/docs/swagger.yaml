@@ -1,0 +1,653 @@
+basePath: /api/voip
+definitions:
+  command.Analytic:
+    properties:
+      answered:
+        items:
+          $ref: '#/definitions/command.AnalyticItem'
+        type: array
+      count_answered:
+        type: integer
+      count_missed:
+        type: integer
+      duration:
+        type: number
+      missed:
+        items:
+          $ref: '#/definitions/command.AnalyticItem'
+        type: array
+    type: object
+  command.AnalyticItem:
+    properties:
+      call_id:
+        type: string
+      call_mark:
+        type: string
+      call_type:
+        type: string
+      caller:
+        type: string
+      did:
+        type: string
+      duration:
+        type: number
+      file:
+        type: string
+      is_answered:
+        type: boolean
+      is_checked:
+        type: boolean
+      queue:
+        type: string
+      receiver:
+        type: string
+      stages:
+        items:
+          $ref: '#/definitions/command.AnalyticStage'
+        type: array
+      timestamp:
+        type: string
+      uuid:
+        type: string
+    type: object
+  command.AnalyticStage:
+    properties:
+      call_id:
+        type: string
+      call_mark:
+        type: string
+      call_type:
+        type: string
+      caller:
+        type: string
+      did:
+        type: string
+      duration:
+        type: number
+      file:
+        type: string
+      is_answered:
+        type: boolean
+      is_checked:
+        type: boolean
+      queue:
+        type: string
+      receiver:
+        type: string
+      timestamp:
+        type: string
+      uuid:
+        type: string
+    type: object
+  command.Base:
+    properties:
+      code:
+        type: integer
+      status:
+        type: string
+    type: object
+  command.CallConference:
+    properties:
+      code:
+        type: integer
+      conference_uuid:
+        type: string
+      status:
+        type: string
+      users:
+        items:
+          properties:
+            caller:
+              type: string
+            role:
+              type: string
+            uuid:
+              type: string
+          type: object
+        type: array
+    type: object
+  command.CallMic:
+    properties:
+      code:
+        type: integer
+      mute:
+        type: boolean
+      status:
+        type: string
+    type: object
+  command.CallP2P:
+    properties:
+      code:
+        type: integer
+      status:
+        type: string
+      timestamp:
+        type: string
+      users:
+        items:
+          properties:
+            caller:
+              type: string
+            mute:
+              type: boolean
+            role:
+              type: string
+            uuid:
+              type: string
+          type: object
+        type: array
+      uuid:
+        type: string
+    type: object
+  command.CallRedirect:
+    properties:
+      caller_uuid:
+        type: string
+      code:
+        type: integer
+      receiver_uuid:
+        type: string
+      status:
+        type: string
+    type: object
+  command.Error:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  command.MissedCallCheck:
+    properties:
+      code:
+        type: integer
+      is_checked:
+        type: boolean
+      status:
+        type: string
+      uuid:
+        type: string
+    type: object
+  restgin.payloadAnalytics:
+    properties:
+      date_end:
+        example: "2023-11-07T00:00:00Z"
+        type: string
+      date_start:
+        example: "2023-11-06T00:00:00Z"
+        type: string
+      input:
+        example: true
+        type: boolean
+      output:
+        example: true
+        type: boolean
+      phones:
+        items:
+          type: string
+        type: array
+    required:
+    - date_end
+    - date_start
+    - phones
+    type: object
+  restgin.payloadCallHangup:
+    properties:
+      uuid:
+        example: "1698993296.50511"
+        type: string
+    required:
+    - uuid
+    type: object
+  restgin.payloadCallMic:
+    properties:
+      uuid:
+        example: "1698993296.50511"
+        type: string
+    required:
+    - uuid
+    type: object
+  restgin.payloadConferenceAdd:
+    properties:
+      users:
+        items:
+          type: string
+        type: array
+      uuid:
+        example: "1698993296.50511"
+        type: string
+    required:
+    - users
+    - uuid
+    type: object
+  restgin.payloadConferenceCreate:
+    properties:
+      users:
+        items:
+          type: string
+        type: array
+    required:
+    - users
+    type: object
+  restgin.payloadMissedCalls:
+    properties:
+      date_end:
+        example: "2023-11-07T00:00:00Z"
+        type: string
+      date_start:
+        example: "2023-11-06T00:00:00Z"
+        type: string
+      phones:
+        items:
+          type: string
+        type: array
+      skip_checked:
+        example: false
+        type: boolean
+    required:
+    - date_end
+    - date_start
+    - phones
+    type: object
+  restgin.payloadMissedCallsCheck:
+    properties:
+      uuid:
+        example: "1699245805.52199"
+        type: string
+    required:
+    - uuid
+    type: object
+  restgin.payloadMorphP2PToConference:
+    properties:
+      new_users:
+        items:
+          type: string
+        type: array
+      uuid:
+        example: "1698993296.50511"
+        type: string
+    required:
+    - new_users
+    - uuid
+    type: object
+  restgin.payloadP2PCrate:
+    properties:
+      caller:
+        example: "137"
+        type: string
+      receiver:
+        example: "138"
+        type: string
+    required:
+    - caller
+    - receiver
+    type: object
+  restgin.payloadP2PRedirect:
+    properties:
+      receiver:
+        example: "139"
+        type: string
+      uuid:
+        example: "1698993296.50511"
+        type: string
+    required:
+    - receiver
+    - uuid
+    type: object
+  restgin.payloadRecordings:
+    properties:
+      date_end:
+        example: "2023-11-07T00:00:00Z"
+        type: string
+      date_start:
+        example: "2023-11-06T00:00:00Z"
+        type: string
+      phones:
+        items:
+          type: string
+        type: array
+    required:
+    - date_end
+    - date_start
+    - phones
+    type: object
+host: localhost
+info:
+  contact:
+    email: d.basenko.it@gmail.com
+    name: Dmitriy Basenko
+    url: https://github.com/dsbasko/
+  title: Voip
+  version: "1.0"
+paths:
+  /analytics:
+    post:
+      consumes:
+      - application/json
+      description: Выводит аналитику по звонкам
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadAnalytics'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.Analytic'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Аналитика звонков
+      tags:
+      - analytics
+  /analytics/missing:
+    post:
+      consumes:
+      - application/json
+      description: Выводит аналитику по пропущенным звонкам
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadMissedCalls'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/command.AnalyticItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Аналитика пропущенных
+      tags:
+      - analytics
+  /analytics/missing/check:
+    patch:
+      consumes:
+      - application/json
+      description: Метит пропущенный звонок как просмотренный
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadMissedCallsCheck'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.MissedCallCheck'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Пометить пропущенный звонок
+      tags:
+      - analytics
+  /analytics/recording:
+    post:
+      consumes:
+      - application/json
+      description: Выводит список звонков за период с ссылкой на файлы записи
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadRecordings'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/command.AnalyticItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Получить записи звонков
+      tags:
+      - analytics
+  /call/hangup:
+    patch:
+      consumes:
+      - application/json
+      description: Кладет трубку участника. Работает как в звонке 1 на 1 так и в конференции
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadCallHangup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.Base'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Положить трубку
+      tags:
+      - call
+  /call/mic:
+    patch:
+      consumes:
+      - application/json
+      description: Включает или выключает микрофон участника
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadCallMic'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.CallMic'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Включить\Выключить микрофон
+      tags:
+      - call
+  /call/morph-p2p-to-conference:
+    put:
+      consumes:
+      - application/json
+      description: Переводит из звонка 1 на 1 в конференцию
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadMorphP2PToConference'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.CallConference'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Перевод из в конференцию
+      tags:
+      - call
+  /conference/add:
+    patch:
+      consumes:
+      - application/json
+      description: Добавляет участника в конференцию
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadConferenceAdd'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.CallConference'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Добавить участника
+      tags:
+      - conference
+  /conference/create:
+    post:
+      consumes:
+      - application/json
+      description: Создает конференцию
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadConferenceCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/command.CallConference'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Создать конференцию
+      tags:
+      - conference
+  /p2p/create:
+    post:
+      consumes:
+      - application/json
+      description: Создает звонок 1 на 1
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadP2PCrate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/command.CallP2P'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Создать звонок
+      tags:
+      - p2p
+  /p2p/redirect:
+    patch:
+      consumes:
+      - application/json
+      description: Переадресовывает звонок 1 на 1
+      parameters:
+      - description: ' '
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/restgin.payloadP2PRedirect'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/command.CallRedirect'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/command.Error'
+      summary: Переадресация
+      tags:
+      - p2p
+  /ping:
+    get:
+      description: Функция для проверки связи с микросервисом
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Ping
+      tags:
+      - system
+  /search/{phone}:
+    get:
+      description: Кладет трубку участника. Работает как в звонке 1 на 1 так и в конференции
+      operationId: searchPhone
+      parameters:
+      - description: Номер телефона для поиска
+        in: path
+        name: phone
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: "137"
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Положить трубку
+      tags:
+      - search
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

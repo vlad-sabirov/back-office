@@ -1,0 +1,28 @@
+.wrapper {
+	@apply mt-20 grid;
+}
+
+.item {
+	@apply grid grid-flow-col items-center justify-start gap-12 rounded-large p-0 p-20 py-12 hover:bg-neutral-bg;
+	grid-template-columns: auto 1fr auto;
+
+	&__avatar {
+	}
+
+	&__name {
+		@apply m-0 font-weight-500;
+	}
+
+	&__workPosition {
+		@apply m-0 text-neutral-400;
+	}
+
+	&__button {
+		@apply p-8;
+		height: 30px;
+
+		& svg {
+			width: 14px;
+		}
+	}
+}

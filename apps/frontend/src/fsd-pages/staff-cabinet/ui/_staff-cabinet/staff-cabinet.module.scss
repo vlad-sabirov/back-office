@@ -1,0 +1,12 @@
+.root {
+	@apply grid gap-20 mt-20;
+	grid-template-columns: 400px auto;
+}
+
+.left {
+	@apply m-0;
+}
+
+.right {
+	height: 100px;
+}

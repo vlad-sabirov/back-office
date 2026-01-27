@@ -1,0 +1,25 @@
+.root {
+	@apply m-0;
+	& > div { height: 160px; }
+}
+
+.workingBaseAll {
+	@apply mb-8 flex gap-4 text-neutral-800;
+	& span { @apply text-primary-main font-weight-500; }
+}
+
+.workingBase {
+	@apply mb-4 flex gap-4 text-neutral-400;
+	& span { @apply m-0 text-neutral-800; }
+
+}
+
+.workingBaseReverse {
+	& [class*="_red_"] {
+		@apply text-success-mainDarken;
+	}
+	& [class*="_green_"] {
+		@apply text-error-main;
+	}
+}
+

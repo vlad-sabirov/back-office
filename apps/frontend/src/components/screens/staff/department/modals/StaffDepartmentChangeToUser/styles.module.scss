@@ -1,0 +1,19 @@
+.root {
+	@apply relative grid;
+}
+
+.avatar {
+	@apply absolute right-0;
+}
+
+.name {
+	@apply m-0 text-neutral-black;
+}
+
+.currentDepartment {
+	@apply m-0;
+}
+
+.select {
+	@apply m-0 mt-20;
+}

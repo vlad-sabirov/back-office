@@ -1,0 +1,32 @@
+.wrapper {
+  @apply mt-40 grid grid-flow-col gap-20 items-center;
+  grid-template-columns: auto auto 1fr auto;
+}
+
+.title {
+  @apply m-0;
+}
+
+.date {
+  @apply grid grid-flow-col items-center gap-4;
+
+  & svg {
+    @apply text-neutral-400 cursor-pointer;
+  }
+
+  &__picker {
+    width: 200px;
+  }
+
+  &__iconPrev {
+   @apply rotate-90;
+  }
+
+  &__iconNext {
+    @apply -rotate-90;
+  }
+}
+
+.refreshButton {
+  @apply px-12
+}

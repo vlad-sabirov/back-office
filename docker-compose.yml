@@ -1,0 +1,46 @@
+services:
+  nginx:
+    extends:
+      file: ./apps/nginx/third_party/docker-compose/compose.yaml
+      service: nginx
+
+  frontend:
+    extends:
+      file: ./apps/frontend/third_party/docker-compose/compose.yaml
+      service: frontend
+
+  api:
+    extends:
+      file: ./apps/api/third_party/docker-compose/compose.yaml
+      service: api
+  db_api:
+    extends:
+      file: ./apps/api/third_party/docker-compose/compose.yaml
+      service: db_api
+
+  voip:
+    extends:
+      file: ./apps/voip/third_party/docker-compose/compose.yaml
+      service: voip
+
+  account_1c:
+    extends:
+      file: ./apps/account_1c/third_party/docker-compose/compose.yaml
+      service: account_1c
+  db_account_1c:
+    extends:
+      file: ./apps/account_1c/third_party/docker-compose/compose.yaml
+      service: db_account_1c
+
+  elastic:
+    extends:
+      file: ./apps/elastic/docker-compose/compose.yaml
+      service: elastic
+
+networks:
+  erp_network:
+    driver: bridge
+
+volumes:
+  vol_db_api:
+  vol_db_account_1c:

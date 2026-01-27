@@ -1,0 +1,46 @@
+.sizeMedium {
+	& [class*='mantine-MultiSelect-input'] {
+		margin: 6px 0;
+		min-height: auto;
+	}
+
+	& [class*='mantine-MultiSelect-values'] {
+		padding: 0;
+		gap: 4px;
+		min-height: auto;
+	}
+
+	& [class*='mantine-MultiSelect-defaultValue'] {
+		height: 22px;
+	}
+
+	& [class*='mantine-MultiSelect-defaultValueLabel'] {
+		margin-top: 4px;
+	}
+
+	& [class*='mantine-MultiSelect-searchInput'] {
+		@apply rounded-medium m-0;
+		height: 28px;
+		box-sizing: border-box;
+	}
+}
+
+.sizeLarge {
+	& [class*='mantine-MultiSelect-input'] {
+		margin: 8px 0;
+		min-height: auto;
+	}
+
+	& [class*='mantine-MultiSelect-values'] {
+		padding: 0;
+		gap: 8px;
+		min-height: auto;
+	}
+
+	& [class*='mantine-MultiSelect-value'], [class*='mantine-MultiSelect-searchInput'] {
+		@apply rounded-medium m-0;
+		height: 34px;
+		box-sizing: border-box;
+		padding: 0 0 0 12px;
+	}
+}

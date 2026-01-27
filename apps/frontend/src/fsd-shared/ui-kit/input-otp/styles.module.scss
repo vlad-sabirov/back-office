@@ -1,0 +1,40 @@
+@import './../../../../styles/vars.scss';
+@import './styles/Sizes.part.scss';
+@import './styles/States.part.scss';
+
+.root {
+	width: 100%;
+
+	& > div {
+		justify-content: stretch;
+		gap: 12px;
+
+		& > div {
+			width: 100%;
+			position: relative;
+
+			& > input {
+				display: block;
+				width: 100% !important;
+				border: 0;
+				outline: 1px solid $color-neutral-200;
+
+				&:hover {
+					outline-width: 2px;
+					outline-offset: -1px;
+				}
+
+				&:focus {
+					outline-color: $color-primary-main;
+					outline-width: 2px;
+					outline-offset: -1px;
+				}
+			}
+		}
+	}
+}
+
+.error {
+	color: $color-error-main;
+	margin: 12px 0 0;
+}

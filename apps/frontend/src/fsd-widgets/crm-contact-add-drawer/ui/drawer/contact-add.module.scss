@@ -1,0 +1,11 @@
+.buttons {
+	@apply mt-40 grid gap-12 grid-flow-col justify-end;
+}
+
+.mainForm {
+	@apply grid gap-20;
+}
+
+.commentForm {
+	@apply mt-40 pt-28 border-t border-neutral-100;
+}

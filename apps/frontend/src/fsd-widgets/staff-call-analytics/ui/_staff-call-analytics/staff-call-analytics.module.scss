@@ -1,0 +1,8 @@
+.root {
+  @apply m-0;
+  & > div { height: 290px; }
+}
+
+.comingSoon {
+  @apply text-center italic text-neutral-400 mt-92;
+}

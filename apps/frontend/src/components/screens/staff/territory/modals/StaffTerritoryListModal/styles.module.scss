@@ -1,0 +1,58 @@
+.wrapper {
+	@apply grid;
+}
+
+.territory {
+	@apply mb-40 grid gap-4;
+	grid-template-columns: auto 1fr auto auto;
+	grid-template-areas:
+		'dragHandle territoryName staffCount menu'
+		'staffPeoples staffPeoples staffPeoples staffPeoples'
+		'territoryAddress territoryAddress territoryAddress territoryAddress';
+
+	&:hover .dragHandle svg,
+	&:hover .territoryName,
+	&:hover .staffCount,
+	&:hover .menu svg,
+	&:hover .territoryAddress {
+		@apply text-neutral-black;
+	}
+}
+
+.dragHandle {
+	grid-area: dragHandle;
+
+	& svg {
+		@apply text-neutral-200;
+		height: 16px;
+	}
+}
+
+.territoryName {
+	grid-area: territoryName;
+	@apply font-weight-500;
+}
+
+.staffCount {
+	grid-area: staffCount;
+}
+
+.menu {
+	@apply cursor-pointer;
+	grid-area: menu;
+
+	& svg {
+		@apply text-neutral-200;
+		height: 16px;
+	}
+}
+
+.staffPeoples {
+	@apply ml-10 flex flex-wrap gap-8;
+	grid-area: staffPeoples;
+}
+
+.territoryAddress {
+	@apply m-0 mt-12 ml-10;
+	grid-area: territoryAddress;
+}

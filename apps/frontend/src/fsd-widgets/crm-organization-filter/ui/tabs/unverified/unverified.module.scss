@@ -1,0 +1,20 @@
+.wrapper {
+	@apply grid gap-y-12 gap-x-20;
+}
+
+.buttons {
+	@apply grid justify-items-end;
+}
+
+.clearButton {
+	@apply mt-20;
+}
+
+.clearIcon {
+	@apply rotate-45
+}
+
+.badgeUnverified {
+	@apply bg-warning-main text-warning-700 px-6 py-0 rounded-small;
+	font-size: 14px;
+}

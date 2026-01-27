@@ -1,0 +1,79 @@
+.root {
+	@apply grid;
+}
+
+.wrapper {
+	@apply grid items-center gap-x-2;
+	grid-template-columns: 1fr auto 18px;
+	grid-template-areas:
+		'name orderCount menu'
+		'description description description'
+		'warningTime warningTime warningTime'
+		'errorTime errorTime errorTime';
+
+	&:not(:last-child) {
+		@apply mb-32;
+	}
+
+	&:hover .name,
+	&:hover .name svg,
+	&:hover .orderCount,
+	&:hover .menu,
+	&:hover .description,
+	&:hover .warningTime span,
+	&:hover .errorTime span {
+		@apply text-neutral-black;
+	}
+
+	&:hover .warningTime,
+	&:hover .errorTime {
+		@apply opacity-100;
+	}
+}
+
+.name {
+	@apply mb-0;
+	grid-area: name;
+
+	& svg {
+		@apply mr-8 inline-block w-6 text-neutral-200;
+		grid-area: draggable;
+	}
+}
+
+.orderCount {
+	@apply mb-0;
+	grid-area: orderCount;
+}
+
+.menu {
+	@apply grid cursor-pointer text-neutral-200;
+	grid-area: menu;
+
+	& svg {
+		@apply w-16 cursor-pointer px-6 py-2;
+	}
+}
+
+.description {
+	@apply my-8 text-neutral-400;
+	grid-area: description;
+}
+
+.warningTime {
+	grid-area: warningTime;
+	@apply m-0 text-warning-500 opacity-70;
+
+	& span {
+		@apply text-neutral-400;
+	}
+}
+
+.errorTime {
+	@apply m-0 text-error-main opacity-70;
+	grid-area: errorTime;
+
+	& span {
+		@apply text-neutral-400;
+	}
+}

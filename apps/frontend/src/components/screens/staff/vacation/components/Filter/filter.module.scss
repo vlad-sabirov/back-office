@@ -1,0 +1,34 @@
+.wrapper {
+	@apply grid gap-20;
+	width: 400px;
+	grid-template-columns: 2fr 1fr 1fr;
+	grid-template-areas:
+		'date date isFake'
+		'department territory territory'
+		'user user user'
+		'button button button';
+}
+
+.date {
+	grid-area: date;
+}
+
+.user {
+	grid-area: user;
+}
+
+.department {
+	grid-area: department;
+}
+
+.territory {
+	grid-area: territory;
+}
+.isFake {
+	grid-area: isFake;
+}
+
+.button {
+	@apply grid justify-end;
+	grid-area: button;
+}

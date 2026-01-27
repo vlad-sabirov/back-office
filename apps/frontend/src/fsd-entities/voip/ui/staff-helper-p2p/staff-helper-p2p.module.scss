@@ -1,0 +1,22 @@
+.dropdown {}
+
+.user {
+  @apply grid items-center cursor-pointer px-8 py-8 rounded-medium;
+  grid-template-columns: 38px 1fr auto;
+
+  &:hover {
+    @apply bg-neutral-50
+  }
+}
+
+.userName {
+  @apply m-0;
+}
+
+.calling {
+	@apply text-primary-main animate-shake;
+}
+
+.userDisabled {
+	@apply opacity-30 pointer-events-none select-none;
+}

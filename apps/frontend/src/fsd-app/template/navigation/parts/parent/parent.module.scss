@@ -1,0 +1,29 @@
+.wrapper {
+	& [class*="mantine-Accordion-control"] {
+		@apply py-8 h-40;
+	}
+}
+
+.panel, .wrapper [aria-expanded="true"] {
+	@apply bg-neutral-bg
+}
+
+.control {
+	@apply text-neutral-600;
+	& svg { @apply text-neutral-300; }
+
+	&__active {
+		@apply text-primary-main font-weight-500;
+		& [class*="mantine-Accordion-label"] { @apply text-primary-main font-weight-500; }
+		& svg { @apply text-primary-main; }
+	}
+}
+
+.withoutChildren {
+	@apply grid grid-flow-col justify-start items-center px-16 m-0 gap-12 py-8;
+}
+
+.badgeUnverified {
+	@apply ml-4 bg-warning-main text-warning-700 px-6 py-0 rounded-small;
+	font-size: 14px;
+}

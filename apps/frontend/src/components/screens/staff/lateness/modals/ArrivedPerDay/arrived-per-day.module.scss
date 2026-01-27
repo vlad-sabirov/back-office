@@ -1,0 +1,16 @@
+.wrapper {
+  @apply grid gap-20;
+  grid-template-columns: 1fr 1fr;
+}
+
+.item {
+  @apply grid grid-flow-col justify-start gap-8 cursor-pointer;
+
+  &__name {
+    @apply text-neutral-black m-0;
+  }
+
+  &__description {
+    @apply text-neutral-400 m-0;
+  }
+}

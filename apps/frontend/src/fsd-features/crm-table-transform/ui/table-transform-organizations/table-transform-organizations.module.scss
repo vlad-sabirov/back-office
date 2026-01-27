@@ -1,0 +1,19 @@
+.once {
+	@apply m-0 cursor-pointer select-none text-neutral-mainDarken;
+}
+
+.many {
+	@apply m-0 text-neutral-400 select-none cursor-pointer;
+}
+
+.manyWrapper {
+	@apply grid grid-flow-row gap-12;
+}
+
+.manyName {
+	@apply m-0;
+}
+
+.manyWorkPosition {
+	@apply text-neutral-400 m-0;
+}

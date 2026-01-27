@@ -1,0 +1,23 @@
+.root {
+	@apply grid;
+	height: 100%;
+	grid-template-areas:
+		'header navigation'
+		'grid grid';
+	grid-template-columns: 1fr auto;
+	grid-template-rows: auto 1fr;
+}
+
+.header {
+	grid-area: header;
+	min-height: 32px;
+}
+
+.navigation {
+	grid-area: navigation;
+	min-height: 32px;
+}
+
+.grid {
+	grid-area: grid;
+}

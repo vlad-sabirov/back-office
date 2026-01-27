@@ -1,0 +1,35 @@
+.wrapper {
+	@apply grid gap-8;
+
+	&__disabled {
+		@apply opacity-50 pointer-events-none select-none;
+	}
+}
+
+.item {
+	@apply bg-error-50 rounded-medium py-8 px-12 grid gap-8 items-center;
+	grid-template-columns: auto 1fr auto;
+}
+
+.callIcon {
+	@apply text-error-mainDarken;
+	width: 20px;
+}
+
+.callClose {
+	@apply text-error-mainDarken cursor-pointer;
+	width: 12px;
+}
+
+.callerName {
+	@apply m-0 text-error-mainDarken truncate;
+	width: 240px;
+}
+
+.callerDate {
+	@apply m-0 text-error-mainLighten;
+}
+
+.pointer {
+	@apply cursor-pointer
+}

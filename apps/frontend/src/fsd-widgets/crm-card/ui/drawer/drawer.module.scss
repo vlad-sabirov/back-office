@@ -1,0 +1,37 @@
+.drawer {
+	padding-bottom: 0 !important;
+	min-height: calc(100vh);
+	max-height: calc(100vh);
+	overflow: hidden;
+}
+
+.wrapper {
+	@apply grid;
+	grid-template-columns: 400px 1fr;
+
+	&__disabled {
+		@apply opacity-30 ;
+	}
+}
+
+.leftSide {
+	@apply pr-40;
+}
+
+.rightSide {
+	@apply pl-40 grid items-end border-l-neutral-100 border-l relative;
+	grid-template-rows: auto 1fr auto;
+	min-height: calc(100vh - 85px);
+	max-height: calc(100vh - 85px);
+	overflow: hidden;
+}
+
+.accessDenied {
+	@apply flex items-center justify-center;
+	height: calc(100vh - 150px);
+	
+	& p {
+		@apply font-weight-500 text-warning-mainDarken;
+		font-size: 24px;
+	}
+}

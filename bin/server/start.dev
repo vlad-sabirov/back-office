@@ -1,0 +1,10 @@
+#!/bin/sh
+
+SCRIPT=$(readlink -f "$0")
+ROOT_PATH=$(realpath "${SCRIPT%/*/*/*}")
+
+docker compose \
+	-f "$ROOT_PATH"/docker-compose.yml \
+	-f "$ROOT_PATH"/docker-compose.dev.yml \
+	--env-file "$ROOT_PATH"/env/.env.local up \
+	--build -d

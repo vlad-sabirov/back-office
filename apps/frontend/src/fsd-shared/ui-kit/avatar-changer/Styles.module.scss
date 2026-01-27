@@ -1,0 +1,84 @@
+@import './../../../../styles/vars.scss';
+
+.avatarWrapper {
+	width: 100px;
+	height: 100px;
+	position: relative;
+}
+
+.avatar {
+	border-radius: 50%;
+	width: 100%;
+	height: 100%;
+}
+
+.uploadButton {
+	position: absolute;
+	bottom: 0;
+	right: -8px;
+	width: 32px !important;
+	height: 32px !important;
+	border-radius: 50% !important;
+	padding: 0 !important;
+
+	& svg {
+		width: 16px !important;
+		height: 16px !important;
+	}
+
+	& input {
+		display: none;
+	}
+}
+
+.editButton {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 32px !important;
+	height: 32px !important;
+	border-radius: 50% !important;
+	padding: 0 !important;
+
+	& svg {
+		width: 16px !important;
+		height: 16px !important;
+	}
+}
+
+.editor {
+	display: grid;
+	gap: 20px 40px;
+	grid-template-columns: 3fr 2fr;
+	grid-template-areas:
+		'editorBoard editorBoard'
+		'scale rotate';
+}
+
+.editorBoard {
+	border-radius: $border-radius-large;
+}
+
+.scale {
+	position: absolute;
+	width: 300px !important;
+	bottom: 160px;
+	left: -160px;
+
+	background-color: $color-neutral-white;
+	border-radius: $border-radius-large;
+	padding: 20px 32px;
+	box-shadow: 0 0 40px rgba($color-neutral-main, 0.5);
+}
+
+.rotate {
+	position: absolute;
+	width: 300px !important;
+	bottom: 160px;
+	right: -160px;
+
+	background-color: $color-neutral-white;
+	border-radius: $border-radius-large;
+	padding: 20px 32px;
+	box-shadow: 0 0 40px rgba($color-neutral-main, 0.5);
+}

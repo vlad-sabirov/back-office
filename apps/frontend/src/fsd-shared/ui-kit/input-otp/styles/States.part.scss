@@ -1,0 +1,11 @@
+.disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.error {
+	& input {
+		color: $color-error-main;
+		outline: 2px solid $color-error-main !important;
+	}
+}

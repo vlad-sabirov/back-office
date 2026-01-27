@@ -1,0 +1,11 @@
+.wrapper {
+	@apply grid gap-20 grid-flow-col;
+}
+
+.description {
+	@apply text-center italic text-neutral-300;
+}
+
+.notFound {
+	@apply text-center italic text-error-mainDarken;
+}

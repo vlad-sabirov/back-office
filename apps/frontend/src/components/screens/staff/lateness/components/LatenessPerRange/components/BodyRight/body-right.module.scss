@@ -1,0 +1,14 @@
+.skeleton {
+  &__header > div {
+    @apply grid grid-flow-col justify-start gap-20;
+  }
+
+  &__table > div {
+    @apply grid gap-20;
+
+    & > div {
+      @apply relative grid grid-flow-col justify-start gap-20;
+      grid-template-columns: 2fr 1fr 3fr;
+    }
+  }
+}

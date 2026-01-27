@@ -1,0 +1,143 @@
+[
+  {
+    "call_id": "1699426287.58983",
+    "uuid": "1699426287.58983",
+    "call_type": "p2p",
+    "caller": "120",
+    "receiver": "101",
+    "did": "",
+    "timestamp": "2023-11-08T11:51:27+05:00",
+    "duration": 27.42,
+    "is_checked": false,
+    "is_answered": false,
+    "file": "",
+    "queue": "",
+    "call_mark": "",
+    "stages": [
+      {
+        "call_id": "1699426287.58983",
+        "uuid": "1699426287.58983_3",
+        "call_type": "p2p",
+        "caller": "120",
+        "receiver": "101",
+        "did": "",
+        "timestamp": "2023-11-08T11:51:27+05:00",
+        "duration": 27.02,
+        "is_checked": false,
+        "is_answered": false,
+        "file": "",
+        "queue": "",
+        "call_mark": ""
+      },
+      {
+        "call_id": "1699426287.58983",
+        "uuid": "1699426287.58983_5",
+        "call_type": "p2p",
+        "caller": "120",
+        "receiver": "903172201",
+        "did": "",
+        "timestamp": "2023-11-08T11:51:34+05:00",
+        "duration": 20,
+        "is_checked": false,
+        "is_answered": false,
+        "file": "",
+        "queue": "",
+        "call_mark": ""
+      }
+    ]
+  },
+  {
+    "call_id": "1699428498.59064",
+    "uuid": "1699428498.59064",
+    "call_type": "p2p",
+    "caller": "101",
+    "receiver": "113",
+    "did": "",
+    "timestamp": "2023-11-08T12:28:18+05:00",
+    "duration": 21.05,
+    "is_checked": false,
+    "is_answered": false,
+    "file": "",
+    "queue": "",
+    "call_mark": "",
+    "stages": [
+      {
+        "call_id": "1699428498.59064",
+        "uuid": "1699428498.59064_3",
+        "call_type": "p2p",
+        "caller": "101",
+        "receiver": "113",
+        "did": "",
+        "timestamp": "2023-11-08T12:28:18+05:00",
+        "duration": 20.6,
+        "is_checked": false,
+        "is_answered": false,
+        "file": "",
+        "queue": "",
+        "call_mark": ""
+      },
+      {
+        "call_id": "1699428498.59064",
+        "uuid": "1699428498.59064_5",
+        "call_type": "p2p",
+        "caller": "101",
+        "receiver": "983071930",
+        "did": "",
+        "timestamp": "2023-11-08T12:28:25+05:00",
+        "duration": 13.63,
+        "is_checked": false,
+        "is_answered": false,
+        "file": "",
+        "queue": "",
+        "call_mark": ""
+      }
+    ]
+  },
+  {
+    "call_id": "1699428522.59073",
+    "uuid": "1699428522.59073",
+    "call_type": "p2p",
+    "caller": "101",
+    "receiver": "116",
+    "did": "",
+    "timestamp": "2023-11-08T12:28:42+05:00",
+    "duration": 15.51,
+    "is_checked": false,
+    "is_answered": false,
+    "file": "",
+    "queue": "",
+    "call_mark": "",
+    "stages": [
+      {
+        "call_id": "1699428522.59073",
+        "uuid": "1699428522.59073_3",
+        "call_type": "p2p",
+        "caller": "101",
+        "receiver": "116",
+        "did": "",
+        "timestamp": "2023-11-08T12:28:42+05:00",
+        "duration": 15.05,
+        "is_checked": false,
+        "is_answered": false,
+        "file": "",
+        "queue": "",
+        "call_mark": ""
+      },
+      {
+        "call_id": "1699428522.59073",
+        "uuid": "1699428522.59073_5",
+        "call_type": "p2p",
+        "caller": "101",
+        "receiver": "950695665",
+        "did": "",
+        "timestamp": "2023-11-08T12:28:50+05:00",
+        "duration": 8.08,
+        "is_checked": false,
+        "is_answered": false,
+        "file": "",
+        "queue": "",
+        "call_mark": ""
+      }
+    ]
+  }
+]

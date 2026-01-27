@@ -1,0 +1,40 @@
+.form {
+	@apply grid gap-12;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		"name name"
+		"workPosition workPosition"
+		"phones phones"
+		"emails emails"
+		"birthday userId"
+		"comment comment";
+}
+
+.name {
+	grid-area: name;
+}
+
+.workPosition {
+	grid-area: workPosition;
+}
+
+.phones {
+	grid-area: phones;
+}
+
+.emails {
+	grid-area: emails;
+}
+
+.birthday {
+	grid-area: birthday;
+}
+
+.userId {
+	grid-area: userId;
+}
+
+
+.comment {
+	grid-area: comment;
+}

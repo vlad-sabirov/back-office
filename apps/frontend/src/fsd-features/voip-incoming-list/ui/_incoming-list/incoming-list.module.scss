@@ -1,0 +1,63 @@
+.root {
+  @apply mt-20;
+}
+
+.rowAnswered {
+  @apply grid py-16 px-20 grid-flow-col gap-12 items-center;
+	grid-template-columns: 100px 200px 200px 1fr 200px;
+
+	&:nth-child(even) {
+		@apply bg-neutral-bg;
+	}
+}
+
+.rowMissed {
+	@apply grid py-16 px-20 grid-flow-col gap-12 items-center;
+	grid-template-columns: 1fr 2fr 2fr 2fr;
+
+	&:nth-child(even) {
+		@apply bg-neutral-bg;
+	}
+}
+
+.head {
+	@apply m-0 uppercase text-neutral-800;
+}
+
+.date {
+	@apply m-0 text-neutral-500;
+}
+
+.time {
+	@apply m-0 text-neutral-400;
+}
+
+.callerPhone {
+	@apply m-0 text-neutral-500;
+}
+
+.callerName {
+	@apply m-0 text-neutral-400 cursor-pointer underline;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 180px;
+}
+
+.departmentPhone {
+	@apply m-0 text-neutral-500;
+}
+
+.departmentName {
+	@apply m-0 text-neutral-400;
+}
+
+.staff {
+	@apply grid gap-8 items-center;
+	grid-template-columns: auto 1fr;
+
+}
+
+.pagination {
+	@apply p-20;
+}

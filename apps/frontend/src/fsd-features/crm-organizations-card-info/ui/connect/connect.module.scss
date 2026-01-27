@@ -1,0 +1,46 @@
+.wrapper {
+	@apply grid gap-20;
+}
+
+.topDescription {
+	@apply italic mb-20 text-center text-neutral-300 px-20;
+}
+
+.item {
+	@apply grid cursor-pointer;
+	grid-template-columns: 1fr auto;
+
+	&__left {
+		@apply p-20 bg-neutral-bg rounded-l-medium;
+	}
+
+	&__right {
+		@apply p-12 bg-primary-main rounded-r-medium flex justify-center items-center opacity-10 transition-all;
+		& > svg { @apply text-neutral-white; }
+	}
+
+	&:hover {
+		& > .item__right { @apply opacity-100; }
+	}
+}
+
+.name {
+	@apply m-0 text-neutral-mainDarken font-weight-500;
+}
+
+.type {
+	@apply m-0 text-neutral-400 italic;
+}
+
+.inn {
+	@apply m-0 text-neutral-400;
+	& span { @apply text-neutral-main; }
+}
+
+.phone {
+	@apply m-0 text-neutral-400;
+}
+
+.footerDescription {
+	@apply italic mt-40 text-center text-neutral-300 px-20;
+}

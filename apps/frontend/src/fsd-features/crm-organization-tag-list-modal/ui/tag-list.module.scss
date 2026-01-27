@@ -1,0 +1,13 @@
+.wrapper {}
+
+.description {
+	@apply text-neutral-300 italic text-center;
+}
+
+.list {
+	@apply mt-20 grid;
+
+	& > button {
+		@apply flex items-start;
+	}
+}

@@ -1,0 +1,27 @@
+.root {
+	@apply grid grid-flow-col items-center justify-start gap-12;
+}
+
+.nowMonth {
+	@apply m-0 cursor-pointer select-none;
+}
+
+.nextMonth {
+	@apply -rotate-90 cursor-pointer text-neutral-600;
+
+	&__disabled {
+		@apply pointer-events-none opacity-30;
+	}
+}
+
+.prevMonth {
+	@apply rotate-90 cursor-pointer text-neutral-600;
+
+	&__disabled {
+		@apply pointer-events-none opacity-30;
+	}
+}
+
+.displayMonth {
+	@apply m-0 select-none font-weight-500 capitalize text-neutral-900;
+}

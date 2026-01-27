@@ -1,0 +1,19 @@
+.form {
+	@apply grid gap-20;
+}
+
+.buttons {
+	@apply grid gap-12 grid-flow-col justify-end mt-40;
+}
+
+.more {
+	@apply px-20 cursor-pointer mx-auto;
+	
+	& svg {
+		@apply text-neutral-300 h-40;
+	}
+
+	&__active {
+		@apply rotate-180;
+	}
+}

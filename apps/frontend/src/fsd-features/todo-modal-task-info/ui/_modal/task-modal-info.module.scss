@@ -1,0 +1,53 @@
+.nameWrapper {
+	@apply cursor-pointer;
+}
+
+.name {
+	@apply text-neutral-700 font-weight-500;
+}
+
+.description {
+	@apply text-neutral-400;
+}
+
+.dueDateWrapper {
+	@apply grid grid-flow-col gap-20 justify-items-end items-end;
+	grid-template-columns: auto auto 1fr;
+}
+
+.dueDate {
+	@apply flex gap-6 items-center m-0 text-neutral-400;
+
+	& svg {
+		width: 14px;
+		height: 14px;
+	}
+}
+
+.dueDateArrived {
+	@apply text-error-mainLighten;
+}
+
+.divider {
+	@apply mt-20;
+}
+
+.pick {
+	@apply grid grid-flow-col mt-12 pt-12 border-t border-neutral-100 cursor-pointer;
+	grid-template-columns: 20px auto;
+}
+
+.pickIcon {
+	@apply text-neutral-400;
+	width: 14px;
+	height: 14px;
+}
+
+.pickText {
+	@apply text-neutral-500 m-0 font-weight-500;
+}
+
+.buttons {
+	@apply grid grid-flow-col gap-8 justify-items-end mt-16;
+	grid-template-columns: 1fr auto auto;
+}

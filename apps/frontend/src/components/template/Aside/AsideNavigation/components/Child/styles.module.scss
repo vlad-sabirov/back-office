@@ -1,0 +1,40 @@
+.childItem {
+	&:hover .childActiveArrow,
+	&:hover .childTitle {
+		@apply text-primary-main;
+	}
+}
+
+.childWrapper {
+	@apply grid cursor-pointer items-center gap-4 py-6 pl-28 pr-16 no-underline;
+	grid-template-columns: auto 1fr;
+	grid-template-areas: 'activeArrow title';
+
+	&__disabled {
+		@apply pointer-events-none;
+	}
+}
+
+.childActiveArrow {
+	@apply -rotate-90 text-primary-main;
+	grid-area: activeArrow;
+	width: 8px;
+}
+
+.childTitle {
+	@apply leading-4 text-neutral-main;
+
+	&__active {
+		@apply font-weight-500 text-primary-main;
+		font-weight: 500;
+	}
+
+	&__disabled {
+		@apply text-neutral-200 #{!important};
+	}
+}
+
+.badgeUnverified {
+	@apply ml-4 bg-warning-main text-warning-700 px-6 py-0 rounded-small;
+	font-size: 14px;
+}

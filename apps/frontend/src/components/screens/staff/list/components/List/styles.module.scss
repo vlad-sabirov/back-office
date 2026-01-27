@@ -1,0 +1,13 @@
+.tableHead {
+	th {
+		font-size: 1rem !important;
+		font-weight: 400 !important;
+		// color: $color-neutral-_audio-player !important;
+		text-transform: uppercase !important;
+	}
+}
+
+.user,
+.call {
+	cursor: pointer;
+}

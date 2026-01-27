@@ -1,0 +1,16 @@
+.control {
+	@apply grid grid-flow-col justify-start items-center px-12 py-2 m-0 gap-12 text-neutral-600 cursor-pointer;
+	font-size: 14px;
+
+	& svg { @apply text-neutral-300; }
+
+	&__active {
+		@apply text-primary-main font-weight-500;
+		& svg { @apply text-primary-main; }
+	}
+}
+
+.badgeUnverified {
+	@apply ml-4 bg-warning-main text-warning-700 px-6 py-0 rounded-small;
+	font-size: 14px;
+}

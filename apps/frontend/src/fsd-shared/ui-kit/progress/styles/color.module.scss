@@ -1,0 +1,15 @@
+.primary [class*='mantine-Progress-bar'] {
+	@apply bg-primary-main;
+}
+
+.green [class*='mantine-Progress-bar'] {
+	@apply bg-success-main;
+}
+
+.yellow [class*='mantine-Progress-bar'] {
+	@apply bg-warning-main;
+}
+
+.red [class*='mantine-Progress-bar'] {
+	@apply bg-error-mainDarken;
+}

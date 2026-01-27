@@ -1,0 +1,33 @@
+@import './../../../../styles/vars.scss';
+
+.root {
+	width: 100%;
+	margin-top: 20px;
+}
+
+.wrapper {
+	background-color: $color-neutral-white;
+	border-radius: $border-radius-large;
+	padding: 20px;
+	outline: $color-neutral-white 2px solid;
+	outline-offset: -2px;
+}
+.withoutPaddingX {
+	padding-left: 0;
+	padding-right: 0;
+}
+.withoutPaddingY {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.loading {
+	@apply opacity-30 pointer-events-none select-none relative;
+}
+
+.loader {
+	@apply absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

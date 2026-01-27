@@ -1,0 +1,34 @@
+.organization {
+	@apply px-20 py-12 cursor-pointer transition-all rounded-medium;
+	&:hover { @apply bg-neutral-50; }
+}
+
+.disabled {
+	@apply opacity-50 pointer-events-none select-none;
+}
+
+.name {
+	@apply mb-0 text-neutral-800 font-weight-500;
+}
+
+.description {
+	@apply mb-0;
+}
+
+.requisitesTitle {
+	@apply mb-0 italic text-neutral-main truncate;
+}
+.requisites {
+	@apply mb-0 italic text-neutral-400 truncate;
+}
+
+.userId {
+	@apply mb-0;
+	& span { @apply font-weight-500; }
+}
+
+.archive {
+	@apply opacity-70;
+	& .name { @apply text-info-400; }
+	& .userId { @apply text-info-300; }
+}

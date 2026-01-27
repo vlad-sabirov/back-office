@@ -1,0 +1,24 @@
+.wrapper > div {
+  @apply grid grid-flow-col gap-20 items-center;
+  grid-template-columns: auto auto 1fr auto;
+}
+
+.userName {
+  @apply m-0 text-neutral-black;
+}
+
+.workPosition {
+  @apply m-0 text-neutral-400 select-none;
+}
+
+.lateCountTitle {
+  @apply m-0 text-neutral-400 select-none;
+}
+
+.lateCount {
+  @apply m-0 text-neutral-black select-none;
+}
+
+.callButton {
+  @apply px-12
+}

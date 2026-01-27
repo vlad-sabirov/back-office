@@ -1,0 +1,8 @@
+#!/bin/sh
+
+SCRIPT=$(readlink -f "$0")
+ROOT_PATH=$(realpath "${SCRIPT%/*/*/*}")
+SERVER_IP="192.168.25.235"
+SERVER_PORT="2222"
+
+scp -P $SERVER_PORT -r "$SERVER_IP":/app/apps/api/uploads "$ROOT_PATH"/apps/api/

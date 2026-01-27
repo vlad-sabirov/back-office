@@ -1,0 +1,23 @@
+.wrapper {
+}
+
+.user {
+	@apply grid grid-flow-col items-center justify-start gap-8;
+
+	& svg {
+		@apply text-neutral-200;
+	}
+}
+
+.dateStart {
+}
+
+.dateEnd {
+}
+
+.amountOfDay {
+}
+
+.skeleton div {
+	@apply grid gap-12;
+}

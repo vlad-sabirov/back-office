@@ -1,0 +1,114 @@
+/* Нейтральный цвет */
+$color-neutral-bg: #f5f6fd;
+$color-neutral-white: #fff;
+$color-neutral-black: #000;
+$color-neutral-main: #475366;
+$color-neutral-main-lighten: #56647b;
+$color-neutral-main-darken: #394251;
+$color-neutral-50: #eaf3ff;
+$color-neutral-100: #d0d7e4;
+$color-neutral-200: #b3bdcc;
+$color-neutral-300: #96a2b6;
+$color-neutral-400: #7988a0;
+$color-neutral-500: #5f6e86;
+$color-neutral-600: #495669;
+$color-neutral-700: #333d4c;
+$color-neutral-800: #1d2530;
+$color-neutral-900: #040d17;
+
+// Основной цвет
+$color-primary-main: #755dff;
+$color-primary-main-lighten: #8e7aff;
+$color-primary-main-darken: #5e42ff;
+$color-primary-50: #e9e4ff;
+$color-primary-100: #beb3ff;
+$color-primary-200: #9280ff;
+$color-primary-300: #674dff;
+$color-primary-400: #3c1bfe;
+$color-primary-500: #2401e5;
+$color-primary-600: #1a00b3;
+$color-primary-700: #120081;
+$color-primary-800: #08004f;
+$color-primary-900: #040020;
+
+// Цвет ошибки
+$color-error-main: #f9515a;
+$color-error-main-lighten: #fa757c;
+$color-error-main-darken: #f82b36;
+$color-error-50: #ffe3e6;
+$color-error-100: #ffb3b8;
+$color-error-200: #fc838a;
+$color-error-300: #f9525b;
+$color-error-400: #f6232e;
+$color-error-500: #dd0d14;
+$color-error-600: #ad060f;
+$color-error-700: #7c020a;
+$color-error-800: #4c0004;
+$color-error-900: #1f0000;
+
+// Цвет предупреждения
+$color-warning-main: #ffc859;
+$color-warning-main-lighten: #ffd685;
+$color-warning-main-darken: #ffb829;
+$color-warning-50: #fff7db;
+$color-warning-100: #ffe6af;
+$color-warning-200: #ffd57f;
+$color-warning-300: #ffc44d;
+$color-warning-400: #ffb31d;
+$color-warning-500: #e69905;
+$color-warning-600: #b37700;
+$color-warning-700: #805500;
+$color-warning-800: #4e3300;
+$color-warning-900: #1e1000;
+
+// Цвет успеха
+$color-success-main: #99d962;
+$color-success-main-lighten: #b2e288;
+$color-success-main-darken: #75c530;
+$color-success-50: #effce2;
+$color-success-100: #d5f1be;
+$color-success-200: #bbe697;
+$color-success-300: #a2dc6f;
+$color-success-400: #88d247;
+$color-success-500: #6eb92f;
+$color-success-600: #559023;
+$color-success-700: #3c6718;
+$color-success-800: #223e0b;
+$color-success-900: #071600;
+
+// Цвет информации
+$color-info-main: #4f7ff0;
+$color-info-main-lighten: #6992f2;
+$color-info-main-darken: #356cee;
+$color-info-50: #e4eeff;
+$color-info-100: #b7ccfd;
+$color-info-200: #89aaf6;
+$color-info-300: #5b87f1;
+$color-info-400: #2e65ec;
+$color-info-500: #164cd2;
+$color-info-600: #0e3ba4;
+$color-info-700: #072a76;
+$color-info-800: #011949;
+$color-info-900: #00081d;
+
+// Другие цвета
+$color-male-main: #4c69f8;
+$color-male-bg: #e0e8ff;
+$color-female-main: #f84cbe;
+$color-female-bg: #ffe5f7;
+$color-excel: #3ec082;
+
+// Радиус скругления
+$border-radius-small: 6px;
+$border-radius-medium: 8px;
+$border-radius-large: 12px;
+
+// Размер аутлайна
+$outline-size-small: 1px;
+$outline-size-medium: 2px;
+$outline-size-large: 3px;
+
+// Скорость анимации
+$transition-fast: all 0.1s;
+$transition-medium: all 0.2s;
+$transition-slow: all 0.3s;

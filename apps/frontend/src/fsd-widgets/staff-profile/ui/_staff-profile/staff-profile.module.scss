@@ -1,0 +1,54 @@
+.root {
+	@apply relative;
+}
+
+.missedCalls {
+	@apply absolute;
+	right: 20px;
+	top: 20px;
+}
+
+.btMissedCalls {
+	@apply rounded-circle p-0;
+	width: 48px;
+	height: 48px;
+}
+
+.btCallMobile {
+	top: 76px;
+}
+
+.avatarInfo {
+	@apply grid gap-20 mb-24;
+	grid-template-columns: 150px auto;
+}
+
+.avatarRight {
+	@apply grid gap-12;
+}
+
+.simpleBlock {
+	@apply m-0 text-neutral-400;
+	& span { @apply text-neutral-800 block; }
+}
+
+.name, .surName {
+	@apply m-0;
+}
+
+.workPosition {
+	@apply text-neutral-400 italic m-0 mt-4;
+}
+
+.contactsTitle, .staffTitle {
+	@apply mt-60;
+}
+
+.contacts {
+	@apply grid gap-8;
+	grid-template-columns: 1fr 1fr;
+}
+
+.staffChildren {
+	@apply grid gap-8;
+}

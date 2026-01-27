@@ -1,0 +1,15 @@
+.root {
+	@apply relative;
+}
+
+.history {
+  @apply m-0;
+}
+
+.employeeOrTeam {
+	@apply absolute z-1;
+	top: 230px;
+	left: 50%;
+	margin-left: -200px;
+	width: 400px;
+}

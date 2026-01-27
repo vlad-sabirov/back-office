@@ -1,0 +1,19 @@
+.wrapper {
+	@apply fixed bottom-20 right-0 z-2 grid grid-flow-col gap-8;
+	transform: translateX(-50%);
+}
+
+.button {
+	@apply rounded-circle p-0;
+	width: 40px;
+	height: 40px;
+	// background-color: #fff !important;
+
+	&__left svg {
+		@apply rotate-90;
+	}
+
+	&__right svg {
+		@apply -rotate-90;
+	}
+}

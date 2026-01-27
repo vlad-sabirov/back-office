@@ -1,0 +1,3 @@
+.wrapper { @apply flex flex-col gap-40; }
+.wrapper > div { @apply flex flex-row gap-12 items-center; }
+.wrapper > p { @apply m-0; }

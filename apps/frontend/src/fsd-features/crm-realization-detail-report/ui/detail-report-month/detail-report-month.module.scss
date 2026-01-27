@@ -1,0 +1,63 @@
+.root {
+	@apply relative;
+}
+
+.title {
+	@apply mb-4;
+}
+
+.realization {
+	@apply mb-4 font-weight-500 text-primary-main;
+	& span {
+		@apply font-weight-400 text-neutral-400;
+		font-size: 16px;
+	}
+}
+
+.item {
+	@apply mb-4 text-neutral-400;
+	& span {
+		@apply text-neutral-black;
+	}
+}
+
+.percent {
+	@apply absolute bottom-0 mb-0 w-full text-center;
+}
+
+.percentChart {
+	@apply absolute bottom-0 -right-20 overflow-hidden;
+	height: 120px;
+	margin-bottom: 20px;
+}
+
+.workingBasePlan {
+	@apply absolute bottom-0 right-0 mr-10 overflow-hidden;
+	width: 180px;
+	/* height: 12px; */
+	z-index: 2;
+}
+
+.newOrganizationPlan {
+	@apply absolute bottom-0 right-0 mr-10 overflow-hidden;
+	width: 180px;
+	/* height: 12px; */
+	z-index: 2;
+}
+
+.hoverCard {
+	@apply m-0 text-neutral-400;
+	& span {
+		@apply ml-4 text-neutral-black;
+	}
+}
+
+.sup {
+	@apply ml-2 font-weight-500;
+	&__positive {
+		@apply text-success-mainDarken;
+	}
+	&__negative {
+		@apply text-error-mainLighten;
+	}
+}

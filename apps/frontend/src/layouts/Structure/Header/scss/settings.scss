@@ -1,0 +1,33 @@
+.settings {
+	grid-area: settings;
+	display: grid;
+	grid-template-columns: auto auto;
+	align-items: center;
+	gap: 10px;
+}
+
+.settingsAvatar {
+	width: 40px;
+	height: 40px;
+	background-color: $color-neutral-200;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.modalItem {
+	font-size: 0.875rem;
+	color: $color-neutral-400;
+
+	&__red {
+		color: $color-error-400;
+	}
+}
+
+.modalItemIcon {
+	width: 12px;
+	fill: $color-neutral-300;
+
+	&__red {
+		fill: $color-error-400;
+	}
+}

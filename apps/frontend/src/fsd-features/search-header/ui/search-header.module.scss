@@ -1,0 +1,18 @@
+.button {
+	@apply outline outline-1 outline-neutral-100;
+	background-color: #fff !important;
+	& [class*='mantine-Button-label'], & [class*='mantine-Button-leftIcon'] {
+		@apply text-neutral-300 font-weight-400;
+	}
+
+	&:hover, &:focus {
+		background-color: #f5f6fd !important;
+		& [class*='mantine-Button-label'], & [class*='mantine-Button-leftIcon'] {
+			@apply text-neutral-400;
+		}
+	}
+}
+
+.kbd {
+	@apply ml-20 opacity-50;
+}

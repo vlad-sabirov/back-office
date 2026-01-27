@@ -1,0 +1,40 @@
+.heading {
+	@apply text-neutral-800 m-0;
+	& span { @apply text-error-main; }
+}
+
+.add {
+	@apply text-primary-mainLighten underline transition-all cursor-pointer m-0;
+	&:hover { @apply text-primary-mainDarken; }
+}
+
+.contacts {
+	@apply grid gap-20 my-12;
+}
+
+.contactName {
+	@apply m-0;
+	&__clickable { @apply cursor-pointer; }
+}
+
+.contactWorkPosition {
+	@apply m-0 text-neutral-300 italic;
+}
+
+.contactPhones {
+	@apply m-0 text-neutral-300;
+	& span { @apply text-neutral-mainLighten cursor-pointer; }
+}
+
+.phoneMany {
+	@apply ml-8;
+}
+
+.contactLinks {
+	@apply flex gap-8;
+}
+
+.contactDisconnect {
+	@apply text-neutral-400 cursor-pointer underline transition-all m-0;
+	&:hover { @apply text-neutral-600; }
+}

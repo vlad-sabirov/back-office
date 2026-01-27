@@ -1,0 +1,42 @@
+.root {
+	@apply m-0;
+
+	& > div {
+		position: relative;
+		height: 290px;
+	}
+}
+
+.open {
+	@apply absolute p-0 w-40 right-20;
+}
+
+.tableHead, .tableBody {
+	@apply grid grid-flow-col;
+	grid-template-columns: 3fr 4fr 3fr 3fr 80px 75px;
+
+	& p { @apply m-0; }
+}
+
+.tableHead {
+	@apply mt-20 mb-12;
+	& p {
+		@apply font-weight-500
+	}
+}
+
+.tableBody {
+	@apply mt-8;
+}
+
+.date {
+	@apply text-neutral-400;
+}
+
+.realization {
+	@apply text-primary-main font-weight-500;
+}
+
+.plan {
+	@apply text-neutral-400;
+}

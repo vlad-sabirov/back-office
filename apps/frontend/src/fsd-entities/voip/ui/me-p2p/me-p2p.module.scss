@@ -1,0 +1,48 @@
+.header {
+  @apply grid mb-4 px-8;
+  grid-template-columns: 1fr auto;
+}
+
+.type, .timer {
+  @apply m-0 text-neutral-400;
+}
+
+.wrapper {
+  @apply p-20 items-center rounded-medium bg-neutral-bg;
+}
+
+.enemy {
+  @apply grid gap-8 items-center;
+  grid-template-columns: auto 1fr;
+}
+
+.enemyName {
+  @apply m-0 text-neutral-800 overflow-hidden text-ellipsis whitespace-nowrap font-weight-500;
+  font-size: 16px;
+  width: 220px;
+}
+.enemyNumber {
+  @apply m-0 text-neutral-500;
+}
+
+.buttons {
+  @apply grid mt-20 gap-8;
+  grid-template-columns: 40px 40px 40px 1fr 40px;
+}
+
+.button {
+  @apply m-0 p-0 rounded-circle;
+}
+
+.avatarIcon {
+	@apply bg-neutral-white rounded-circle;
+	padding: 15px;
+
+	& svg {
+		@apply text-neutral-mainLighten w-20;
+	}
+}
+
+.pointer {
+	@apply cursor-pointer;
+}

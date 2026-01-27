@@ -1,0 +1,45 @@
+.user {
+	@apply grid cursor-pointer grid-flow-col items-center justify-start;
+}
+
+.userName {
+	@apply m-0 font-weight-500;
+}
+
+.userPhoto {
+	@apply m-0 mr-8;
+}
+
+.customerCount {
+	@apply m-0;
+}
+
+.customerShipment {
+	@apply m-0 mr-40;
+
+	&__disabled {
+		@apply opacity-30;
+	}
+}
+
+.customerNew {
+	@apply m-0;
+}
+
+.plan {
+	@apply m-0 text-center text-neutral-300;
+}
+
+.realization {
+	@apply m-0;
+
+	&__disabled {
+		@apply opacity-30;
+	}
+}
+
+.customerShipment span,
+.realization span {
+	@apply rounded-small bg-neutral-200 px-4 py-2 font-weight-500 text-neutral-white;
+	font-size: 12px;
+}

@@ -1,0 +1,22 @@
+@import './../../../styles/vars.scss';
+
+.wrapper {
+	display: grid;
+	grid-template-columns: auto auto 1fr auto;
+	grid-template-areas: 'title leftSelection . rightSelection';
+	align-items: center;
+}
+
+.title {
+	grid-area: title;
+	margin: 0;
+}
+
+.leftSelection {
+	grid-area: leftSelection;
+	margin-left: 20px;
+}
+
+.rightSelection {
+	grid-area: rightSelection;
+}

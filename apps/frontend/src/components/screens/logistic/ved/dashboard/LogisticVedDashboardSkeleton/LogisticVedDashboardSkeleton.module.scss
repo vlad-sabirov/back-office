@@ -1,0 +1,7 @@
+.root {
+	@apply grid gap-20;
+
+	& > div {
+		@apply grid grid-flow-col gap-60;
+	}
+}

@@ -1,0 +1,22 @@
+.userId {
+	@apply text-neutral-300;
+	& > span { @apply text-neutral-mainDarken cursor-pointer; }
+}
+
+.workPosition {
+	@apply text-neutral-300;
+	& > span { @apply text-neutral-mainDarken; }
+}
+
+.comment {
+	@apply mt-20 text-neutral-300;
+}
+
+.website, .birthday {
+	@apply text-neutral-300;
+	& > span { @apply text-neutral-mainLighten; }
+}
+
+.action {
+	@apply underline cursor-pointer text-neutral-300;
+}

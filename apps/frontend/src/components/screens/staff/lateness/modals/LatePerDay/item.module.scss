@@ -1,0 +1,83 @@
+.item {
+  @apply relative transition-all rounded-medium outline-neutral-white;
+
+  &__active {
+    @apply p-12 outline outline-1 outline-neutral-100;
+  }
+
+  &__wrapper {
+    @apply relative grid gap-8 items-center grid-flow-col justify-start cursor-pointer transition-all rounded-medium  outline-neutral-white;
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+.avatar {
+  @apply transition-all;
+}
+
+.name {
+  @apply text-neutral-black m-0 transition-all;
+
+  &__date {
+    @apply text-neutral-300;
+  }
+
+  &__isSkipped {
+    @apply bg-info-main px-8 py-2 rounded-small text-neutral-white ml-4;
+    font-size: 0.75rem;
+  }
+}
+
+.commentUser {
+  @apply m-0 text-neutral-400 italic;
+}
+
+.commentCount {
+  @apply grid gap-4 grid-flow-col;
+
+  &, & p {
+    @apply m-0 text-neutral-main font-weight-500;
+  }
+}
+
+.commentsWrapper {
+  @apply grid mt-12;
+
+  &__buttonAdd {
+    @apply transition-all;
+    margin: 0 auto;
+
+    & svg {
+      @apply w-12 mr-8;
+    }
+  }
+}
+
+.comments {
+  &__wrapper {
+    @apply mb-12;
+  }
+
+  &__item {
+    @apply grid justify-start items-center gap-x-8 py-4 border-l-2 border-neutral-100 ml-12 pl-12 cursor-pointer;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:  'avatar comment'
+                          'avatar date';
+  }
+
+  &__avatar {
+    grid-area: avatar;
+  }
+
+  &__comment {
+    @apply m-0;
+    line-height: 0.875rem;
+    grid-area: comment;
+  }
+
+  &__date {
+    @apply m-0 text-neutral-300;
+    line-height: 0.875rem;
+    grid-area: date;
+  }
+}

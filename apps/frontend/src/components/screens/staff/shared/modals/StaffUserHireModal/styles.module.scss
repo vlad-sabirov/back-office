@@ -1,0 +1,147 @@
+.stepOne {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'firstName firstName'
+		'lastName lastName'
+		'surname birthday'
+		'sex sex';
+}
+
+.firstName {
+	grid-area: firstName;
+}
+
+.lastName {
+	grid-area: lastName;
+}
+
+.surname {
+	grid-area: surname;
+}
+
+.birthday {
+	grid-area: birthday;
+}
+
+.sex {
+	grid-area: sex;
+	& svg {
+		width: 24px;
+	}
+}
+
+.stepTwo {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'login login'
+		'password passwordConfirm'
+		'avatarAndColor avatarAndColor'
+		'passwordTelegramId fixLate';
+}
+
+.username {
+	grid-area: login;
+}
+
+.password {
+	grid-area: password;
+}
+
+.passwordConfirm {
+	grid-area: passwordConfirm;
+}
+
+.avatarAndColor {
+	grid-area: avatarAndColor;
+	@apply grid items-center gap-20;
+	grid-template-columns: 100px 1fr;
+	height: 125px;
+}
+
+.colors {
+	align-self: flex-start;
+	& [class*='mantine-ColorPicker-swatches'] {
+		@apply grid w-full gap-8;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+	& [class*='mantine-ColorPicker-swatch'] {
+		@apply m-0 p-0;
+		width: 23px;
+		height: 23px;
+		border: 0 !important;
+	}
+}
+
+.passwordTelegramId {
+	grid-area: passwordTelegramId;
+}
+
+.fixLate {
+	grid-area: fixLate;
+}
+
+.stepThree {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'departmentId territoryId'
+		'workPosition workPosition'
+		'parentId parentId'
+		'roles roles';
+}
+
+.departmentId {
+	grid-area: departmentId;
+}
+
+.territoryId {
+	grid-area: territoryId;
+}
+
+.workPosition {
+	grid-area: workPosition;
+}
+
+.parentId {
+	grid-area: parentId;
+}
+
+.roles {
+	grid-area: roles;
+}
+
+.stepFour {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-areas:
+		'phoneVoip phoneVoip phoneMobile phoneMobile phoneMobile phoneMobile'
+		'email email email telegram telegram telegram'
+		'facebook facebook facebook facebook facebook facebook'
+		'instagram instagram instagram instagram instagram instagram';
+}
+
+.phoneVoip {
+	grid-area: phoneVoip;
+}
+
+.phoneMobile {
+	grid-area: phoneMobile;
+}
+
+.email {
+	grid-area: email;
+}
+
+.telegram {
+	grid-area: telegram;
+}
+
+.facebook {
+	grid-area: facebook;
+}
+
+.instagram {
+	grid-area: instagram;
+}

@@ -1,0 +1,17 @@
+.once {
+	@apply text-neutral-300;
+	& span { @apply text-neutral-mainDarken cursor-pointer; }
+}
+
+.many {
+	@apply mb-8;
+}
+
+.manyTitle {
+	@apply text-neutral-300 m-0;
+}
+
+.manyItem {
+	@apply text-neutral-300 m-0 ml-8;
+	& span { @apply text-neutral-mainDarken cursor-pointer; }
+}

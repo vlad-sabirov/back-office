@@ -1,0 +1,9 @@
+.heading {
+	@apply text-neutral-800 m-0;
+	& span { @apply text-error-main; }
+}
+
+.add {
+	@apply text-primary-mainLighten underline transition-all cursor-pointer m-0;
+	&:hover { @apply text-primary-mainDarken; }
+}

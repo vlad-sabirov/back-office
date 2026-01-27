@@ -1,0 +1,41 @@
+.root {
+	@apply relative grid items-center;
+}
+
+.progress {
+	@apply m-0 bg-neutral-50;
+	grid-area: progress;
+}
+
+.label {
+	@apply m-0 text-center;
+	grid-area: label;
+}
+
+.labelDirection {
+	&__top {
+		@apply grid-flow-col gap-4;
+		grid-template-areas: 'label' 'progress';
+	}
+
+	&__bottom {
+		@apply grid-flow-col gap-4;
+		grid-template-areas: 'progress' 'label';
+	}
+
+	&__left {
+		@apply grid-flow-col gap-8;
+		grid-template-columns: auto 1fr;
+		grid-template-areas: 'label progress';
+	}
+
+	&__right {
+		@apply grid-flow-col gap-8;
+		grid-template-columns: 1fr auto;
+		grid-template-areas: 'progress label';
+	}
+}
+
+.disabled {
+	@apply pointer-events-none opacity-30;
+}

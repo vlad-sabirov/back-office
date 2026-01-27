@@ -1,0 +1,62 @@
+.root {
+	@apply grid grid-flow-col gap-20 mb-20 items-start;
+	grid-template-columns: 1fr 480px;
+	& > div {
+		@apply w-full relative;
+	}
+}
+
+.today {
+	&__title {
+		@apply mb-12;
+	}
+
+	&__realization {
+		@apply text-neutral-300 mb-12;
+		& span {
+			@apply text-primary-main font-weight-500;
+			font-size: 24px;
+		}
+	}
+
+	&__info {
+		@apply mb-3;
+	}
+}
+
+.tooltip {
+	@apply bg-neutral-white px-20 py-12 shadow-2xl rounded-medium;
+
+	& p {
+		@apply m-0;
+	}
+
+	&__date {
+		@apply capitalize text-neutral-black;
+	}
+
+	&__plan span { @apply text-warning-600; }
+	&__realization span { @apply text-success-600; }
+	&__percent span { @apply text-primary-main; }
+}
+
+.history, .todayMy, .todayTeam {
+	@apply m-0;
+}
+
+.todayMy > div, .todayTeam > div {
+	@apply relative;
+}
+
+.rightSection, .leftSection {
+	@apply grid gap-20 content-start;
+}
+
+.percent {
+	@apply absolute w-full text-center bottom-0 mb-0;
+}
+
+.percentChart {
+	@apply absolute overflow-hidden bottom-24 right-0;
+	height: 120px;
+}

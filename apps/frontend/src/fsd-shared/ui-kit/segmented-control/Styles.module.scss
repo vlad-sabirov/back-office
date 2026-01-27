@@ -1,0 +1,38 @@
+@import './../../../../styles/vars.scss';
+@import './styles/Sizes.part.scss';
+@import './styles/Colors.part.scss';
+@import './styles/States.part.scss';
+
+.wrapper {
+	width: 100%;
+}
+
+.label {
+	margin-left: 10px;
+}
+
+.required {
+	color: #f03e3e;
+}
+
+.root {
+	background-color: $color-neutral-50;
+	width: 100%;
+
+	& [class*='-control'] {
+		border-color: darken($color-neutral-50, 5);
+	}
+
+	& [class*='-active'] {
+		box-shadow: none;
+	}
+
+	& [class*='-label'] {
+		display: grid;
+		grid-auto-flow: column;
+		gap: 10px;
+		align-items: center;
+		font-weight: 500;
+		color: $color-neutral-main;
+	}
+}

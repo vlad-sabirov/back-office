@@ -1,0 +1,55 @@
+.wrapper {
+	@apply grid gap-20;
+}
+
+.root {
+	@apply grid grid-flow-col justify-start gap-12 rounded-large bg-neutral-50 p-20;
+}
+
+.department {
+	@apply m-0 ml-16 grid border-l
+  border-solid border-neutral-50 
+  pr-0 pt-12 pb-20 pl-8;
+	grid-template-columns: auto 1fr auto auto;
+	grid-template-areas:
+		'dragHandle departmentName staffCount menu'
+		'staffPeople staffPeople staffPeople staffPeople';
+
+	&:hover .dragHandle svg,
+	&:hover .departmentName,
+	&:hover .staffCount,
+	&:hover .menu svg {
+		@apply text-neutral-black;
+	}
+}
+
+.dragHandle {
+	@apply py-0 px-4 text-neutral-200;
+	grid-area: dragHandle;
+
+	& svg {
+		height: 16px;
+	}
+}
+
+.departmentName {
+	grid-area: departmentName;
+}
+
+.staffCount {
+	grid-area: staffCount;
+}
+
+.menu {
+	@apply cursor-pointer text-neutral-200;
+	grid-area: menu;
+
+	& svg {
+		height: 16px;
+	}
+}
+
+.staffPeople {
+	@apply ml-10 flex flex-wrap gap-10;
+	grid-area: staffPeople;
+}

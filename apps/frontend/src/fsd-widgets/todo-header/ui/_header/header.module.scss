@@ -1,0 +1,14 @@
+.icon {
+	@apply text-neutral-300 cursor-pointer;
+}
+
+.create {
+	@apply absolute right-20 top-28 text-primary-mainLighten cursor-pointer transition-all;
+	&:hover {
+		@apply text-primary-mainDarken;
+	}
+}
+
+.disabled {
+	@apply opacity-0;
+}

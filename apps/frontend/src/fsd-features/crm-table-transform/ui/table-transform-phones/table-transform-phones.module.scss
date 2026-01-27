@@ -1,0 +1,20 @@
+.once {
+	@apply m-0 select-none text-neutral-mainDarken cursor-pointer;
+}
+
+.many {
+	@apply m-0 text-neutral-400 italic select-none cursor-pointer;
+}
+
+.manyItem {
+	@apply text-neutral-400 m-0 cursor-pointer transition-all;
+
+	& span {
+		@apply m-0 text-neutral-main select-none transform-none transition-all;
+	}
+
+	&:hover, {
+		@apply text-neutral-700;
+		& span { @apply text-neutral-black; }
+	}
+}

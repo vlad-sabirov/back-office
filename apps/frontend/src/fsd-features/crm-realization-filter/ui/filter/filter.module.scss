@@ -1,0 +1,21 @@
+.root {
+	width: 240px;
+}
+
+.root {
+	&__month { @apply mt-16; }
+	&__year { @apply mt-20; }
+}
+
+.buttons {
+	@apply grid grid-flow-col gap-20 mt-12;
+}
+
+.arrow {
+		&__left { @apply rotate-90; }
+		&__right { @apply -rotate-90; }
+}
+
+.year {
+	@apply m-0 text-center;
+}

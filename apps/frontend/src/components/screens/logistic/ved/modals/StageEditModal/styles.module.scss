@@ -1,0 +1,42 @@
+.wrapper {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'name description'
+		'alias description'
+		'actionExpected description'
+		'warningTime errorTime';
+}
+
+.name {
+	grid-area: name;
+}
+
+.description {
+	@apply relative;
+	grid-area: description;
+
+	& [class*='mantine-Textarea-wrapper'],
+	& textarea {
+		height: 210px !important;
+	}
+}
+
+.alias {
+	grid-area: alias;
+}
+
+.actionExpected {
+	grid-area: actionExpected;
+}
+
+.warningTime {
+	@apply grid grid-flow-col gap-8;
+	grid-template-columns: 3fr 2fr;
+	grid-area: warningTime;
+}
+
+.errorTime {
+	@apply grid grid-flow-col gap-8;
+	grid-template-columns: 3fr 2fr;
+}

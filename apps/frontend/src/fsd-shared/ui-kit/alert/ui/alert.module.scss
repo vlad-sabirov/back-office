@@ -1,0 +1,225 @@
+.root {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-areas: 'icon title' 'icon body';
+}
+
+.icon {
+	grid-area: icon;
+}
+
+.title {
+	grid-area: title;
+}
+
+.body {
+	grid-area: body;
+}
+
+.sizeSmall {
+	@apply rounded-large;
+	padding: 20px;
+
+	& .icon svg {
+		width: 16px;
+		padding: 4px 8px 0 0;
+		box-sizing: content-box;
+	}
+
+	& .title {
+		font-size: 1rem;
+		font-weight: 500;
+		margin: 0;
+	}
+
+	& .body {
+		font-size: 0.875rem;
+		line-height: 1rem;
+		margin: 0;
+	}
+}
+
+.sizeMedium {
+	@apply rounded-large;
+	padding: 20px;
+
+	& .icon svg {
+		width: 20px;
+		padding: 4px 12px 0 0;
+		box-sizing: content-box;
+	}
+
+	& .title {
+		font-size: 1.125rem;
+		line-height: 1.375rem;
+		font-weight: 500;
+		margin: 0 0 4px 0;
+	}
+
+	& .body {
+		font-size: 1rem;
+		margin: 0;
+	}
+}
+
+.sizeLarge {
+	@apply rounded-large;
+	padding: 20px;
+
+	& .icon svg {
+		width: 28px;
+		padding: 4px 12px 0 0;
+		box-sizing: content-box;
+	}
+
+	& .title {
+		font-size: 1.25rem;
+		line-height: 1.5rem;
+		font-weight: 500;
+		margin-bottom: 6px;
+	}
+
+	& .body {
+		font-size: 1.125rem;
+		line-height: 1.375rem;
+		margin: 0;
+	}
+}
+
+.colorNeutral {
+	&__light {
+		@apply bg-neutral-white;
+		& .icon svg { @apply text-neutral-white; }
+		& .title { @apply text-neutral-black; }
+		& .body { @apply text-neutral-main; }
+	}
+
+	&__filled {
+		@apply bg-neutral-bg;
+		& .icon svg { @apply text-neutral-main; }
+		& .title { @apply text-neutral-black; }
+		& .body { @apply text-neutral-main; }
+	}
+
+	&__outline {
+		@apply bg-neutral-white outline outline-2 outline-neutral-50;
+		& .icon svg { @apply text-neutral-main; }
+		& .title { @apply text-neutral-black; }
+		& .body { @apply text-neutral-main; }
+	}
+}
+
+.colorPrimary {
+	&__light {
+		@apply bg-neutral-white;
+		& .icon svg { @apply text-primary-main; }
+		& .title { @apply text-primary-main; }
+		& .body { @apply text-neutral-main; }
+	}
+
+	&__filled {
+		@apply bg-primary-main;
+		& .icon svg { @apply text-primary-50; }
+		& .title { @apply text-primary-50; }
+		& .body { @apply text-primary-100; }
+	}
+
+	&__outline {
+		@apply bg-neutral-white outline outline-2 outline-primary-100;
+		& .icon svg { @apply text-primary-main; }
+		& .title { @apply text-primary-main; }
+		& .body { @apply text-neutral-main; }
+	}
+}
+
+.colorSuccess {
+	&__light {
+		@apply bg-neutral-white;
+		& .icon svg { @apply text-success-500; }
+		& .title { @apply text-success-500; }
+		& .body { @apply text-neutral-main; }
+	}
+
+	&__filled {
+		@apply bg-success-main;
+		& .icon svg { @apply text-success-700; }
+		& .title { @apply text-success-700; }
+		& .body { @apply text-success-600; }
+	}
+
+	&__outline {
+		@apply bg-neutral-white outline outline-2 outline-success-100;
+		& .icon svg { @apply text-success-mainDarken; }
+		& .title { @apply text-success-mainDarken; }
+		& .body { @apply text-neutral-main; }
+	}
+}
+
+.colorWarning {
+	&__light {
+		@apply bg-neutral-white;
+		& .icon svg { @apply text-warning-500; }
+		& .title { @apply text-warning-500; }
+		& .body { @apply text-neutral-main; }
+	}
+
+	&__filled {
+		@apply bg-warning-main;
+		& .icon svg { @apply text-warning-700; }
+		& .title { @apply text-warning-700; }
+		& .body { @apply text-warning-600; }
+	}
+
+	&__outline {
+		@apply bg-neutral-white outline outline-2 outline-warning-100;
+		& .icon svg { @apply text-warning-mainDarken; }
+		& .title { @apply text-warning-mainDarken; }
+		& .body { @apply text-neutral-main; }
+	}
+}
+
+.colorError {
+	&__light {
+		@apply bg-neutral-white;
+		& .icon svg { @apply text-error-main; }
+		& .title { @apply text-error-main; }
+		& .body { @apply text-neutral-main; }
+	}
+
+	&__filled {
+		@apply bg-error-main;
+		& .icon svg { @apply text-neutral-white; }
+		& .title { @apply text-neutral-white; }
+		& .body { @apply text-error-50; }
+	}
+
+	&__outline {
+		@apply bg-neutral-white outline outline-2 outline-error-100;
+		& .icon svg { @apply text-error-main; }
+		& .title { @apply text-error-main; }
+		& .body { @apply text-neutral-main; }
+	}
+}
+
+.colorInfo {
+	&__light {
+		@apply bg-neutral-white;
+		& .icon svg { @apply text-error-main; }
+		& .title { @apply text-error-main; }
+		& .body { @apply text-neutral-main; }
+	}
+
+	&__filled {
+		@apply bg-error-main;
+		& .icon svg { @apply text-neutral-white; }
+		& .title { @apply text-neutral-white; }
+		& .body { @apply text-error-50; }
+	}
+
+	&__outline {
+		@apply bg-neutral-white outline outline-2 outline-info-100;
+		& .icon svg { @apply text-info-main; }
+		& .title { @apply text-info-main; }
+		& .body { @apply text-info-200; }
+	}
+}

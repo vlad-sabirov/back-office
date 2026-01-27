@@ -1,0 +1,59 @@
+.root {
+	@apply p-20 items-center rounded-medium bg-neutral-bg;
+}
+
+.p2p, .conference { @apply mt-20; }
+
+.dialpad {
+	@apply grid grid-flow-col gap-8;
+	grid-template-columns: 1fr auto;
+}
+
+.add, .call {
+	@apply p-0 m-0 w-40;
+}
+
+.back {
+	@apply absolute top-8 left-8 p-0;
+	width: 30px;
+}
+
+.conferenceUsersTitle {
+	@apply grid mt-20 px-8 pb-4;
+	grid-template-columns: 1fr auto;
+
+	& > p { @apply font-weight-500 m-0; }
+}
+
+.conferenceUsers {
+	@apply grid py-4 px-8 pr-12 bg-neutral-bg items-center rounded-small;
+	grid-template-columns: 1fr auto;
+
+	&:hover {
+		@apply bg-neutral-white;
+	}
+
+	& > p {
+		@apply m-0;
+	}
+
+	& .icon > svg { @apply ml-4 -mt-2 w-12 inline-block text-primary-main; }
+}
+
+.conferenceUsersRemove {
+	@apply w-10 cursor-pointer;
+
+	&:hover {
+		@apply text-primary-main;
+	}
+}
+
+.conferenceCreate {
+	@apply w-full grid mt-12 justify-items-center;
+}
+
+.type {
+	& [class*='root'] {
+		@apply bg-neutral-white;
+	}
+}

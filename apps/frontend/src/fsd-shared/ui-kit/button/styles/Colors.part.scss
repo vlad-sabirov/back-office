@@ -1,0 +1,350 @@
+.color__transparent {
+	@apply bg-transparent text-neutral-main transition-all;
+
+	& .loader { @apply fill-neutral-200 stroke-neutral-200; }
+
+	&:hover { @apply bg-neutral-50 text-neutral-black; }
+	&:focus { @apply bg-neutral-100 text-neutral-black outline-neutral-100; }
+}
+
+.color__neutral {
+	&__hard {
+		background-color: $color-neutral-main !important;
+		color: $color-neutral-white !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			fill: $color-neutral-white !important;
+			stroke: $color-neutral-white !important;
+		}
+
+		&:hover {
+			background-color: $color-neutral-main-darken !important;
+			color: $color-neutral-white !important;
+		}
+
+		&:focus {
+			background-color: $color-neutral-main-darken !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-neutral-100 !important;
+		}
+	}
+
+	&__easy {
+		background-color: $color-neutral-50 !important;
+		color: $color-neutral-main !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			transition: $transition-medium !important;
+			fill: $color-neutral-main !important;
+			stroke: $color-neutral-main !important;
+		}
+
+		&:hover {
+			background-color: $color-neutral-100 !important;
+			color: $color-neutral-main-darken !important;
+
+			& .loader {
+				fill: $color-neutral-main-darken !important;
+				stroke: $color-neutral-main-darken !important;
+			}
+		}
+
+		&:focus {
+			background-color: $color-neutral-300 !important;
+			outline-color: $color-neutral-50 !important;
+			color: $color-neutral-white !important;
+
+			& .loader {
+				fill: $color-neutral-white !important;
+				stroke: $color-neutral-white !important;
+			}
+		}
+	}
+}
+
+.color__primary {
+	&__hard {
+		background-color: $color-primary-main !important;
+		color: $color-neutral-white !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			fill: $color-neutral-white !important;
+			stroke: $color-neutral-white !important;
+		}
+
+		&:hover {
+			background-color: $color-primary-main-darken !important;
+			color: $color-neutral-white !important;
+		}
+
+		&:focus {
+			background-color: $color-primary-main-darken !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-primary-100 !important;
+		}
+	}
+
+	&__easy {
+		background-color: $color-primary-50 !important;
+		color: $color-primary-main !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			transition: $transition-medium !important;
+			fill: $color-primary-main !important;
+			stroke: $color-primary-main !important;
+		}
+
+		&:hover {
+			background-color: $color-primary-100 !important;
+			color: $color-primary-main-darken !important;
+
+			& .loader {
+				fill: $color-primary-main-darken !important;
+				stroke: $color-primary-main-darken !important;
+			}
+		}
+
+		&:focus {
+			background-color: $color-primary-200 !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-primary-50 !important;
+
+			& .loader {
+				fill: $color-neutral-white !important;
+				stroke: $color-neutral-white !important;
+			}
+		}
+	}
+}
+
+.color__info {
+	&__hard {
+		background-color: $color-info-main !important;
+		color: $color-neutral-white !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			fill: $color-neutral-white !important;
+			stroke: $color-neutral-white !important;
+		}
+
+		&:hover {
+			background-color: $color-info-main-darken !important;
+			color: $color-neutral-white !important;
+		}
+
+		&:focus {
+			background-color: $color-info-main-darken !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-info-100 !important;
+		}
+	}
+
+	&__easy {
+		background-color: $color-info-50 !important;
+		color: $color-info-main !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			transition: $transition-medium !important;
+			fill: $color-info-main !important;
+			stroke: $color-info-main !important;
+		}
+
+		&:hover {
+			background-color: $color-info-100 !important;
+			color: $color-info-main-darken !important;
+
+			& .loader {
+				fill: $color-info-main-darken !important;
+				stroke: $color-info-main-darken !important;
+			}
+		}
+
+		&:focus {
+			background-color: $color-info-200 !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-info-50 !important;
+
+			& .loader {
+				fill: $color-neutral-white !important;
+				stroke: $color-neutral-white !important;
+			}
+		}
+	}
+}
+
+.color__success {
+	&__hard {
+		background-color: $color-success-main-darken !important;
+		color: $color-neutral-white !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			fill: $color-neutral-white !important;
+			stroke: $color-neutral-white !important;
+		}
+
+		&:hover {
+			background-color: $color-success-main-darken !important;
+			color: $color-neutral-white !important;
+		}
+
+		&:focus {
+			background-color: $color-success-main-darken !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-success-100 !important;
+		}
+	}
+
+	&__easy {
+		background-color: $color-success-50 !important;
+		color: $color-success-main-darken !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			transition: $transition-medium !important;
+			fill: $color-success-main-darken !important;
+			stroke: $color-success-main-darken !important;
+		}
+
+		&:hover {
+			background-color: $color-success-100 !important;
+			color: $color-success-main-darken !important;
+
+			& .loader {
+				fill: $color-success-main-darken !important;
+				stroke: $color-success-main-darken !important;
+			}
+		}
+
+		&:focus {
+			background-color: $color-success-300 !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-success-50 !important;
+
+			& .loader {
+				fill: $color-neutral-white !important;
+				stroke: $color-neutral-white !important;
+			}
+		}
+	}
+}
+
+.color__warning {
+	&__hard {
+		background-color: $color-warning-main !important;
+		color: $color-warning-700 !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			transition: $transition-medium !important;
+			fill: $color-warning-700 !important;
+			stroke: $color-warning-700 !important;
+		}
+
+		&:hover {
+			background-color: $color-warning-main-darken !important;
+			color: $color-warning-800 !important;
+
+			& .loader {
+				fill: $color-warning-800 !important;
+				stroke: $color-warning-800 !important;
+			}
+		}
+
+		&:focus {
+			background-color: $color-warning-main-darken !important;
+			color: $color-warning-800 !important;
+			outline-color: $color-warning-100 !important;
+
+			& .loader {
+				fill: $color-warning-800 !important;
+				stroke: $color-warning-800 !important;
+			}
+		}
+	}
+
+	&__easy {
+		background-color: $color-warning-50 !important;
+		color: $color-warning-500 !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			transition: $transition-medium !important;
+			fill: $color-warning-500 !important;
+			stroke: $color-warning-500 !important;
+		}
+
+		&:hover {
+			background-color: $color-warning-100 !important;
+			color: $color-warning-500 !important;
+
+			& .loader {
+				fill: $color-warning-500 !important;
+				stroke: $color-warning-500 !important;
+			}
+		}
+
+		&:focus {
+			background-color: $color-warning-300 !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-warning-50 !important;
+
+			& .loader {
+				fill: $color-neutral-white !important;
+				stroke: $color-neutral-white !important;
+			}
+		}
+	}
+}
+
+.color__error {
+	&__hard {
+		background-color: $color-error-main !important;
+		color: $color-neutral-white !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			fill: $color-neutral-white !important;
+			stroke: $color-neutral-white !important;
+		}
+
+		&:hover {
+			background-color: $color-error-main-darken !important;
+			color: $color-neutral-white !important;
+		}
+
+		&:focus {
+			background-color: $color-error-main-darken !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-error-100 !important;
+		}
+	}
+
+	&__easy {
+		background-color: $color-error-50 !important;
+		color: $color-error-main !important;
+		transition: $transition-medium !important;
+
+		& .loader {
+			fill: $color-error-main !important;
+			stroke: $color-error-main !important;
+		}
+
+		&:hover {
+			background-color: $color-error-100 !important;
+			color: $color-error-main-darken !important;
+		}
+
+		&:focus {
+			background-color: $color-error-200 !important;
+			color: $color-neutral-white !important;
+			outline-color: $color-error-50 !important;
+		}
+	}
+}

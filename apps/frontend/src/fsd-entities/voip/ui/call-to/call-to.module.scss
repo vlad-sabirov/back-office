@@ -1,0 +1,20 @@
+.title {
+	@apply font-weight-500;
+}
+
+.close {
+	@apply w-16 cursor-pointer absolute right-20 top-20 text-neutral-400 transition-all p-2;
+	&:hover { @apply text-neutral-black; }
+}
+
+.name {
+	@apply m-0 text-neutral-400;
+}
+
+.phone {
+	@apply font-weight-500 text-neutral-800;
+}
+
+.buttons {
+	@apply grid grid-flow-col gap-12 mt-16;
+}

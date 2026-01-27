@@ -1,0 +1,35 @@
+### [POST] /analytics
+POST http://localhost/api/voip/analytics
+
+{
+   "date_end": "2023-11-07T00:00:00Z",
+   "date_start": "2023-11-06T00:00:00Z",
+   "input": true,
+   "output": true,
+   "phones": ["129", "909125829"]
+}
+
+
+
+
+
+### [POST] /analytics/missing
+POST http://localhost/api/voip/analytics/missing
+
+{
+   "date_start": "2023-11-08T00:00:00Z",
+   "date_end": "2023-11-09T00:00:00Z",
+   "skip_checked": false,
+   "phones": ["101"]
+}
+
+
+
+
+
+### [PATCH] /analytics/missing
+PATCH http://localhost/api/voip/analytics/missing/check
+
+{
+   "uuid": "1699245805.52199"
+}

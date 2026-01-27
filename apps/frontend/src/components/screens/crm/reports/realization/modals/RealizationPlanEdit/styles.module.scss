@@ -1,0 +1,9 @@
+.wrapper {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr;
+}
+
+.item {
+	@apply grid grid-flow-col items-end gap-20;
+	grid-template-columns: 1fr auto;
+}

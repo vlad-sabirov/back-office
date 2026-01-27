@@ -1,0 +1,42 @@
+.root {
+	@apply relative;
+}
+
+.title {
+	@apply mb-4;
+}
+
+.realization {
+	@apply mb-4 text-primary-main font-weight-500;
+	& span {
+		@apply text-neutral-400 font-weight-400;
+		font-size: 16px;
+	}
+}
+
+.item {
+	@apply text-neutral-400 mb-4;
+	& span {
+		@apply text-neutral-black
+	}
+}
+
+.percent {
+	@apply absolute w-full text-center bottom-0 mb-0;
+}
+
+.percentChart {
+	@apply absolute overflow-hidden bottom-0 -right-20;
+	height: 120px;
+}
+
+.hoverCard {
+	@apply m-0 text-neutral-400;
+	& span { @apply text-neutral-black ml-4; }
+}
+
+.sup {
+	@apply ml-2 font-weight-500;
+	&__positive { @apply text-success-mainDarken; }
+	&__negative { @apply text-error-mainLighten; }
+}

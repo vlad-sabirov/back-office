@@ -1,0 +1,23 @@
+.extraSmall,
+.extraSmall [class*='mantine-Progress-bar'] {
+	@apply rounded-small;
+	height: 6px;
+}
+
+.small,
+.small [class*='mantine-Progress-bar'] {
+	@apply rounded-small;
+	height: 12px;
+}
+
+.medium,
+.medium [class*='mantine-Progress-bar'] {
+	@apply rounded-small;
+	height: 20px;
+}
+
+.large,
+.large [class*='mantine-Progress-bar'] {
+	@apply rounded-medium;
+	height: 32px;
+}

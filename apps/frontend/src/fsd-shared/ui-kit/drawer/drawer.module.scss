@@ -1,0 +1,27 @@
+.wrapper {
+  & [class*='mantine-Drawer-drawer'] {
+    @apply grid p-40;
+    grid-template-rows: auto 1fr;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  & [class*='mantine-Drawer-title'] {
+    font-size: 22px;
+  }
+}
+
+.title {
+	@apply grid grid-flow-col gap-8 items-center;
+}
+
+.body {
+	&__disabled {
+		@apply pointer-events-none select-none opacity-40;
+	}
+}
+
+.shared {
+	@apply text-primary-main cursor-pointer;
+}

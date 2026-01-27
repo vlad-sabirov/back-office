@@ -1,0 +1,32 @@
+.description {
+	@apply italic mb-20 text-center text-neutral-300 px-20;
+}
+
+.emptyResult {
+	@apply text-info-main mb-20 font-weight-500 italic text-center;
+}
+
+.form {
+	@apply grid gap-12;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas: 
+		"name name"
+		"phone inn"
+		"buttons buttons";
+}
+
+.name {
+	grid-area: name;
+}
+
+.phone {
+	grid-area: phone;
+}
+
+.inn {
+	grid-area: inn;
+}
+
+.buttons {
+	grid-area: buttons;
+}

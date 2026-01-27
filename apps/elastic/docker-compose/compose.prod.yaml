@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+   elastic:
+      build:
+         context: ../
+         dockerfile: ./docker/prod.dockerfile
+      restart: always
+      environment:
+         - discovery.type=single-node
+      env_file:
+         - ../../../env/.env.local
+         - ../../../env/.env.prod

@@ -1,0 +1,26 @@
+.sizeSmall {
+	& input {
+		height: 30px;
+		border-radius: $border-radius-medium;
+		font-size: 1rem;
+		color: $color-neutral-main;
+	}
+}
+
+.sizeMedium {
+	& input {
+		height: 40px;
+		border-radius: $border-radius-medium;
+		font-size: 1.25rem;
+		color: $color-neutral-main;
+	}
+}
+
+.sizeLarge {
+	& input {
+		height: 50px;
+		border-radius: $border-radius-medium;
+		font-size: 1.5rem;
+		color: $color-neutral-main;
+	}
+}

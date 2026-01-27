@@ -1,0 +1,54 @@
+.sizeExtraSmall {
+	min-width: 20px;
+	min-height: 20px;
+	width: 20px;
+	height: 20px;
+
+	& > [class*='mantine-Avatar-placeholder'] {
+		font-size: 0.5rem;
+	}
+}
+
+.sizeSmall {
+	min-width: 30px;
+	min-height: 30px;
+	width: 30px;
+	height: 30px;
+
+	& > [class*='mantine-Avatar-placeholder'] {
+		font-size: 0.75rem;
+	}
+}
+
+.sizeMedium {
+	min-width: 40px;
+	min-height: 40px;
+	width: 40px;
+	height: 40px;
+
+	& > [class*='mantine-Avatar-placeholder'] {
+		font-size: 1rem;
+	}
+}
+
+.sizeLarge {
+	min-width: 50px;
+	min-height: 50px;
+	width: 50px;
+	height: 50px;
+
+	& > [class*='mantine-Avatar-placeholder'] {
+		font-size: 1.25rem;
+	}
+}
+
+.sizeExtraLarge {
+	min-width: 150px;
+	min-height: 150px;
+	width: 150px;
+	height: 150px;
+
+	& > [class*='mantine-Avatar-placeholder'] {
+		font-size: 3rem;
+	}
+}

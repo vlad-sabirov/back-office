@@ -1,0 +1,55 @@
+.wrapper {
+	@apply grid items-start gap-20;
+	grid-template-columns: 1fr 1fr;
+}
+
+.information__actual {
+	& p {
+		@apply m-0;
+
+		& span {
+			@apply font-weight-500 text-neutral-black;
+		}
+	}
+}
+
+.configuration {
+	@apply grid gap-y-12 gap-x-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'realization realization'
+		'customerShipment deep'
+		'check check';
+}
+
+.realization {
+	grid-area: realization;
+
+	&__calculate {
+		@apply m-0 font-weight-500 text-primary-main;
+	}
+
+	&__label {
+		@apply m-0;
+	}
+
+	&__green {
+		@apply ml-4 text-success-mainDarken;
+	}
+
+	&__red {
+		@apply ml-4 text-error-main;
+	}
+}
+
+.customerShipment {
+	grid-area: customerShipment;
+}
+
+.deep {
+	grid-area: deep;
+}
+
+.check {
+	grid-area: check;
+}

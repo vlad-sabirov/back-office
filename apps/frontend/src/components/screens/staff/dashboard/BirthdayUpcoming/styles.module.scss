@@ -1,0 +1,49 @@
+.root {
+	@apply m-0 grid;
+
+	& > div {
+		@apply relative m-0 grid items-center;
+		grid-template-rows: auto 1fr;
+		min-height: 160px;
+		max-height: 160px;
+	}
+}
+
+.staff {
+	@apply grid h-full gap-8;
+	grid-template-columns: 1fr 1fr;
+
+	&__long {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+
+	&__item {
+		@apply grid cursor-pointer items-center gap-x-8;
+		grid-template-columns: auto 1fr;
+		grid-template-areas:
+			'avatar name'
+			'avatar birthday';
+	}
+
+	&__avatar {
+		grid-area: avatar;
+	}
+
+	&__name {
+		@apply font-weight-500;
+		grid-area: name;
+	}
+
+	&__birthday {
+		@apply italic text-neutral-400;
+		grid-area: birthday;
+	}
+
+	& p {
+		@apply m-0;
+	}
+}
+
+.skeleton {
+	@apply grid grid-flow-col gap-20;
+}

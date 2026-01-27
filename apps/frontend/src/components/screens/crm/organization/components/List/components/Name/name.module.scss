@@ -1,0 +1,12 @@
+.wrapper {
+	@apply grid items-center gap-4;
+	grid-template-columns: auto 1fr;
+}
+
+.text {
+	@apply m-0 pr-20;
+	width: 100%;
+	white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}

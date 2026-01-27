@@ -1,0 +1,4 @@
+port: "3000"
+basic-auth:
+   user: voip
+   pass: 5qClHKyR0DijZQ7Eecxn

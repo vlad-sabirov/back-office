@@ -1,0 +1,21 @@
+.wrapper {
+  @apply grid gap-20;
+  width: 280px;
+}
+
+.filterDate {
+  @apply grid grid-flow-col items-end;
+  grid-template-columns: auto auto 1fr auto;
+
+  &__prev {
+    @apply text-neutral-400 w-20 px-2 mb-12 cursor-pointer rotate-90;
+  }
+
+  &__next {
+    @apply text-neutral-400 w-20 px-2 mb-12 cursor-pointer -rotate-90;
+  }
+}
+
+.button {
+  @apply grid grid-flow-col justify-end pt-20;
+}

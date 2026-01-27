@@ -1,0 +1,1 @@
+export { useStoreConfigure } from './useStoreConfigure'

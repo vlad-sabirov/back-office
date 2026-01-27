@@ -1,0 +1,32 @@
+.wrapper {
+	@apply grid gap-20;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		'color color'
+		'lastName firstName'
+		'surName birthday';
+}
+
+.color {
+	grid-area: color;
+}
+
+.lastName {
+	grid-area: lastName;
+}
+
+.firstName {
+	grid-area: firstName;
+}
+
+.surName {
+	grid-area: surName;
+}
+
+.birthday {
+	grid-area: birthday;
+}
+
+.photo {
+	@apply absolute top-100 -right-200;
+}

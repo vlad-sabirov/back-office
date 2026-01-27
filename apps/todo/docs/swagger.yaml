@@ -1,0 +1,311 @@
+basePath: /api/todo
+definitions:
+  api.CheckTaskRequestV1:
+    properties:
+      is_checked:
+        type: boolean
+    type: object
+  api.CheckTaskResponseV1:
+    properties:
+      data:
+        $ref: '#/definitions/entities.RepositoryTaskEntity'
+      error:
+        type: string
+    type: object
+  api.CreateTaskRequestV1:
+    properties:
+      assignee_id:
+        type: integer
+      contact_id:
+        type: integer
+      description:
+        type: string
+      due_date:
+        type: string
+      name:
+        type: string
+      organization_id:
+        type: integer
+      send_notification_to_telegram:
+        type: boolean
+      user_id:
+        type: integer
+    type: object
+  api.CreateTaskResponseV1:
+    properties:
+      data:
+        $ref: '#/definitions/entities.RepositoryTaskEntity'
+      error:
+        type: string
+    type: object
+  api.FindTaskRequestV1:
+    properties:
+      fields:
+        $ref: '#/definitions/entities.RepositoryTaskEntity'
+      order:
+        items:
+          $ref: '#/definitions/api.order'
+        type: array
+    type: object
+  api.FindTaskResponseV1:
+    properties:
+      data:
+        $ref: '#/definitions/entities.RepositoryTaskEntity'
+      error:
+        type: string
+    type: object
+  api.FindTasksRequestV1:
+    properties:
+      fields:
+        $ref: '#/definitions/entities.RepositoryTaskEntity'
+      limit:
+        type: integer
+      offset:
+        type: integer
+      order:
+        items:
+          $ref: '#/definitions/api.order'
+        type: array
+    type: object
+  api.FindTasksResponseV1:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.RepositoryTaskEntity'
+        type: array
+      error:
+        type: string
+      total:
+        type: integer
+    type: object
+  api.GetTasksByUserIDRequestV1:
+    properties:
+      is_done:
+        type: boolean
+      limit:
+        type: integer
+      offset:
+        type: integer
+      order:
+        items:
+          $ref: '#/definitions/api.order'
+        type: array
+      user_id:
+        type: integer
+    type: object
+  api.GetTasksResponseV1:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entities.RepositoryTaskEntity'
+        type: array
+      error:
+        type: string
+      total:
+        type: integer
+    type: object
+  api.order:
+    properties:
+      direction:
+        type: string
+      field:
+        type: string
+    type: object
+  entities.RepositoryTaskEntity:
+    properties:
+      assignee_id:
+        type: integer
+      contact_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      due_date:
+        type: string
+      id:
+        type: string
+      is_done:
+        type: boolean
+      name:
+        type: string
+      organization_id:
+        type: integer
+      send_notification_to_telegram:
+        type: boolean
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+host: localhost
+info:
+  contact:
+    email: d.basenko.it@gmail.com
+    name: Dmitriy Basenko
+    url: https://github.com/dsbasko
+  description: Планировщик задач.
+  termsOfService: http://swagger.io/terms/
+  title: Todo Microservice
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      consumes:
+      - text/plain
+      description: Простой пинг-понг для проверки доступности сервиса
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+      summary: Проверка доступности сервиса
+      tags:
+      - ping
+  /task:
+    post:
+      consumes:
+      - application/json
+      description: Принимает данные задачи и создает новую задачу
+      parameters:
+      - description: DTO для создания задачи
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateTaskRequestV1'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Успешное создание задачи
+          schema:
+            $ref: '#/definitions/api.CreateTaskResponseV1'
+        "400":
+          description: Какая-то ошибка
+          schema:
+            $ref: '#/definitions/api.CreateTaskResponseV1'
+      summary: Создание новой задачи
+      tags:
+      - tasks
+  /task/{task_id}/check:
+    patch:
+      consumes:
+      - application/json
+      description: Помечает задачу выполненной или невыполненной
+      parameters:
+      - description: DTO для пометки задачи
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/api.CheckTaskRequestV1'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная пометка задачи
+          schema:
+            $ref: '#/definitions/api.CheckTaskResponseV1'
+        "400":
+          description: Какая-то ошибка
+          schema:
+            $ref: '#/definitions/api.CheckTaskResponseV1'
+      summary: Пометка задачи как выполненной
+      tags:
+      - tasks
+  /task/find-task:
+    post:
+      consumes:
+      - application/json
+      description: Ищет задачу по переданным параметрам
+      parameters:
+      - description: DTO поиска задачи
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/api.FindTaskRequestV1'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Успешный поиск
+          schema:
+            $ref: '#/definitions/api.FindTaskResponseV1'
+        "400":
+          description: Какая-то ошибка
+          schema:
+            $ref: '#/definitions/api.FindTaskResponseV1'
+        "500":
+          description: Ошибка сервисного слоя
+          schema:
+            $ref: '#/definitions/api.FindTaskResponseV1'
+      summary: Поиск задачи
+      tags:
+      - tasks
+  /task/find-tasks:
+    post:
+      consumes:
+      - application/json
+      description: Ищет задачи по переданным параметрам
+      parameters:
+      - description: DTO поиска задачи
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/api.FindTasksRequestV1'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Успешный поиск
+          schema:
+            $ref: '#/definitions/api.FindTasksResponseV1'
+        "400":
+          description: Какая-то ошибка
+          schema:
+            $ref: '#/definitions/api.FindTasksResponseV1'
+        "500":
+          description: Ошибка сервисного слоя
+          schema:
+            $ref: '#/definitions/api.FindTasksResponseV1'
+      summary: Поиск задач
+      tags:
+      - tasks
+  /task/get-tasks-by-user-id:
+    post:
+      consumes:
+      - application/json
+      description: Ищет задачи по ID пользователя с возможностью фильтрации
+      parameters:
+      - description: DTO поиска задачи
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/api.GetTasksByUserIDRequestV1'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/api.GetTasksResponseV1'
+        "400":
+          description: Какая-то ошибка
+          schema:
+            $ref: '#/definitions/api.GetTasksResponseV1'
+        "500":
+          description: Ошибка сервисного слоя
+          schema:
+            $ref: '#/definitions/api.GetTasksResponseV1'
+      summary: Получить задачи по ID пользователя
+      tags:
+      - tasks
+swagger: "2.0"

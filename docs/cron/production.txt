@@ -1,0 +1,31 @@
+# -------
+# [минуты] [часы] [дни-месяца] [месяцы] [дни-недели] [команда]
+# -------
+
+# -------
+# Оповещения
+# -------
+# Дни рождения сегодня
+30 8 * * * /usr/bin/curl --silent http://localhost/api/notification/cron/birthday/findBirthdayToday &>/dev/null
+# Дни рождения в этом месяце
+45 8 1 * * /usr/bin/curl --silent http://localhost/api/notification/cron/birthday/findBirthdayThisMonth &>/dev/null
+# Не отмечались сегодня
+0 11 * * 1-5 /usr/bin/curl --silent http://localhost/api/notification/cron/lateness/didComeToday &>/dev/null
+# Рассылка тем кто забыл отметиться
+0 9 * * 1-5 /usr/bin/curl --silent http://localhost/api/notification/cron/lateness/forgotToCheckIn &>/dev/null
+# Отчет руководителю о посещаемости его команды
+30 9 * * 1-5 /usr/bin/curl --silent http://localhost/api/notification/cron/lateness/teamAttendanceReport &>/dev/null
+
+# -------
+# Системное
+# -------
+# Перезапуск VOIP сервера каждые 5 минут
+*/5 7-22 * * 1-6 docker container restart voip
+# Автоматические бекапы
+0 1 * * 1-6 sh /app/sh/backup_uploads/cron.sh
+0 2 * * 1-6 sh /app/sh/backup_db/cron.sh
+# Запуск скриптов после перезагрузки системы
+@reboot yandex-disk start
+
+# Ежедневная перезагрузка серверов
+0 2 * * 1-5 /root/shutdown.sh

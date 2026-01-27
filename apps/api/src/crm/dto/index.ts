@@ -1,0 +1,28 @@
+export * from './mutation-contact.dto';
+export * from './mutation-email.dto';
+export * from './mutation-history.dto';
+export * from './mutation-organization.dto';
+export * from './mutation-organization-requisite.dto';
+export * from './mutation-organization-type.dto';
+export * from './mutation-organization-tag.dto';
+export * from './mutation-phone.dto';
+export * from './mutation-report-realization.dto';
+
+export * from './query-contact.dto';
+export * from './query-email.dto';
+export * from './query-history.dto';
+export * from './query-organization.dto';
+export * from './query-organization-requisite.dto';
+export * from './query-organization-tag.dto';
+export * from './query-organization-type.dto';
+export * from './query-phone.dto';
+export * from './query-report-realization.dto';
+
+export * from './search-contact.dto';
+// export * from './search-email.dto';
+// export * from './search-organization.dto';
+// export * from './search-organization-requisite.dto';
+// export * from './search-organization-tag.dto';
+// export * from './search-organization-type.dto';
+// export * from './search-phone.dto';
+// export * from './search-report-realization.dto';

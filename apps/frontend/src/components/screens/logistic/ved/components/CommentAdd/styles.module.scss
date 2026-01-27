@@ -1,0 +1,8 @@
+.root {
+	@apply grid items-stretch gap-20;
+	grid-template-columns: 2fr 150px;
+}
+
+.button {
+	@apply h-full;
+}

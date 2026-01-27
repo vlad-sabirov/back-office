@@ -1,0 +1,47 @@
+.wrapper {
+	@apply rounded-medium cursor-pointer select-none grid grid-flow-col;
+	grid-template-columns: 1fr auto;
+
+	&:hover {
+		@apply outline outline-1 outline-primary-mainLighten;
+
+		.button {
+			@apply bg-primary-main;
+		}
+
+		.icon {
+			@apply text-primary-50;
+		}
+	}
+}
+
+.info {
+	@apply relative px-20 py-16 bg-neutral-bg rounded-l-medium;
+}
+
+.name {
+	@apply m-0 text-neutral-800;
+}
+
+.workPosition {
+	@apply m-0 text-neutral-500;
+}
+
+.phones {
+	&__wrapper {
+		@apply grid justify-start mt-4 gap-4;
+		grid-template-columns: repeat(auto-fill, 140px);
+	}
+
+	&__item {
+		@apply bg-neutral-white font-weight-500 px-8 py-4 rounded-medium m-0 text-center;
+	}
+}
+
+.button {
+	@apply bg-primary-50 rounded-r-medium p-20 grid items-center transition-all;
+}
+
+.icon {
+	@apply w-20 text-primary-mainDarken transition-all;
+}
