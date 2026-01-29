@@ -13,8 +13,8 @@ const tabs: IActionsTab[] = [
 		panel: { type: CommentPanel, props: { index: 'comment' }, key: null },
 	},
 	{
-		list: { type: TaskList, props: { index: 'task', disabled: true }, key: null  },
-		panel: { type: TaskPanel, props: { index: 'task', disabled: true }, key: null  },
+		list: { type: TaskList, props: { index: 'task' }, key: null  },
+		panel: { type: TaskPanel, props: { index: 'task' }, key: null  },
 	},
 ]
 

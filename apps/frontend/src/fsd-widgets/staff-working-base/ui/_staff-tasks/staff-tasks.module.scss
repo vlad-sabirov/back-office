@@ -1,0 +1,84 @@
+.root {
+	@apply m-0;
+
+	& > div {
+		position: relative;
+		min-height: 290px;
+	}
+}
+
+.headerIcon {
+	margin-right: 8px;
+	color: #4f7ff0;
+}
+
+.tasksAll {
+	@apply mt-24 mb-20 flex gap-4 text-neutral-400;
+	& span {
+		@apply text-neutral-800 font-weight-500;
+	}
+}
+
+.hasValue {
+	@apply text-primary-main;
+}
+
+.taskRow {
+	@apply mb-8 flex gap-4 text-neutral-400;
+	align-items: center;
+	& span:last-child {
+		@apply m-0 text-neutral-800;
+	}
+}
+
+.iconUrgent {
+	color: #f9515a;
+	font-size: 10px;
+}
+
+.iconHigh {
+	color: #ffc859;
+	font-size: 10px;
+}
+
+.iconNormal {
+	color: #4f7ff0;
+	font-size: 10px;
+}
+
+.iconLow {
+	color: #96a2b6;
+	font-size: 10px;
+}
+
+.iconOverdue {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	background-color: #f9515a;
+	color: #fff;
+	border-radius: 50%;
+	font-size: 10px;
+	font-weight: 700;
+}
+
+.valueUrgent {
+	color: #f9515a !important;
+	font-weight: 600;
+}
+
+.valueHigh {
+	color: #ffc859 !important;
+	font-weight: 600;
+}
+
+.valueOverdue {
+	color: #f9515a !important;
+	font-weight: 700;
+}
+
+.footer {
+	@apply m-0 mt-28 text-neutral-400 italic;
+}

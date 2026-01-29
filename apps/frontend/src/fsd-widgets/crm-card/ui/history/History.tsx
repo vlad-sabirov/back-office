@@ -4,6 +4,7 @@ import { Skeleton } from './skeleton/Skeleton';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import TailwindColors from '@config/tailwind/color';
 import { CrmHistoryConst, EnCrmHistoryTypes } from '@fsd/entities/crm-history';
+import { ICrmTaskEntity } from '@fsd/entities/crm-task';
 import { useFeed } from '@fsd/entities/crm-history/lib/useFeed/useFeed';
 import { useAccess, useStateSelector } from '@fsd/shared/lib/hooks';
 import { Loader } from '@mantine/core';
@@ -37,14 +38,24 @@ export const History: FC<IHistoryProps> = () => {
 		<div className={css.scroll}>
 			<div className={css.wrapper}>
 				{feed.map((historyItem) => {
-					if (!isDisplaySystemHistories && historyItem.isSystem) {
+					if ('isSystem' in historyItem && !isDisplaySystemHistories && historyItem.isSystem) {
 						return null;
+					}
+
+					if (historyItem.type == EnCrmHistoryTypes.Task) {
+						return (
+							<Item.Task
+								task={historyItem as ICrmTaskEntity & { type: EnCrmHistoryTypes.Task }}
+								key={`${historyItem.type}_${historyItem.id}`}
+								className={css.historyItem}
+							/>
+						);
 					}
 
 					if (historyItem.type == EnCrmHistoryTypes.Comment) {
 						return (
 							<Item.Comment
-								history={historyItem}
+								history={historyItem as any}
 								key={`${historyItem.type}_${historyItem.id}`}
 								className={css.historyItem}
 							/>
@@ -54,7 +65,7 @@ export const History: FC<IHistoryProps> = () => {
 					if (historyItem.type == EnCrmHistoryTypes.Log) {
 						return (
 							<Item.Log
-								history={historyItem}
+								history={historyItem as any}
 								key={`${historyItem.type}_${historyItem.id}`}
 								className={css.historyItem}
 							/>
@@ -64,7 +75,7 @@ export const History: FC<IHistoryProps> = () => {
 					if (historyItem.type == EnCrmHistoryTypes.Call) {
 						return (
 							<Item.Call
-								history={historyItem}
+								history={historyItem as any}
 								key={`${historyItem.type}_${historyItem.id}`}
 								className={css.historyItem}
 							/>

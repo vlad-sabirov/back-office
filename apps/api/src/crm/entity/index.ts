@@ -8,3 +8,4 @@ export * from './organization-tag.entity';
 export * from './organization-type.entity';
 export * from './phone.entity';
 export * from './report-realization.entity';
+export * from './task.entity';

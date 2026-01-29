@@ -1,7 +1,44 @@
 .panel {
-	@apply relative h-120;
+	@apply relative;
+	min-height: 180px;
 }
 
+.taskWrapper {
+	@apply grid gap-12;
+}
+
+.taskRow {
+	@apply grid gap-12;
+	grid-template-columns: 1fr auto auto;
+	align-items: end;
+}
+
+.taskRow:last-child {
+	grid-template-columns: 1fr 120px;
+}
+
+.titleInput {
+	min-width: 200px;
+}
+
+.prioritySelect {
+	width: 140px;
+}
+
+.deadlineInput {
+	width: 160px;
+}
+
+.descriptionInput textarea {
+	height: 60px !important;
+}
+
+.submitButton {
+	@apply h-full;
+	min-height: 60px;
+}
+
+/* Legacy support for old styles */
 .wrapper {
 	@apply grid gap-12;
 	grid-template-columns: 1fr 150px;
@@ -14,4 +51,3 @@
 .comment textarea {
 	height: 70px !important;
 }
-	

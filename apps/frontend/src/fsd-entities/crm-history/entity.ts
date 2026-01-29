@@ -6,6 +6,7 @@ export enum EnCrmHistoryTypes {
 	Comment = 'comment',
 	Log = 'log',
 	Call = 'call',
+	Task = 'task',
 }
 
 export enum EnCrmHistoryEntities {

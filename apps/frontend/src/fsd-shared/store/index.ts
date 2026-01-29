@@ -13,6 +13,7 @@ import { CrmOrganizationTagApi, CrmOrganizationTagReducer } from '@fsd/entities/
 import { CrmOrganizationTypeApi, CrmOrganizationTypeReducer } from '@fsd/entities/crm-organization-type';
 import { CrmPhoneApi } from '@fsd/entities/crm-phone';
 import { CrmRealizationApi, CrmRealizationSliceReducer } from '@fsd/entities/crm-realization';
+import { CrmTaskApi, CrmTaskReducer } from '@fsd/entities/crm-task';
 import { CrmWorkingBaseApi, CrmWorkingBaseSliceReducer } from '@fsd/entities/crm-working-base';
 import { SearchReducer } from '@fsd/entities/search';
 import { StaffApi, StaffReducer } from '@fsd/entities/staff';
@@ -58,6 +59,8 @@ export const rootReducer = combineReducers({
 	[VoipApi.reducerPath]: VoipApi.reducer,
 	todo: TodoSliceReducer,
 	[TodoApi.reducerPath]: TodoApi.reducer,
+	crm_task: CrmTaskReducer,
+	[CrmTaskApi.reducerPath]: CrmTaskApi.reducer,
 });
 
 export const ReduxStore = () =>
@@ -80,7 +83,8 @@ export const ReduxStore = () =>
 				.concat(CrmWorkingBaseApi.middleware)
 				.concat(Account1CApi.middleware)
 				.concat(VoipApi.middleware)
-				.concat(TodoApi.middleware);
+				.concat(TodoApi.middleware)
+				.concat(CrmTaskApi.middleware);
 		},
 	});
 

@@ -5,7 +5,7 @@ import { HeaderContent } from '@components/HeaderContent/HeaderContent';
 import { useStateSelector, useUser } from '@fsd/shared/lib/hooks';
 import { StaffProfileWidget } from '@fsd/widgets/staff-profile';
 import { StaffRealizationWidget } from '@fsd/widgets/staff-realization';
-import { StaffWorkingBaseWidget } from '@fsd/widgets/staff-working-base';
+import { StaffWorkingBaseWidget, StaffTasksWidget } from '@fsd/widgets/staff-working-base';
 import { MainContext } from '@globalStore';
 import { Grid } from '@mantine/core';
 import {
@@ -38,6 +38,7 @@ const StaffCabinet: FC = observer(() => {
 				<Grid gutter={20} columns={100} className={css.right} grow align={'flex-start'}>
 					<StaffRealizationWidget />
 					<StaffWorkingBaseWidget />
+					<StaffTasksWidget />
 				</Grid>
 			</div>
 

@@ -7,3 +7,4 @@ export * from './organization-tag.constants';
 export * from './organization-type.constants';
 export * from './phone.constants';
 export * from './reports-realization.constants';
+export * from './task.constants';

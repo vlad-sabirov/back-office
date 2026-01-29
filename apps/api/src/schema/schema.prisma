@@ -53,6 +53,8 @@ model User {
   crmHistory                CrmHistory[]           @relation("crm_history_user")
   crmReportRealizaiton      CrmReportRealization[] @relation("crm_report_realization")
   vacationCalendar          VacationCalendar[]     @relation("calendar_vacation")
+  tasksAuthored             CrmTask[]              @relation("crm_task_author")
+  tasksAssigned             CrmTask[]              @relation("crm_task_assignee")
   // -------
   createdAt                 DateTime               @default(now())
   updatedAt                 DateTime               @updatedAt
@@ -285,6 +287,8 @@ model CrmOrganization {
   emails        CrmEmail[]                 @relation("crm_email_organization")
   tags          CrmOrganizationTag[]       @relation("crm_organization_tag")
   history       CrmHistory[]               @relation("crm_history_organization")
+  tasks         CrmTask[]                  @relation("crm_task_organization")
+  powerLogs     CrmOrganizationPowerLog[]  @relation("crm_organization_power_log")
   // -------
   isVerified    Boolean                    @default(false)
   isReserve     Boolean                    @default(false)
@@ -454,4 +458,47 @@ model VacationCalendar {
   updatedAt DateTime @updatedAt
 
   @@map("calendar_vacation")
+}
+
+model CrmTask {
+  id                Int              @id @default(autoincrement())
+  title             String
+  description       String?
+  status            String           @default("pending") // pending, in_progress, completed, cancelled
+  priority          String           @default("normal") // low, normal, high, urgent
+  deadline          DateTime?
+  reminderSent3Days Boolean          @default(false)
+  reminderSent1Day  Boolean          @default(false)
+  reminderSent2Hours Boolean         @default(false)
+  overdueNotified   Boolean          @default(false)
+  // -------
+  author            User             @relation("crm_task_author", fields: [authorId], references: [id])
+  authorId          Int
+  assignee          User             @relation("crm_task_assignee", fields: [assigneeId], references: [id])
+  assigneeId        Int
+  organization      CrmOrganization? @relation("crm_task_organization", fields: [organizationId], references: [id])
+  organizationId    Int?
+  // -------
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  completedAt       DateTime?
+
+  @@index([assigneeId, status])
+  @@index([deadline])
+  @@index([organizationId])
+  @@map("crm_task")
+}
+
+model CrmOrganizationPowerLog {
+  id             Int             @id @default(autoincrement())
+  previousStatus String
+  newStatus      String
+  // -------
+  organization   CrmOrganization @relation("crm_organization_power_log", fields: [organizationId], references: [id])
+  organizationId Int
+  // -------
+  createdAt      DateTime        @default(now())
+
+  @@index([organizationId])
+  @@map("crm_organization_power_log")
 }

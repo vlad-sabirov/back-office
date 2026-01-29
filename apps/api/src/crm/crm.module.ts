@@ -1,7 +1,8 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthModule } from 'src/auth/auth.module';
 import { SearchModule } from 'src/search/search.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 import {
 	ContactController,
@@ -14,6 +15,7 @@ import {
 	PhoneController,
 	ReportRealizationController,
 } from './controllers';
+import { TaskController } from './controllers/task.controller';
 
 import {
 	ContactService,
@@ -26,9 +28,10 @@ import {
 	PhoneService,
 	ReportRealizationService,
 } from './services';
+import { TaskService } from './services/task.service';
 
 @Module({
-	imports: [SearchModule, AuthModule, HttpModule],
+	imports: [SearchModule, AuthModule, HttpModule, forwardRef(() => NotificationModule)],
 	controllers: [
 		ContactController,
 		EmailController,
@@ -39,6 +42,7 @@ import {
 		OrganizationTagController,
 		PhoneController,
 		ReportRealizationController,
+		TaskController,
 	],
 	providers: [
 		ContactService,
@@ -50,6 +54,8 @@ import {
 		OrganizationRequisiteService,
 		PhoneService,
 		ReportRealizationService,
+		TaskService,
 	],
+	exports: [TaskService, OrganizationService],
 })
 export class CrmModule {}
