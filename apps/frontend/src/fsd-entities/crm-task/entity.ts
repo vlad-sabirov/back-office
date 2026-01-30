@@ -15,6 +15,15 @@ export enum EnCrmTaskPriority {
 	Urgent = 'urgent',
 }
 
+export interface ICrmTaskModificationEntity {
+	id: number;
+	taskId: number;
+	modifiedBy?: IStaffEntity;
+	modifiedById: number;
+	changes: string; // JSON строка с описанием изменений
+	createdAt: string;
+}
+
 export interface ICrmTaskEntity {
 	id: number;
 	title: string;
@@ -33,6 +42,7 @@ export interface ICrmTaskEntity {
 	assigneeId: number;
 	organization?: ICrmOrganizationEntity | null;
 	organizationId?: number | null;
+	modifications?: ICrmTaskModificationEntity[];
 	// Timestamps
 	createdAt: string;
 	updatedAt: string;

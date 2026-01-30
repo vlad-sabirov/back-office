@@ -1,0 +1,178 @@
+.tasksList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+.empty {
+	@apply m-0 text-neutral-400 italic;
+	text-align: center;
+	padding: 32px 0;
+}
+
+.taskItem {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 16px;
+	background-color: #f5f7fa;
+	border-radius: 8px;
+	border-left: 3px solid #4f7ff0;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	text-decoration: none;
+}
+
+.taskContent {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+}
+
+.taskItem:hover {
+	background-color: #eef2f7;
+}
+
+.taskItemOverdue {
+	border-left-color: #f9515a;
+	background-color: #fff5f5;
+}
+
+.taskItemOverdue:hover {
+	background-color: #ffecec;
+}
+
+.taskHeader {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+	min-width: 0;
+}
+
+.priorityDot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.priority_red {
+	background-color: #f9515a;
+}
+
+.priority_orange {
+	background-color: #ffc859;
+}
+
+.priority_blue {
+	background-color: #4f7ff0;
+}
+
+.priority_gray {
+	background-color: #96a2b6;
+}
+
+.taskTitle {
+	@apply m-0 text-neutral-700;
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.overdueLabel {
+	flex-shrink: 0;
+	padding: 2px 8px;
+	background-color: #f9515a;
+	color: #fff;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.taskMeta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.organization {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #6b7a8f;
+	font-size: 13px;
+	max-width: 180px;
+}
+
+.organization span {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.orgIcon {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	color: #96a2b6;
+}
+
+.deadline {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #6b7a8f;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.deadlineOverdue {
+	color: #f9515a;
+	font-weight: 600;
+}
+
+.calendarIcon {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	color: #96a2b6;
+}
+
+.deadlineOverdue .calendarIcon {
+	color: #f9515a;
+}
+
+.arrowIcon {
+	width: 16px;
+	height: 16px;
+	color: #96a2b6;
+	flex-shrink: 0;
+	transform: rotate(-90deg);
+}
+
+.taskItem:hover .arrowIcon {
+	color: #4f7ff0;
+}
+
+.author {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #6b7a8f;
+	font-size: 12px;
+}
+
+.authorIcon {
+	width: 12px;
+	height: 12px;
+	flex-shrink: 0;
+	color: #96a2b6;
+}

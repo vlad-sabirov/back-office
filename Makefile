@@ -1,4 +1,4 @@
-.PHONY: start-prod start-dev start-mac-dev start-prod-mac build build-mac stop backup restore-db restore-files
+.PHONY: start-prod start-dev start-mac-dev start-prod-mac build build-mac stop backup restore-db restore-files restore-admin-roles seed
 .SILENT:
 
 start-prod: stop
@@ -79,6 +79,20 @@ restore-db:
 restore-files:
 	@if [ "$(RUNNING_CONTAINERS)" != "" ]; then \
 		 scp -r 192.168.25.235:/app/apps/api/uploads apps/api/; \
+	else \
+		echo "No running containers detected."; \
+	fi
+
+restore-admin-roles:
+	@if [ "$(RUNNING_CONTAINERS)" != "" ]; then \
+		docker exec -e PGPASSWORD="${API_DB_PASSWORD}" db_api psql -U root -d erp -f /scripts/restore-admin-roles.sql; \
+	else \
+		echo "No running containers detected."; \
+	fi
+
+seed:
+	@if [ "$(RUNNING_CONTAINERS)" != "" ]; then \
+		docker exec api npx prisma db seed; \
 	else \
 		echo "No running containers detected."; \
 	fi

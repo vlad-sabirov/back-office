@@ -1,9 +1,13 @@
-import { FC, useMemo } from 'react';
-import { format, parseISO, isPast } from 'date-fns';
+import { FC, useMemo, useState, useCallback } from 'react';
+import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
 import { ICrmTaskEntity, EnCrmTaskStatus, EnCrmTaskPriority, CrmTaskConst } from '@fsd/entities/crm-task';
 import { StaffAvatar } from '@fsd/entities/staff';
 import { dateFnsLocaleRu } from '@fsd/shared/lib/date-fns.ru.locale';
+import { useStateSelector } from '@fsd/shared/lib/hooks';
 import { TextField, Icon } from '@fsd/shared/ui-kit';
+import { ActionIcon } from '@mantine/core';
+import { TaskEditModal } from './TaskEditModal';
+import { TaskDeleteModal } from './TaskDeleteModal';
 import css from './task.module.scss';
 
 interface IProps {
@@ -12,8 +16,30 @@ interface IProps {
 }
 
 export const Task: FC<IProps> = ({ task, className }) => {
+	const [editModalOpened, setEditModalOpened] = useState(false);
+	const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+
+	// Получаем текущего пользователя и его роли
+	const currentUserId = useStateSelector((state) => state.app.auth.userId);
+	const currentUserRoles = useStateSelector((state) => state.app.auth.roles) || [];
+
 	const author = useMemo(() => task.author, [task.author]);
 	const assignee = useMemo(() => task.assignee, [task.assignee]);
+
+	// Проверка прав на редактирование/удаление
+	// Можно если: ты автор ИЛИ имеешь роль boss/admin/developer/crmAdmin
+	const canModify = useMemo(() => {
+		const isAuthor = task.authorId === Number(currentUserId);
+		const hasAdminRole = currentUserRoles.some((role: string) =>
+			['boss', 'admin', 'developer', 'crmAdmin'].includes(role)
+		);
+		return isAuthor || hasAdminRole;
+	}, [task.authorId, currentUserId, currentUserRoles]);
+
+	const openEditModal = useCallback(() => setEditModalOpened(true), []);
+	const closeEditModal = useCallback(() => setEditModalOpened(false), []);
+	const openDeleteModal = useCallback(() => setDeleteModalOpened(true), []);
+	const closeDeleteModal = useCallback(() => setDeleteModalOpened(false), []);
 
 	const createdDate = useMemo(() => {
 		return format(parseISO(task.createdAt), 'dd MMMM yyyy', { locale: dateFnsLocaleRu });
@@ -55,6 +81,16 @@ export const Task: FC<IProps> = ({ task, className }) => {
 				<TextField size={'small'} className={css.label}>
 					Создал{author.sex === 'female' && 'а'} задачу
 				</TextField>
+				{canModify && (
+					<div className={css.actions}>
+						<ActionIcon size="sm" variant="subtle" onClick={openEditModal} title="Редактировать">
+							<Icon name="edit" className={css.actionIcon} />
+						</ActionIcon>
+						<ActionIcon size="sm" variant="subtle" color="red" onClick={openDeleteModal} title="Удалить">
+							<Icon name="trash" className={css.actionIcon} />
+						</ActionIcon>
+					</div>
+				)}
 			</div>
 
 			<div className={css.taskContent}>
@@ -85,7 +121,33 @@ export const Task: FC<IProps> = ({ task, className }) => {
 						</TextField>
 					</div>
 				)}
+
+				{task.modifications && task.modifications.length > 0 && (
+					<div className={css.modifications}>
+						{task.modifications.slice(0, 2).map((mod) => {
+							const modifiedBy = mod.modifiedBy;
+							const modDate = formatDistanceToNow(parseISO(mod.createdAt), {
+								addSuffix: true,
+								locale: dateFnsLocaleRu,
+							});
+							return (
+								<div key={mod.id} className={css.modificationItem}>
+									<span className={css.modificationLabel}>Изменено:</span>
+									{' '}
+									<span className={css.modificationAuthor}>
+										{modifiedBy?.lastName || ''} {modifiedBy?.firstName || ''}
+									</span>
+									{' '}
+									<span className={css.modificationDate}>{modDate}</span>
+								</div>
+							);
+						})}
+					</div>
+				)}
 			</div>
+
+			<TaskEditModal task={task} opened={editModalOpened} onClose={closeEditModal} />
+			<TaskDeleteModal task={task} opened={deleteModalOpened} onClose={closeDeleteModal} />
 		</div>
 	);
 };

@@ -9,12 +9,16 @@
 
 .taskRow {
 	@apply grid gap-12;
-	grid-template-columns: 1fr auto auto;
+	grid-template-columns: 1fr auto auto auto;
 	align-items: end;
 }
 
 .taskRow:last-child {
 	grid-template-columns: 1fr 120px;
+}
+
+.timeInput {
+	width: 100px;
 }
 
 .titleInput {
@@ -50,4 +54,11 @@
 
 .comment textarea {
 	height: 70px !important;
+}
+
+.noAccess {
+	@apply flex items-center justify-center text-neutral-400 italic;
+	min-height: 120px;
+	text-align: center;
+	padding: 20px;
 }

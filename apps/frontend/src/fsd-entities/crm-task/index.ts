@@ -1,5 +1,5 @@
 // Entity
-export type { ICrmTaskEntity, ICrmTaskFormEntity } from './entity';
+export type { ICrmTaskEntity, ICrmTaskFormEntity, ICrmTaskModificationEntity } from './entity';
 export { EnCrmTaskStatus, EnCrmTaskPriority } from './entity';
 
 // Config

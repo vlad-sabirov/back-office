@@ -1,10 +1,11 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { CrmTaskService, ICrmTaskEntity, EnCrmTaskStatus, EnCrmTaskPriority } from '@fsd/entities/crm-task';
-import { ContentBlock, Icon, TextField } from '@fsd/shared/ui-kit';
+import { ContentBlock, Icon, TextField, Button } from '@fsd/shared/ui-kit';
 import { useUserDeprecated } from '@hooks';
 import { Grid } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
+import { StaffTasksModal } from './StaffTasksModal';
 import css from './staff-tasks.module.scss';
 
 export const StaffTasks: FC = () => {
@@ -14,6 +15,10 @@ export const StaffTasks: FC = () => {
 	const [spanCount, setSpanCount] = useState<number>(25);
 	const { width: screenWidth } = useViewportSize();
 	const [tasks, setTasks] = useState<ICrmTaskEntity[]>([]);
+	const [modalOpened, setModalOpened] = useState(false);
+
+	const openModal = useCallback(() => setModalOpened(true), []);
+	const closeModal = useCallback(() => setModalOpened(false), []);
 
 	const [fetchTasks] = CrmTaskService.getByAssigneeId();
 
@@ -75,6 +80,12 @@ export const StaffTasks: FC = () => {
 	return (
 		<Grid.Col span={spanCount}>
 			<ContentBlock className={css.root}>
+				{taskStats.total > 0 && (
+					<Button className={css.open} onClick={openModal}>
+						<Icon name={'open'} />
+					</Button>
+				)}
+
 				<TextField mode={'heading'} size={'small'}>
 					<Icon name={'todo'} className={css.headerIcon} />
 					Задачи сотрудника
@@ -121,6 +132,13 @@ export const StaffTasks: FC = () => {
 					Выполнено всего: {taskStats.completed}
 				</TextField>
 			</ContentBlock>
+
+			<StaffTasksModal
+				tasks={tasks}
+				opened={modalOpened}
+				onClose={closeModal}
+				userName={user ? `${user.lastName} ${user.firstName}` : undefined}
+			/>
 		</Grid.Col>
 	);
 };

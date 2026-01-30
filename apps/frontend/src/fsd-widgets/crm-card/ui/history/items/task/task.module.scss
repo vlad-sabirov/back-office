@@ -34,6 +34,29 @@
 	margin-bottom: 8px;
 }
 
+.actions {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-left: auto;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.taskWrapper:hover .actions {
+	opacity: 1;
+}
+
+.actionIcon {
+	width: 14px;
+	height: 14px;
+	color: #96a2b6;
+}
+
+.actionIcon:hover {
+	color: #4f7ff0;
+}
+
 .taskIcon {
 	color: #4f7ff0;
 	width: 16px;
@@ -120,4 +143,35 @@
 .assigneeLabel {
 	@apply m-0 text-neutral-400;
 	font-size: 12px;
+}
+
+.modifications {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px dashed #c4cedf;
+}
+
+.modificationItem {
+	@apply text-neutral-400;
+	font-size: 11px;
+	line-height: 1.4;
+	margin-bottom: 4px;
+}
+
+.modificationItem:last-child {
+	margin-bottom: 0;
+}
+
+.modificationLabel {
+	color: #9ca3af;
+}
+
+.modificationAuthor {
+	font-weight: 500;
+	color: #6b7280;
+}
+
+.modificationDate {
+	font-style: italic;
+	color: #9ca3af;
 }

@@ -20,7 +20,16 @@ export class TaskService extends PrismaService {
 		super();
 	}
 
-	create = async ({ createDto }: { createDto: MutationTaskDto }): Promise<TaskEntity> => {
+	create = async ({ createDto, currentUserId }: { createDto: MutationTaskDto; currentUserId?: number }): Promise<TaskEntity> => {
+		// Проверка прав: можно создавать задачи только в своих организациях
+		// (где пользователь является ответственным менеджером)
+		if (createDto.organizationId && currentUserId) {
+			const canCreate = await this.canCreateTaskInOrganization(currentUserId, Number(createDto.organizationId));
+			if (!canCreate) {
+				throw new HttpException(TaskConstants.FORBIDDEN_NOT_MANAGER, HttpStatus.FORBIDDEN);
+			}
+		}
+
 		const data = {
 			title: createDto.title,
 			description: createDto.description,
@@ -52,7 +61,16 @@ export class TaskService extends PrismaService {
 	findById = async (id: number | string, include?: Record<string, boolean>): Promise<TaskEntity> => {
 		return this.crmTask.findUnique({
 			where: { id: Number(id) },
-			include: include || { author: true, assignee: true, organization: true },
+			include: include || {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 		});
 	};
 
@@ -68,7 +86,16 @@ export class TaskService extends PrismaService {
 		const parsedWhere = this.parseWhere(where);
 		return this.crmTask.findFirst({
 			where: parsedWhere,
-			include: include || { author: true, assignee: true, organization: true },
+			include: include || {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 			...filter,
 		});
 	};
@@ -85,7 +112,16 @@ export class TaskService extends PrismaService {
 		const parsedWhere = this.parseWhere(where);
 		return this.crmTask.findMany({
 			where: parsedWhere,
-			include: include || { author: true, assignee: true, organization: true },
+			include: include || {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 			orderBy: filter?.orderBy || { createdAt: 'desc' },
 			take: filter?.take,
 			skip: filter?.skip,
@@ -95,7 +131,16 @@ export class TaskService extends PrismaService {
 	getByOrganizationId = async (id: number | string): Promise<TaskEntity[]> => {
 		return this.crmTask.findMany({
 			where: { organizationId: Number(id) },
-			include: { author: true, assignee: true, organization: true },
+			include: {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 			orderBy: { createdAt: 'desc' },
 		});
 	};
@@ -103,7 +148,16 @@ export class TaskService extends PrismaService {
 	getByAssigneeId = async (id: number | string): Promise<TaskEntity[]> => {
 		return this.crmTask.findMany({
 			where: { assigneeId: Number(id) },
-			include: { author: true, assignee: true, organization: true },
+			include: {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 			orderBy: { createdAt: 'desc' },
 		});
 	};
@@ -113,7 +167,16 @@ export class TaskService extends PrismaService {
 			where: {
 				OR: [{ assigneeId: userId }, { authorId: userId }],
 			},
-			include: { author: true, assignee: true, organization: true },
+			include: {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 			orderBy: { createdAt: 'desc' },
 		});
 	};
@@ -121,46 +184,161 @@ export class TaskService extends PrismaService {
 	updateById = async ({
 		id,
 		updateDto,
+		currentUserId,
 	}: {
 		id: number | string;
 		updateDto: Partial<MutationTaskDto>;
+		currentUserId?: number;
 	}): Promise<TaskEntity> => {
-		await this.throwNotFoundError(id);
+		const task = await this.findById(id);
+		if (!task) throw new HttpException(TaskConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
+
+		// Проверка прав: можно редактировать только свои задачи (где ты автор)
+		if (currentUserId) {
+			const canModify = await this.canModifyTask(currentUserId, task);
+			if (!canModify) {
+				throw new HttpException(TaskConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
+			}
+		}
 
 		const data: any = {};
-		if (updateDto.title !== undefined) data.title = updateDto.title;
-		if (updateDto.description !== undefined) data.description = updateDto.description;
-		if (updateDto.status !== undefined) data.status = updateDto.status;
-		if (updateDto.priority !== undefined) data.priority = updateDto.priority;
-		if (updateDto.deadline !== undefined) data.deadline = updateDto.deadline ? new Date(updateDto.deadline) : null;
-		if (updateDto.assigneeId !== undefined) data.assigneeId = Number(updateDto.assigneeId);
-		if (updateDto.organizationId !== undefined)
-			data.organizationId = updateDto.organizationId ? Number(updateDto.organizationId) : null;
+		const changes: string[] = [];
 
-		return this.crmTask.update({
+		if (updateDto.title !== undefined && updateDto.title !== task.title) {
+			data.title = updateDto.title;
+			changes.push(`Заголовок: "${task.title}" → "${updateDto.title}"`);
+		}
+		if (updateDto.description !== undefined && updateDto.description !== task.description) {
+			data.description = updateDto.description;
+			changes.push('Описание изменено');
+		}
+		if (updateDto.status !== undefined && updateDto.status !== task.status) {
+			data.status = updateDto.status;
+			changes.push(`Статус: ${task.status} → ${updateDto.status}`);
+		}
+		if (updateDto.priority !== undefined && updateDto.priority !== task.priority) {
+			data.priority = updateDto.priority;
+			changes.push(`Приоритет: ${task.priority} → ${updateDto.priority}`);
+		}
+		if (updateDto.deadline !== undefined) {
+			const newDeadline = updateDto.deadline ? new Date(updateDto.deadline) : null;
+			const oldDeadline = task.deadline ? new Date(task.deadline).toISOString() : null;
+			const newDeadlineStr = newDeadline ? newDeadline.toISOString() : null;
+			if (oldDeadline !== newDeadlineStr) {
+				data.deadline = newDeadline;
+				changes.push('Дедлайн изменён');
+			}
+		}
+		if (updateDto.assigneeId !== undefined && Number(updateDto.assigneeId) !== task.assigneeId) {
+			data.assigneeId = Number(updateDto.assigneeId);
+			changes.push('Исполнитель изменён');
+		}
+		if (updateDto.organizationId !== undefined) {
+			const newOrgId = updateDto.organizationId ? Number(updateDto.organizationId) : null;
+			if (newOrgId !== task.organizationId) {
+				data.organizationId = newOrgId;
+				changes.push('Организация изменена');
+			}
+		}
+
+		// Обновить задачу
+		await this.crmTask.update({
 			where: { id: Number(id) },
 			data,
-			include: { author: true, assignee: true, organization: true },
+		});
+
+		// Создать запись модификации если были изменения и известен пользователь
+		if (changes.length > 0 && currentUserId) {
+			await this.crmTaskModification.create({
+				data: {
+					taskId: Number(id),
+					modifiedById: currentUserId,
+					changes: JSON.stringify(changes),
+				},
+			});
+		}
+
+		// Вернуть задачу с включёнными модификациями
+		return this.crmTask.findUnique({
+			where: { id: Number(id) },
+			include: {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 		});
 	};
 
-	updateStatus = async (id: number | string, status: string): Promise<TaskEntity> => {
-		await this.throwNotFoundError(id);
+	updateStatus = async (id: number | string, status: string, currentUserId?: number): Promise<TaskEntity> => {
+		const task = await this.findById(id);
+		if (!task) throw new HttpException(TaskConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
 
+		// Проверка прав: можно менять статус только своих задач (где ты автор)
+		// или задач назначенных тебе (исполнитель может отметить выполнение)
+		if (currentUserId) {
+			const canModify = await this.canModifyTask(currentUserId, task);
+			const isAssignee = task.assigneeId === currentUserId;
+			if (!canModify && !isAssignee) {
+				throw new HttpException(TaskConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
+			}
+		}
+
+		const oldStatus = task.status;
 		const data: any = { status };
 		if (status === 'completed') {
 			data.completedAt = new Date();
 		}
 
-		return this.crmTask.update({
+		// Обновить статус
+		await this.crmTask.update({
 			where: { id: Number(id) },
 			data,
-			include: { author: true, assignee: true, organization: true },
+		});
+
+		// Создать запись модификации если статус изменился
+		if (oldStatus !== status && currentUserId) {
+			await this.crmTaskModification.create({
+				data: {
+					taskId: Number(id),
+					modifiedById: currentUserId,
+					changes: JSON.stringify([`Статус: ${oldStatus} → ${status}`]),
+				},
+			});
+		}
+
+		// Вернуть задачу с включёнными модификациями
+		return this.crmTask.findUnique({
+			where: { id: Number(id) },
+			include: {
+				author: true,
+				assignee: true,
+				organization: true,
+				modifications: {
+					include: { modifiedBy: true },
+					orderBy: { createdAt: 'desc' },
+					take: 2,
+				},
+			},
 		});
 	};
 
-	deleteById = async (id: number | string): Promise<TaskEntity> => {
-		await this.throwNotFoundError(id);
+	deleteById = async (id: number | string, currentUserId?: number): Promise<TaskEntity> => {
+		const task = await this.findById(id);
+		if (!task) throw new HttpException(TaskConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
+
+		// Проверка прав: можно удалять только свои задачи (где ты автор)
+		if (currentUserId) {
+			const canModify = await this.canModifyTask(currentUserId, task);
+			if (!canModify) {
+				throw new HttpException(TaskConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
+			}
+		}
+
 		return this.crmTask.delete({ where: { id: Number(id) } });
 	};
 
@@ -252,6 +430,52 @@ export class TaskService extends PrismaService {
 	private throwNotFoundError = async (id: number | string): Promise<void> => {
 		const findItem = await this.findById(id);
 		if (!findItem) throw new HttpException(TaskConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
+	};
+
+	/**
+	 * Проверка: может ли пользователь создавать задачи в организации
+	 * Условие: пользователь является ответственным менеджером организации ИЛИ имеет роль boss/admin/developer
+	 */
+	private canCreateTaskInOrganization = async (userId: number, organizationId: number): Promise<boolean> => {
+		// Проверить роли пользователя (boss, admin, developer могут создавать везде)
+		const user = await this.user.findUnique({
+			where: { id: userId },
+			include: { roles: true },
+		});
+
+		if (user?.roles?.some((role) => ['boss', 'admin', 'developer', 'crmAdmin'].includes(role.alias))) {
+			return true;
+		}
+
+		// Проверить, является ли пользователь ответственным менеджером организации
+		const organization = await this.crmOrganization.findUnique({
+			where: { id: organizationId },
+		});
+
+		if (!organization) {
+			return false;
+		}
+
+		return organization.userId === userId;
+	};
+
+	/**
+	 * Проверка: может ли пользователь редактировать/удалять задачу
+	 * Условие: пользователь является автором задачи ИЛИ имеет роль boss/admin/developer
+	 */
+	private canModifyTask = async (userId: number, task: TaskEntity): Promise<boolean> => {
+		// Проверить роли пользователя (boss, admin, developer могут редактировать все)
+		const user = await this.user.findUnique({
+			where: { id: userId },
+			include: { roles: true },
+		});
+
+		if (user?.roles?.some((role) => ['boss', 'admin', 'developer', 'crmAdmin'].includes(role.alias))) {
+			return true;
+		}
+
+		// Проверить, является ли пользователь автором задачи
+		return task.authorId === userId;
 	};
 
 	private sendTaskAssignedNotification = async (task: TaskEntity): Promise<void> => {

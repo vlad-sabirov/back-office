@@ -20,6 +20,7 @@ const priorityOptions = [
 export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const currentOrganization = useStateSelector((state) => state.crm_organization.data.current);
+	const currentUserRoles = useStateSelector((state) => state.app.auth.roles) || [];
 	const { userId } = useUserDeprecated();
 	const historyActions = useCrmHistoryActions();
 
@@ -33,17 +34,39 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 		return currentOrganization?.userId || null;
 	}, [currentOrganization]);
 
+	// Проверка прав на создание задачи
+	// Можно если: ты менеджер организации ИЛИ имеешь роль boss/admin/developer/crmAdmin
+	const canCreate = useMemo(() => {
+		const isManager = currentOrganization?.userId === Number(userId);
+		const hasAdminRole = currentUserRoles.some((role: string) =>
+			['boss', 'admin', 'developer', 'crmAdmin'].includes(role)
+		);
+		return isManager || hasAdminRole;
+	}, [currentOrganization?.userId, userId, currentUserRoles]);
+
 	const form = useForm({
 		initialValues: {
 			title: '',
 			description: '',
 			priority: EnCrmTaskPriority.Normal,
-			deadline: null as Date | null,
+			deadlineDate: null as Date | null,
+			deadlineTime: '18:00',
 		},
 		validate: {
 			title: (value) => (value.trim().length < 3 ? 'Минимум 3 символа' : null),
 		},
 	});
+
+	// Комбинируем дату и время в один объект Date
+	const getDeadlineDateTime = useCallback(() => {
+		if (!form.values.deadlineDate) return undefined;
+		const date = new Date(form.values.deadlineDate);
+		if (form.values.deadlineTime) {
+			const [hours, minutes] = form.values.deadlineTime.split(':').map(Number);
+			date.setHours(hours, minutes, 0, 0);
+		}
+		return date;
+	}, [form.values.deadlineDate, form.values.deadlineTime]);
 
 	const [create, { ...createProps }] = CrmTaskService.create();
 
@@ -59,13 +82,13 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 			title: form.values.title,
 			description: form.values.description || undefined,
 			priority: form.values.priority,
-			deadline: form.values.deadline || undefined,
+			deadline: getDeadlineDateTime(),
 			authorId: userId || 0,
 			assigneeId: assigneeId, // Менеджер организации
 			organizationId: organizationId || undefined,
 		});
 		historyActions.reloadTimestamp();
-	}, [create, form, userId, assigneeId, organizationId, historyActions]);
+	}, [create, form, userId, assigneeId, organizationId, historyActions, getDeadlineDateTime]);
 
 	useEffect(() => {
 		if (createProps.status === 'uninitialized') return;
@@ -76,7 +99,9 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 
 	useEffect(() => {
 		if (createProps.error) {
-			showNotification({ color: 'red', message: 'Ошибка создания задачи' });
+			const error = createProps.error as any;
+			const message = error?.data?.message || error?.message || 'Ошибка создания задачи';
+			showNotification({ color: 'red', message });
 		}
 	}, [createProps.error, createProps.startedTimeStamp]);
 
@@ -87,6 +112,17 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [createProps.fulfilledTimeStamp, createProps.isSuccess]);
+
+	// Если нет прав на создание - показать сообщение
+	if (!canCreate) {
+		return (
+			<Tabs.Panel value={index} className={css.panel}>
+				<div className={css.noAccess}>
+					Вы можете создавать задачи только в организациях, где вы являетесь ответственным менеджером
+				</div>
+			</Tabs.Panel>
+		);
+	}
 
 	return (
 		<Tabs.Panel value={index} className={css.panel}>
@@ -112,7 +148,14 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 						className={css.deadlineInput}
 						disabled={disabled || isLoading}
 						minDate={new Date()}
-						{...form.getInputProps('deadline')}
+						{...form.getInputProps('deadlineDate')}
+					/>
+					<Input
+						label="Время"
+						type="time"
+						className={css.timeInput}
+						disabled={disabled || isLoading}
+						{...form.getInputProps('deadlineTime')}
 					/>
 				</div>
 				<div className={css.taskRow}>

@@ -22,7 +22,16 @@ interface IFindManyRequest {
 
 export const CrmTaskApi = createApi({
 	reducerPath: `${Const.State.ReducerName}/api`,
-	baseQuery: fetchBaseQuery({ baseUrl: '/api/crm/task' }),
+	baseQuery: fetchBaseQuery({
+		baseUrl: '/api/crm/task',
+		prepareHeaders: (headers) => {
+			const token = localStorage.getItem('accessToken');
+			if (token) {
+				headers.set('Authorization', `Bearer ${token}`);
+			}
+			return headers;
+		},
+	}),
 	tagTypes: ['current', 'list', 'my'],
 	endpoints: (builder) => ({
 		// Найти много

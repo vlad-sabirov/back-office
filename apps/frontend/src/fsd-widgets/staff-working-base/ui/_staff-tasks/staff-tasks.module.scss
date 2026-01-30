@@ -7,6 +7,10 @@
 	}
 }
 
+.open {
+	@apply absolute p-0 w-40 right-20;
+}
+
 .headerIcon {
 	margin-right: 8px;
 	color: #4f7ff0;

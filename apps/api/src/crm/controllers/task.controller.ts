@@ -19,10 +19,24 @@ export class TaskController {
 		private readonly tokenService: TokenService
 	) {}
 
+	private getCurrentUserId(authorization: string): number | null {
+		try {
+			const token = authorization?.replace('Bearer ', '');
+			const payload = this.tokenService.validateAccessToken(token);
+			return payload?.id || null;
+		} catch {
+			return null;
+		}
+	}
+
 	@Post()
-	async create(@Body() createDto: MutationTaskDto): Promise<TaskEntity> {
+	async create(
+		@Body() createDto: MutationTaskDto,
+		@Headers('authorization') authorization: string
+	): Promise<TaskEntity> {
 		await delay(process.env.DELAY);
-		return await this.taskService.create({ createDto });
+		const currentUserId = this.getCurrentUserId(authorization);
+		return await this.taskService.create({ createDto, currentUserId });
 	}
 
 	@Get('/byId/:id')
@@ -76,24 +90,32 @@ export class TaskController {
 	@Patch('/byId/:id')
 	async updateById(
 		@Param('id') id: number | string,
-		@Body() updateDto: Partial<MutationTaskDto>
+		@Body() updateDto: Partial<MutationTaskDto>,
+		@Headers('authorization') authorization: string
 	): Promise<TaskEntity> {
 		await delay(process.env.DELAY);
-		return await this.taskService.updateById({ id, updateDto });
+		const currentUserId = this.getCurrentUserId(authorization);
+		return await this.taskService.updateById({ id, updateDto, currentUserId });
 	}
 
 	@Patch('/byId/:id/status')
 	async updateStatus(
 		@Param('id') id: number | string,
-		@Body('status') status: string
+		@Body('status') status: string,
+		@Headers('authorization') authorization: string
 	): Promise<TaskEntity> {
 		await delay(process.env.DELAY);
-		return await this.taskService.updateStatus(id, status);
+		const currentUserId = this.getCurrentUserId(authorization);
+		return await this.taskService.updateStatus(id, status, currentUserId);
 	}
 
 	@Delete('/byId/:id')
-	async deleteById(@Param('id') id: number | string): Promise<TaskEntity> {
+	async deleteById(
+		@Param('id') id: number | string,
+		@Headers('authorization') authorization: string
+	): Promise<TaskEntity> {
 		await delay(process.env.DELAY);
-		return await this.taskService.deleteById(id);
+		const currentUserId = this.getCurrentUserId(authorization);
+		return await this.taskService.deleteById(id, currentUserId);
 	}
 }
