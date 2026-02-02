@@ -3,9 +3,10 @@
 SCRIPT=$(readlink -f "$0")
 ROOT_PATH=$(realpath "${SCRIPT%/*/*/*}")
 SERVER_IP="192.168.25.235"
-SERVER_PORT="2222"
+SERVER_PORT="22"
+SERVER_USER="evgeniy"
 
-ssh -t $SERVER_IP -p $SERVER_PORT 'sh /app/bin/backup_db/backup.sh' &&
-scp -P $SERVER_PORT -r $SERVER_IP:/app/apps/api/third_party/db/backup/last.sql "$ROOT_PATH"/apps/api/third_party/db/backup &&
-scp -P $SERVER_PORT -r $SERVER_IP:/app/apps/account_1c/third_party/db/backup/test "$ROOT_PATH"/apps/account_1c/third_party/db/backup
+ssh -t $SERVER_USER@$SERVER_IP -p $SERVER_PORT 'sh /app/bin/backup_db/backup.sh' &&
+scp -P $SERVER_PORT -r $SERVER_USER@$SERVER_IP:/app/apps/api/third_party/db/backup/last.sql "$ROOT_PATH"/apps/api/third_party/db/backup &&
+scp -P $SERVER_PORT -r $SERVER_USER@$SERVER_IP:/app/apps/account_1c/third_party/db/backup/test "$ROOT_PATH"/apps/account_1c/third_party/db/backup
 sh "$ROOT_PATH"/bin/backup_db/restore.sh

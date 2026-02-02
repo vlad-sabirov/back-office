@@ -16,6 +16,20 @@ interface TaskFilter {
 
 @Injectable()
 export class TaskService extends PrismaService {
+	private readonly priorityLabels: Record<string, string> = {
+		low: '🟢 Низкий',
+		normal: '🔵 Обычный',
+		high: '🟠 Высокий',
+		urgent: '🔴 Срочный',
+	};
+
+	private readonly statusLabels: Record<string, string> = {
+		pending: '⏳ Ожидает',
+		in_progress: '🔄 В работе',
+		completed: '✅ Выполнена',
+		cancelled: '❌ Отменена',
+	};
+
 	constructor(private readonly telegramService: TelegramService) {
 		super();
 	}
@@ -193,10 +207,23 @@ export class TaskService extends PrismaService {
 		const task = await this.findById(id);
 		if (!task) throw new HttpException(TaskConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
 
-		// Проверка прав: можно редактировать только свои задачи (где ты автор)
+		// Проверка прав
 		if (currentUserId) {
 			const canModify = await this.canModifyTask(currentUserId, task);
-			if (!canModify) {
+			const isAssignee = task.assigneeId === currentUserId;
+
+			// Исполнитель может менять только статус
+			if (!canModify && isAssignee) {
+				const allowedFields = ['status'];
+				const requestedFields = Object.keys(updateDto);
+				const hasDisallowedFields = requestedFields.some((field) => !allowedFields.includes(field));
+				if (hasDisallowedFields) {
+					throw new HttpException(TaskConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
+				}
+			}
+
+			// Не автор и не исполнитель — запрет
+			if (!canModify && !isAssignee) {
 				throw new HttpException(TaskConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
 			}
 		}
@@ -214,11 +241,11 @@ export class TaskService extends PrismaService {
 		}
 		if (updateDto.status !== undefined && updateDto.status !== task.status) {
 			data.status = updateDto.status;
-			changes.push(`Статус: ${task.status} → ${updateDto.status}`);
+			changes.push(`Статус: ${this.statusLabels[task.status] || task.status} → ${this.statusLabels[updateDto.status] || updateDto.status}`);
 		}
 		if (updateDto.priority !== undefined && updateDto.priority !== task.priority) {
 			data.priority = updateDto.priority;
-			changes.push(`Приоритет: ${task.priority} → ${updateDto.priority}`);
+			changes.push(`Приоритет: ${this.priorityLabels[task.priority] || task.priority} → ${this.priorityLabels[updateDto.priority] || updateDto.priority}`);
 		}
 		if (updateDto.deadline !== undefined) {
 			const newDeadline = updateDto.deadline ? new Date(updateDto.deadline) : null;
@@ -256,6 +283,11 @@ export class TaskService extends PrismaService {
 					changes: JSON.stringify(changes),
 				},
 			});
+
+			// Отправить уведомление исполнителю, если задачу изменил не он сам
+			if (currentUserId !== task.assigneeId && task.assignee?.telegramId) {
+				await this.sendTaskModifiedNotification(task, changes, currentUserId);
+			}
 		}
 
 		// Вернуть задачу с включёнными модификациями
@@ -302,13 +334,19 @@ export class TaskService extends PrismaService {
 
 		// Создать запись модификации если статус изменился
 		if (oldStatus !== status && currentUserId) {
+			const statusChangeText = `Статус: ${this.statusLabels[oldStatus] || oldStatus} → ${this.statusLabels[status] || status}`;
 			await this.crmTaskModification.create({
 				data: {
 					taskId: Number(id),
 					modifiedById: currentUserId,
-					changes: JSON.stringify([`Статус: ${oldStatus} → ${status}`]),
+					changes: JSON.stringify([statusChangeText]),
 				},
 			});
+
+			// Отправить уведомление исполнителю, если статус изменил не он сам
+			if (currentUserId !== task.assigneeId && task.assignee?.telegramId) {
+				await this.sendTaskModifiedNotification(task, [statusChangeText], currentUserId);
+			}
 		}
 
 		// Вернуть задачу с включёнными модификациями
@@ -485,16 +523,13 @@ export class TaskService extends PrismaService {
 		const author = task.author as any;
 		const organization = task.organization as any;
 
-		let message = `📌 <b>Вам назначена новая задача</b>\n\n`;
-		message += `<b>От:</b> ${author?.lastName || ''} ${author?.firstName || ''}\n`;
+		let message = `📌 <b>${assignee?.firstName || ''}</b>, вам назначена новая задача!\n\n`;
+		message += `<b>От кого:</b> ${author?.firstName || ''} ${author?.lastName || ''}\n`;
 		message += `<b>Задача:</b> ${task.title}\n`;
+		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
 
 		if (task.deadline) {
-			message += `<b>Дедлайн:</b> ${format(new Date(task.deadline), 'd MMMM yyyy', { locale: ru })}\n`;
-		}
-
-		if (task.priority === 'urgent') {
-			message += `⚡ <b>СРОЧНО!</b>\n`;
+			message += `<b>Дедлайн:</b> ${format(new Date(task.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}\n`;
 		}
 
 		if (organization) {
@@ -504,7 +539,38 @@ export class TaskService extends PrismaService {
 		try {
 			await this.telegramService.sendMessage(Number(assignee.telegramId), message);
 		} catch (error) {
-			console.error('Failed to send Telegram notification:', error);
+			console.error('Ошибка отправки Telegram уведомления о назначении задачи:', error);
+		}
+	};
+
+	private sendTaskModifiedNotification = async (task: TaskEntity, changes: string[], modifiedById: number): Promise<void> => {
+		const assignee = task.assignee as any;
+		if (!assignee?.telegramId) return;
+
+		// Получить информацию о том, кто изменил задачу
+		const modifiedBy = await this.user.findUnique({
+			where: { id: modifiedById },
+		});
+
+		const organization = task.organization as any;
+
+		let message = `✏️ <b>${assignee?.firstName || ''}</b>, ваша задача была изменена!\n\n`;
+		message += `<b>Кем:</b> ${modifiedBy?.firstName || ''} ${modifiedBy?.lastName || ''}\n`;
+		message += `<b>Задача:</b> ${task.title}\n\n`;
+		message += `<b>Что изменилось:</b>\n`;
+
+		for (const change of changes) {
+			message += `• ${change}\n`;
+		}
+
+		if (organization) {
+			message += `\n<b>Организация:</b> ${organization.nameRu || organization.nameEn || ''}\n`;
+		}
+
+		try {
+			await this.telegramService.sendMessage(Number(assignee.telegramId), message);
+		} catch (error) {
+			console.error('Ошибка отправки Telegram уведомления об изменении задачи:', error);
 		}
 	};
 }

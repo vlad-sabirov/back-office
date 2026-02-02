@@ -75,10 +75,10 @@ export class CronTaskReminderService extends PrismaService {
 		let sentCount = 0;
 		for (const task of tasks) {
 			const assignee = task.assignee as any;
-			const message = this.buildReminderMessage(task, '🔔 Напоминание (1 день до дедлайна)');
 
 			// Уведомить исполнителя
 			if (assignee?.telegramId) {
+				const message = this.buildReminderMessage(task, '🔔 Напоминание (1 день до дедлайна)');
 				await this.telegramService.sendMessage(Number(assignee.telegramId), message);
 				sentCount++;
 			}
@@ -87,7 +87,9 @@ export class CronTaskReminderService extends PrismaService {
 			if (assignee?.id) {
 				const fullAssignee = await this.userService.findById(assignee.id);
 				if (fullAssignee?.parent?.telegramId) {
-					await this.telegramService.sendMessage(Number(fullAssignee.parent.telegramId), message);
+					const parentName = fullAssignee.parent.firstName || '';
+					const messageForParent = this.buildReminderMessage(task, '🔔 Напоминание (1 день до дедлайна)', parentName);
+					await this.telegramService.sendMessage(Number(fullAssignee.parent.telegramId), messageForParent);
 					sentCount++;
 				}
 			}
@@ -124,10 +126,10 @@ export class CronTaskReminderService extends PrismaService {
 		let sentCount = 0;
 		for (const task of tasks) {
 			const assignee = task.assignee as any;
-			const message = this.buildReminderMessage(task, '⚠️ СРОЧНО! До дедлайна 2 часа');
 
 			// Уведомить исполнителя
 			if (assignee?.telegramId) {
+				const message = this.buildReminderMessage(task, '⚠️ СРОЧНО! До дедлайна 2 часа');
 				await this.telegramService.sendMessage(Number(assignee.telegramId), message);
 				sentCount++;
 			}
@@ -136,7 +138,9 @@ export class CronTaskReminderService extends PrismaService {
 			if (assignee?.id) {
 				const fullAssignee = await this.userService.findById(assignee.id);
 				if (fullAssignee?.parent?.telegramId) {
-					await this.telegramService.sendMessage(Number(fullAssignee.parent.telegramId), message);
+					const parentName = fullAssignee.parent.firstName || '';
+					const messageForParent = this.buildReminderMessage(task, '⚠️ СРОЧНО! До дедлайна 2 часа', parentName);
+					await this.telegramService.sendMessage(Number(fullAssignee.parent.telegramId), messageForParent);
 					sentCount++;
 				}
 			}
@@ -168,10 +172,10 @@ export class CronTaskReminderService extends PrismaService {
 		let sentCount = 0;
 		for (const task of tasks) {
 			const assignee = task.assignee as any;
-			const message = this.buildOverdueMessage(task);
 
 			// Уведомить исполнителя
 			if (assignee?.telegramId) {
+				const message = this.buildOverdueMessage(task);
 				await this.telegramService.sendMessage(Number(assignee.telegramId), message);
 				sentCount++;
 			}
@@ -180,7 +184,9 @@ export class CronTaskReminderService extends PrismaService {
 			if (assignee?.id) {
 				const fullAssignee = await this.userService.findById(assignee.id);
 				if (fullAssignee?.parent?.telegramId) {
-					await this.telegramService.sendMessage(Number(fullAssignee.parent.telegramId), message);
+					const parentName = fullAssignee.parent.firstName || '';
+					const messageForParent = this.buildOverdueMessage(task, parentName);
+					await this.telegramService.sendMessage(Number(fullAssignee.parent.telegramId), messageForParent);
 					sentCount++;
 				}
 			}
@@ -213,36 +219,46 @@ export class CronTaskReminderService extends PrismaService {
 
 	// ==================== Private ====================
 
-	private buildReminderMessage = (task: any, header: string): string => {
+	private priorityLabels: Record<string, string> = {
+		low: '🟢 Низкий',
+		normal: '🔵 Обычный',
+		high: '🟠 Высокий',
+		urgent: '🔴 Срочный',
+	};
+
+	private buildReminderMessage = (task: any, header: string, recipientName?: string): string => {
 		const organization = task.organization as any;
 		const assignee = task.assignee as any;
+		const author = task.author as any;
+		const name = recipientName || assignee?.firstName || '';
 
 		let message = `${header}\n\n`;
+		message += `<b>${name}</b>, напоминаем о задаче:\n\n`;
+		message += `<b>От кого:</b> ${author?.firstName || ''} ${author?.lastName || ''}\n`;
 		message += `<b>Задача:</b> ${task.title}\n`;
+		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
 
 		if (task.deadline) {
 			message += `<b>Дедлайн:</b> ${format(new Date(task.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}\n`;
-		}
-
-		if (task.priority === 'urgent' || task.priority === 'high') {
-			message += `<b>Приоритет:</b> ${task.priority === 'urgent' ? '⚡ Срочный' : '🔴 Высокий'}\n`;
 		}
 
 		if (organization) {
 			message += `<b>Организация:</b> ${organization.nameRu || organization.nameEn || ''}\n`;
 		}
 
-		message += `<b>Исполнитель:</b> ${assignee?.lastName || ''} ${assignee?.firstName || ''}\n`;
-
 		return message;
 	};
 
-	private buildOverdueMessage = (task: any): string => {
+	private buildOverdueMessage = (task: any, recipientName?: string): string => {
 		const organization = task.organization as any;
 		const assignee = task.assignee as any;
+		const author = task.author as any;
+		const name = recipientName || assignee?.firstName || '';
 
-		let message = `🚨 <b>Задача просрочена!</b>\n\n`;
+		let message = `🚨 <b>${name}</b>, задача просрочена!\n\n`;
+		message += `<b>От кого:</b> ${author?.firstName || ''} ${author?.lastName || ''}\n`;
 		message += `<b>Задача:</b> ${task.title}\n`;
+		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
 
 		if (task.deadline) {
 			message += `<b>Дедлайн был:</b> ${format(new Date(task.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}\n`;
@@ -252,7 +268,6 @@ export class CronTaskReminderService extends PrismaService {
 			message += `<b>Организация:</b> ${organization.nameRu || organization.nameEn || ''}\n`;
 		}
 
-		message += `<b>Исполнитель:</b> ${assignee?.lastName || ''} ${assignee?.firstName || ''}\n`;
 		message += `\n⚠️ <i>Требуется срочное выполнение!</i>`;
 
 		return message;
