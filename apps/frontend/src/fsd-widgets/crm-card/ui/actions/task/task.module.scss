@@ -8,17 +8,22 @@
 }
 
 .taskRow {
-	@apply grid gap-12;
+	@apply grid gap-8;
 	grid-template-columns: 1fr auto auto auto;
 	align-items: end;
+	min-width: 0;
 }
 
 .taskRow:last-child {
 	grid-template-columns: 1fr 120px;
 }
 
+.taskRow > * {
+	min-width: 0;
+}
+
 .timeInput {
-	width: 100px;
+	width: 120px;
 }
 
 .titleInput {
@@ -26,11 +31,11 @@
 }
 
 .prioritySelect {
-	width: 140px;
+	width: 160px;
 }
 
 .deadlineInput {
-	width: 160px;
+	width: 180px;
 }
 
 .descriptionInput textarea {

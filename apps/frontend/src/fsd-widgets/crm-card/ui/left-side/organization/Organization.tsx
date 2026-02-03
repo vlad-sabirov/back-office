@@ -205,7 +205,6 @@ export const Organization: FC = () => {
 				onUpdate={!current?.isArchive ? (requisite) => handleUpdateRequisite(requisite) : undefined}
 				onDelete={!current?.isArchive ? (requisite) => handleDeleteRequisite(requisite) : undefined}
 			/>
-			<br />
-		</>
+			</>
 	);
 };

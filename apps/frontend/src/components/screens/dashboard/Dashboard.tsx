@@ -15,6 +15,7 @@ import css from './styles.module.scss';
 export const Dashboard: FC = observer(() => {
 	const CheckAccess = useAccess();
 	const { rolesAlias } = useUserDeprecated();
+	const isBoss = CheckAccess(['developer', 'boss', 'crmAdmin']);
 
 	return (
 		<>
@@ -31,11 +32,15 @@ export const Dashboard: FC = observer(() => {
 					<BirthdayToday />
 
 					{rolesAlias?.includes('crm') && <CrmWorkingBaseDashboardWidget />}
-					{rolesAlias?.includes('logisticVedOrdersAuthor') && <LogisticVedDashboardAuthor />}
-					{rolesAlias?.includes('logisticVedOrdersVed') && <LogisticVedDashboardVed />}
-					{rolesAlias?.includes('logisticVedOrdersCalculate') && <LogisticVedDashboardCalculate />}
-					{CheckAccess(['developer', 'boss']) && <LogisticVedDashboardBoss />}
-					{CheckAccess(['developer', 'boss', 'crmAdmin']) && <LogisticVedDashboardBoss />}
+					{isBoss ? (
+						<LogisticVedDashboardBoss />
+					) : (
+						<>
+							{rolesAlias?.includes('logisticVedOrdersAuthor') && <LogisticVedDashboardAuthor />}
+							{rolesAlias?.includes('logisticVedOrdersVed') && <LogisticVedDashboardVed />}
+							{rolesAlias?.includes('logisticVedOrdersCalculate') && <LogisticVedDashboardCalculate />}
+						</>
+					)}
 
 					<BirthdayUpcoming />
 					<StaffCount />

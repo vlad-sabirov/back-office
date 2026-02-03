@@ -8,6 +8,8 @@
 .wrapper {
 	@apply grid;
 	grid-template-columns: 400px 1fr;
+	overflow: hidden;
+	height: calc(100vh - 85px);
 
 	&__disabled {
 		@apply opacity-30 ;
@@ -15,15 +17,23 @@
 }
 
 .leftSide {
-	@apply pr-40;
+	@apply pr-20 pb-20;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .rightSide {
-	@apply pl-40 grid items-end border-l-neutral-100 border-l relative;
+	@apply pl-20 grid border-l-neutral-100 border-l relative;
 	grid-template-rows: auto 1fr auto;
 	min-height: calc(100vh - 85px);
 	max-height: calc(100vh - 85px);
 	overflow: hidden;
+	min-width: 0;
 }
 
 .accessDenied {
