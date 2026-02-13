@@ -3,7 +3,7 @@ import { CalendarPropsEvent } from '@fsd/shared/ui-kit';
 import { getEventsFromDaysProps, getEventsFromDaysResponse } from '.';
 
 export const getEventsFromDays = ({ dates, events }: getEventsFromDaysProps): getEventsFromDaysResponse[] => {
-	const limitDisplay = 3;
+	const limitDisplay = 5;
 
 	const result: getEventsFromDaysResponse[] = dates.map((date) => {
 		const foundedEvent: CalendarPropsEvent[] = [];
@@ -28,7 +28,7 @@ export const getEventsFromDays = ({ dates, events }: getEventsFromDaysProps): ge
 	});
 
 	result.map((day, dayIndex) => {
-		const positionStamp: number[] = [0, 0, 0];
+		const positionStamp: number[] = [0, 0, 0, 0, 0];
 		const newEvents = day.events?.length
 			? day.events.map((event, index) => {
 					const findPrev = result?.[dayIndex - 1]?.events?.filter(
@@ -45,6 +45,10 @@ export const getEventsFromDays = ({ dates, events }: getEventsFromDaysProps): ge
 						? 2
 						: !positionStamp[2]
 						? 3
+						: !positionStamp[3]
+						? 4
+						: !positionStamp[4]
+						? 5
 						: 0;
 
 					if (!findPrev?.slot?.position) positionStamp[position - 1] = 1;

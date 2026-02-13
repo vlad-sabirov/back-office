@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { LatenessAccess } from '@fsd/entities/lateness';
 import { CrmRealizationDashboard } from '@fsd/features/crm-realization-dashboard';
 import { CrmWorkingBaseDashboardWidget } from '@fsd/widgets/crm-working-base-dashboard';
+import { TodayPlan } from '@fsd/widgets/calendar-today-plan';
 import { useAccess, useUserDeprecated } from '@hooks';
 import { Grid } from '@mantine/core';
 import { LogisticVedDashboardAuthor, LogisticVedDashboardBoss } from '@screens/logistic/ved/dashboard';
@@ -28,6 +29,7 @@ export const Dashboard: FC = observer(() => {
 
 				<Grid gutter={20} columns={100} className={css.grid} grow>
 					{/*<Mock count={40} />*/}
+					<TodayPlan />
 					{CheckAccess(LatenessAccess.lateness) && <LatenessTodayDashboard />}
 					<BirthdayToday />
 

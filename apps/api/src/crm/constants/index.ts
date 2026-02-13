@@ -8,3 +8,4 @@ export * from './organization-type.constants';
 export * from './phone.constants';
 export * from './reports-realization.constants';
 export * from './task.constants';
+export * from './calendar-event.constants';

@@ -12,6 +12,15 @@ export const data: INavigationData[] = [
 		access: ['user'],
 	},
 
+	/** Ежедневник */
+	{
+		alias: 'calendar',
+		title: 'Ежедневник',
+		icon: 'calendar',
+		route: '/calendar',
+		access: ['user'],
+	},
+
 	/** CRM */
 	{
 		alias: 'crm',

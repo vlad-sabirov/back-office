@@ -20,6 +20,7 @@ export interface CalendarPropsEvent {
 	isManyDays?: boolean;
 	priority?: number;
 	ctx?: string;
+	color?: string;
 	icon?: ReactNode;
 	slot?: CalendarPropsSlot;
 	onClick?: () => void;

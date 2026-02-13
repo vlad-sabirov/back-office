@@ -7,6 +7,7 @@ import { CalendarProps } from '.';
 import css from './Calendar.module.scss';
 
 const calendarStore = new CalendarStore();
+const CalendarContext = createContext(calendarStore);
 
 const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 	({ date, events, min, max, startDay, view, views, ctx, loading, className, ...props }) => {
@@ -24,7 +25,7 @@ const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 			if (view) CalendarStore.setView(view);
 			if (!view && views) CalendarStore.setView(views[0]);
 			if (views) CalendarStore.setViews(views);
-			if (loading) CalendarStore.setLoading(loading);
+			CalendarStore.setLoading(!!loading);
 			setIsLoaded(true);
 		}, [CalendarStore, events, date, max, min, startDay, view, views, loading]);
 
@@ -42,7 +43,6 @@ const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 
 const withHOC = <T extends CalendarProps>(Component: FC<T & { ctx: Context<CalendarStore> }>) => {
 	return function withHOCComponent(props: T) {
-		const CalendarContext = createContext(calendarStore);
 		const newProps: T & { ctx: Context<CalendarStore> } = { ...props, ctx: CalendarContext };
 
 		return (

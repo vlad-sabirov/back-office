@@ -1,0 +1,29 @@
+.headerRight {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.userSelect {
+	min-width: 200px;
+}
+
+.navigation {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 20px;
+	border-bottom: 1px solid var(--mantine-color-gray-3);
+	background: var(--mantine-color-body);
+}
+
+.dateTitle {
+	min-width: 200px;
+	text-transform: capitalize;
+}
+
+.calendarWrapper {
+	padding: 20px;
+	height: calc(100vh - 140px);
+	overflow: auto;
+}

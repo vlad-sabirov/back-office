@@ -16,6 +16,9 @@ import {
 	ReportRealizationController,
 } from './controllers';
 import { TaskController } from './controllers/task.controller';
+import { CalendarEventController } from './controllers/calendar-event.controller';
+import { CalendarParticipantController } from './controllers/calendar-participant.controller';
+import { CalendarReminderController } from './controllers/calendar-reminder.controller';
 
 import {
 	ContactService,
@@ -29,6 +32,11 @@ import {
 	ReportRealizationService,
 } from './services';
 import { TaskService } from './services/task.service';
+import { CalendarEventService } from './services/calendar-event.service';
+import { TaskNotificationService } from './services/task-notification.service';
+import { CalendarEventNotificationService } from './services/calendar-event-notification.service';
+import { CalendarParticipantService } from './services/calendar-participant.service';
+import { CalendarReminderService } from './services/calendar-reminder.service';
 
 @Module({
 	imports: [SearchModule, AuthModule, HttpModule, forwardRef(() => NotificationModule)],
@@ -43,6 +51,9 @@ import { TaskService } from './services/task.service';
 		PhoneController,
 		ReportRealizationController,
 		TaskController,
+		CalendarEventController,
+		CalendarParticipantController,
+		CalendarReminderController,
 	],
 	providers: [
 		ContactService,
@@ -55,7 +66,12 @@ import { TaskService } from './services/task.service';
 		PhoneService,
 		ReportRealizationService,
 		TaskService,
+		CalendarEventService,
+		TaskNotificationService,
+		CalendarEventNotificationService,
+		CalendarParticipantService,
+		CalendarReminderService,
 	],
-	exports: [TaskService, OrganizationService],
+	exports: [TaskService, CalendarEventService, OrganizationService],
 })
 export class CrmModule {}

@@ -30,6 +30,7 @@ export interface IStaffEntity {
 	lastLogin: string;
 	child?: IStaffEntity[];
 	parent?: IStaffEntity;
+	parentId?: number | null;
 	departmentId: number;
 	department: IStaffDepartmentEntity;
 	territoryId: number;

@@ -53,7 +53,7 @@ export class CronTaskReminderService extends PrismaService {
 	};
 
 	/**
-	 * Проверка дедлайнов за 1 день - уведомляем исполнителя + руководителя
+	 * Проверка дедлайнов за 1 день - уведомляем исполнителя + руководителя (если notifyBoss = true)
 	 */
 	sendReminder1Day = async (): Promise<{ sent: number }> => {
 		const now = new Date();
@@ -83,8 +83,8 @@ export class CronTaskReminderService extends PrismaService {
 				sentCount++;
 			}
 
-			// Уведомить руководителя (parent исполнителя)
-			if (assignee?.id) {
+			// Уведомить руководителя (parent исполнителя) — только если notifyBoss = true
+			if (task.notifyBoss && assignee?.id) {
 				const fullAssignee = await this.userService.findById(assignee.id);
 				if (fullAssignee?.parent?.telegramId) {
 					const parentName = fullAssignee.parent.firstName || '';
@@ -104,7 +104,7 @@ export class CronTaskReminderService extends PrismaService {
 	};
 
 	/**
-	 * Срочное напоминание за 2 часа - уведомляем обоих
+	 * Срочное напоминание за 2 часа - уведомляем исполнителя + руководителя (если notifyBoss = true)
 	 */
 	sendReminder2Hours = async (): Promise<{ sent: number }> => {
 		const now = new Date();
@@ -134,8 +134,8 @@ export class CronTaskReminderService extends PrismaService {
 				sentCount++;
 			}
 
-			// Уведомить руководителя
-			if (assignee?.id) {
+			// Уведомить руководителя — только если notifyBoss = true
+			if (task.notifyBoss && assignee?.id) {
 				const fullAssignee = await this.userService.findById(assignee.id);
 				if (fullAssignee?.parent?.telegramId) {
 					const parentName = fullAssignee.parent.firstName || '';
@@ -180,8 +180,8 @@ export class CronTaskReminderService extends PrismaService {
 				sentCount++;
 			}
 
-			// Уведомить руководителя
-			if (assignee?.id) {
+			// Уведомить руководителя — только если notifyBoss = true
+			if (task.notifyBoss && assignee?.id) {
 				const fullAssignee = await this.userService.findById(assignee.id);
 				if (fullAssignee?.parent?.telegramId) {
 					const parentName = fullAssignee.parent.firstName || '';

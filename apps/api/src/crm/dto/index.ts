@@ -8,6 +8,7 @@ export * from './mutation-organization-tag.dto';
 export * from './mutation-phone.dto';
 export * from './mutation-report-realization.dto';
 export * from './mutation-task.dto';
+export * from './mutation-calendar-event.dto';
 
 export * from './query-contact.dto';
 export * from './query-email.dto';
@@ -19,6 +20,7 @@ export * from './query-organization-type.dto';
 export * from './query-phone.dto';
 export * from './query-report-realization.dto';
 export * from './query-task.dto';
+export * from './query-calendar-event.dto';
 
 export * from './search-contact.dto';
 // export * from './search-email.dto';

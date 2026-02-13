@@ -1,0 +1,62 @@
+.panel {
+	@apply relative;
+	min-height: 180px;
+}
+
+.eventWrapper {
+	@apply grid gap-12;
+}
+
+.eventRow {
+	@apply grid gap-8;
+	grid-template-columns: 160px 1fr;
+	align-items: end;
+	min-width: 0;
+}
+
+.eventRow:nth-child(2) {
+	grid-template-columns: 180px 100px 180px 100px;
+}
+
+.eventRowLast {
+	@apply grid gap-8;
+	grid-template-columns: 1fr 120px;
+	align-items: end;
+}
+
+.eventRow > *,
+.eventRowLast > * {
+	min-width: 0;
+}
+
+.typeSelect {
+	width: 160px;
+}
+
+.titleInput {
+	min-width: 200px;
+}
+
+.dateInput {
+	width: 180px;
+}
+
+.timeInput {
+	width: 100px;
+}
+
+.descriptionInput textarea {
+	height: 60px !important;
+}
+
+.submitButton {
+	@apply h-full;
+	min-height: 60px;
+}
+
+.noAccess {
+	@apply flex items-center justify-center text-neutral-400 italic;
+	min-height: 120px;
+	text-align: center;
+	padding: 20px;
+}

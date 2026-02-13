@@ -56,9 +56,13 @@ model User {
   tasksAuthored             CrmTask[]              @relation("crm_task_author")
   tasksAssigned             CrmTask[]              @relation("crm_task_assignee")
   taskModifications         CrmTaskModification[]  @relation("crm_task_modifier")
+  calendarEventsAuthored    CalendarEvent[]              @relation("calendar_event_author")
+  calendarEventsAssigned    CalendarEvent[]              @relation("calendar_event_assignee")
+  calendarEventParticipations CalendarEventParticipant[] @relation("calendar_event_participant_user")
+  calendarReminders         CalendarReminder[]           @relation("calendar_reminder_user")
   // -------
-  createdAt                 DateTime               @default(now())
-  updatedAt                 DateTime               @updatedAt
+  createdAt                 DateTime                     @default(now())
+  updatedAt                 DateTime                     @updatedAt
 
   @@map("user")
 }
@@ -288,10 +292,11 @@ model CrmOrganization {
   emails        CrmEmail[]                 @relation("crm_email_organization")
   tags          CrmOrganizationTag[]       @relation("crm_organization_tag")
   history       CrmHistory[]               @relation("crm_history_organization")
-  tasks         CrmTask[]                  @relation("crm_task_organization")
-  powerLogs     CrmOrganizationPowerLog[]  @relation("crm_organization_power_log")
+  tasks          CrmTask[]                  @relation("crm_task_organization")
+  calendarEvents CalendarEvent[]            @relation("calendar_event_organization")
+  powerLogs      CrmOrganizationPowerLog[]  @relation("crm_organization_power_log")
   // -------
-  isVerified    Boolean                    @default(false)
+  isVerified     Boolean                    @default(false)
   isReserve     Boolean                    @default(false)
   isArchive     Boolean                    @default(false)
   last1CUpdate  DateTime?                  @db.Date
@@ -313,12 +318,13 @@ model CrmContact {
   organizations CrmOrganization[]
   phones        CrmPhone[]        @relation("crm_phone_contact")
   emails        CrmEmail[]        @relation("crm_email_contact")
-  history       CrmHistory[]      @relation("crm_history_contact")
+  history        CrmHistory[]      @relation("crm_history_contact")
+  calendarEvents CalendarEvent[]   @relation("calendar_event_contact")
   // -------
-  isVerified    Boolean           @default(false)
-  isArchive     Boolean           @default(false)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  isVerified     Boolean           @default(false)
+  isArchive      Boolean           @default(false)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@map("crm_contact")
 }
@@ -462,28 +468,32 @@ model VacationCalendar {
 }
 
 model CrmTask {
-  id                Int                   @id @default(autoincrement())
-  title             String
-  description       String?
-  status            String                @default("pending") // pending, in_progress, completed, cancelled
-  priority          String                @default("normal") // low, normal, high, urgent
-  deadline          DateTime?
-  reminderSent3Days Boolean               @default(false)
-  reminderSent1Day  Boolean               @default(false)
-  reminderSent2Hours Boolean              @default(false)
-  overdueNotified   Boolean               @default(false)
+  id                 Int                   @id @default(autoincrement())
+  title              String
+  description        String?
+  status             String                @default("pending") // pending, in_progress, completed, cancelled
+  priority           String                @default("normal") // low, normal, high, urgent
+  deadline           DateTime?
+  // Notification fields
+  notifyBoss         Boolean               @default(false)
+  notifyBossManual   Boolean               @default(false)
+  reminderSent3Days  Boolean               @default(false)
+  reminderSent1Day   Boolean               @default(false)
+  reminderSent2Hours Boolean               @default(false)
+  overdueNotified    Boolean               @default(false)
   // -------
-  author            User                  @relation("crm_task_author", fields: [authorId], references: [id])
-  authorId          Int
-  assignee          User                  @relation("crm_task_assignee", fields: [assigneeId], references: [id])
-  assigneeId        Int
-  organization      CrmOrganization?      @relation("crm_task_organization", fields: [organizationId], references: [id])
-  organizationId    Int?
-  modifications     CrmTaskModification[] @relation("crm_task_modifications")
+  author             User                  @relation("crm_task_author", fields: [authorId], references: [id])
+  authorId           Int
+  assignee           User                  @relation("crm_task_assignee", fields: [assigneeId], references: [id])
+  assigneeId         Int
+  organization       CrmOrganization?      @relation("crm_task_organization", fields: [organizationId], references: [id])
+  organizationId     Int?
+  modifications      CrmTaskModification[] @relation("crm_task_modifications")
+  calendarEvents     CalendarEvent[]       @relation("calendar_event_task")
   // -------
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
-  completedAt       DateTime?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  completedAt        DateTime?
 
   @@index([assigneeId, status])
   @@index([deadline])
@@ -517,4 +527,75 @@ model CrmOrganizationPowerLog {
 
   @@index([organizationId])
   @@map("crm_organization_power_log")
+}
+
+model CalendarEvent {
+  id                Int                        @id @default(autoincrement())
+  type              String                     // meeting, call, note, reminder
+  title             String
+  description       String?
+  dateStart         DateTime
+  dateEnd           DateTime
+  isAllDay          Boolean                    @default(false)
+  location          String?
+  // Notification fields
+  reminderSent1Day  Boolean                    @default(false)
+  reminderSent2Hours Boolean                   @default(false)
+  reminderSent1Hour Boolean                    @default(false)
+  reminderFired     Boolean                    @default(false)
+  // -------
+  author            User                       @relation("calendar_event_author", fields: [authorId], references: [id])
+  authorId          Int
+  assignee          User                       @relation("calendar_event_assignee", fields: [assigneeId], references: [id])
+  assigneeId        Int
+  organization      CrmOrganization?           @relation("calendar_event_organization", fields: [organizationId], references: [id])
+  organizationId    Int?
+  contact           CrmContact?                @relation("calendar_event_contact", fields: [contactId], references: [id])
+  contactId         Int?
+  task              CrmTask?                   @relation("calendar_event_task", fields: [taskId], references: [id], onDelete: SetNull)
+  taskId            Int?
+  participants      CalendarEventParticipant[] @relation("calendar_event_participants")
+  reminders         CalendarReminder[]         @relation("calendar_event_reminders")
+  // -------
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+
+  @@index([assigneeId, dateStart])
+  @@index([dateStart, dateEnd])
+  @@index([organizationId])
+  @@index([contactId])
+  @@index([taskId])
+  @@map("calendar_event")
+}
+
+model CalendarEventParticipant {
+  id        Int           @id @default(autoincrement())
+  event     CalendarEvent @relation("calendar_event_participants", fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   Int
+  user      User          @relation("calendar_event_participant_user", fields: [userId], references: [id])
+  userId    Int
+  status    String        @default("pending") // pending, accepted, declined
+  // -------
+  createdAt DateTime      @default(now())
+
+  @@unique([eventId, userId])
+  @@index([userId, status])
+  @@map("calendar_event_participant")
+}
+
+model CalendarReminder {
+  id        Int           @id @default(autoincrement())
+  event     CalendarEvent @relation("calendar_event_reminders", fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   Int
+  user      User          @relation("calendar_reminder_user", fields: [userId], references: [id])
+  userId    Int
+  remindAt  DateTime
+  isSent    Boolean       @default(false)
+  // -------
+  createdAt DateTime      @default(now())
+
+  @@index([remindAt, isSent])
+  @@index([eventId])
+  @@index([userId])
+  @@map("calendar_reminder")
 }

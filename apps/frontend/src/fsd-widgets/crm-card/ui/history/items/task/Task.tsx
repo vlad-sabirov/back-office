@@ -1,14 +1,23 @@
 import { FC, useMemo, useState, useCallback } from 'react';
 import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
-import { ICrmTaskEntity, EnCrmTaskStatus, EnCrmTaskPriority, CrmTaskConst } from '@fsd/entities/crm-task';
+import { ICrmTaskEntity, EnCrmTaskStatus, EnCrmTaskPriority, CrmTaskConst, CrmTaskService } from '@fsd/entities/crm-task';
 import { StaffAvatar } from '@fsd/entities/staff';
+import { useCrmHistoryActions } from '@fsd/entities/crm-history';
 import { dateFnsLocaleRu } from '@fsd/shared/lib/date-fns.ru.locale';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
-import { TextField, Icon } from '@fsd/shared/ui-kit';
+import { TextField, Icon, Select } from '@fsd/shared/ui-kit';
 import { ActionIcon } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { TaskEditModal } from './TaskEditModal';
 import { TaskDeleteModal } from './TaskDeleteModal';
 import css from './task.module.scss';
+
+const statusOptions = [
+	{ value: EnCrmTaskStatus.Pending, label: 'Ожидает' },
+	{ value: EnCrmTaskStatus.InProgress, label: 'В работе' },
+	{ value: EnCrmTaskStatus.Completed, label: 'Выполнена' },
+	{ value: EnCrmTaskStatus.Cancelled, label: 'Отменена' },
+];
 
 interface IProps {
 	task: ICrmTaskEntity;
@@ -26,6 +35,9 @@ export const Task: FC<IProps> = ({ task, className }) => {
 	const author = useMemo(() => task.author, [task.author]);
 	const assignee = useMemo(() => task.assignee, [task.assignee]);
 
+	const historyActions = useCrmHistoryActions();
+	const [updateTaskStatus] = CrmTaskService.updateStatus();
+
 	// Проверка прав на редактирование/удаление
 	// Можно если: ты автор ИЛИ имеешь роль boss/admin/developer/crmAdmin
 	const canModify = useMemo(() => {
@@ -35,6 +47,23 @@ export const Task: FC<IProps> = ({ task, className }) => {
 		);
 		return isAuthor || hasAdminRole;
 	}, [task.authorId, currentUserId, currentUserRoles]);
+
+	// Исполнитель тоже может менять статус
+	const canChangeStatus = useMemo(() => {
+		const isAssignee = task.assigneeId === Number(currentUserId);
+		return canModify || isAssignee;
+	}, [canModify, task.assigneeId, currentUserId]);
+
+	const handleStatusChange = useCallback(async (newStatus: string) => {
+		try {
+			await updateTaskStatus({ id: task.id, status: newStatus }).unwrap();
+			showNotification({ color: 'green', message: 'Статус задачи обновлён' });
+			historyActions.reloadTimestamp();
+		} catch (e: any) {
+			const message = e?.data?.message || 'Ошибка при смене статуса';
+			showNotification({ color: 'red', message });
+		}
+	}, [task.id, updateTaskStatus, historyActions]);
 
 	const openEditModal = useCallback(() => setEditModalOpened(true), []);
 	const closeEditModal = useCallback(() => setEditModalOpened(false), []);
@@ -101,9 +130,19 @@ export const Task: FC<IProps> = ({ task, className }) => {
 				)}
 
 				<div className={css.taskMeta}>
-					<span className={`${css.badge} ${css[`badge_${statusConfig.color}`]}`}>
-						{statusConfig.label}
-					</span>
+					{canChangeStatus ? (
+						<Select
+							data={statusOptions}
+							value={task.status}
+							onChange={(value) => value && handleStatusChange(value)}
+							size="medium"
+							className={css.statusSelectWrapper}
+						/>
+					) : (
+						<span className={`${css.badge} ${css[`badge_${statusConfig.color}`]}`}>
+							{statusConfig.label}
+						</span>
+					)}
 					<span className={`${css.badge} ${css[`badge_${priorityConfig.color}`]}`}>
 						{priorityConfig.label}
 					</span>

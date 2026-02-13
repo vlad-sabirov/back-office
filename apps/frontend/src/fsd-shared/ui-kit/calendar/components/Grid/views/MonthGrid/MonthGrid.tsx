@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import cn from 'classnames';
 import {
 	differenceInDays,
@@ -10,6 +10,7 @@ import {
 } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import { TextField } from '@fsd/shared/ui-kit';
+import { CalendarPropsEvent } from '@fsd/shared/ui-kit';
 import TailwindColors from '@config/tailwind/color';
 import { Loader, MantineColor, Tooltip } from '@mantine/core';
 import HolidaySvg from '@public/img/holiday.svg';
@@ -18,6 +19,31 @@ import { getDateRange } from '@fsd/shared/ui-kit/calendar/utils/getDateRange/get
 import { getEventsFromDays, getEventsFromDaysResponse } from '@fsd/shared/ui-kit/calendar/utils/getEventsFromDays';
 import { MonthGridProps } from '.';
 import css from './MonthGrid.module.scss';
+
+/** Собирает цвета событий дня и возвращает стили для ячейки */
+const getDayCellStyle = (events?: CalendarPropsEvent[]): React.CSSProperties | undefined => {
+	if (!events || events.length === 0) return undefined;
+
+	const colors = events
+		.map((e) => e.color)
+		.filter((c): c is string => !!c);
+
+	if (colors.length === 0) return undefined;
+
+	const unique = [...new Set(colors)];
+
+	if (unique.length === 1) {
+		return { backgroundColor: unique[0] + '30' }; // 30 = ~19% opacity hex
+	}
+
+	// Градиент из уникальных цветов с полупрозрачностью
+	const stops = unique.map((c, i) => {
+		const pct = (i / (unique.length - 1)) * 100;
+		return `${c}40 ${pct}%`; // 40 = ~25% opacity
+	});
+
+	return { background: `linear-gradient(135deg, ${stops.join(', ')})` };
+};
 
 export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...props }) => {
 	const CalendarStore = useContext(ctx);
@@ -70,12 +96,18 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 							const isHoliday = day.holiday;
 							const isTransfer = day.transfer;
 
+							const dayCellStyle = (isSameMonth && !isLessMin && !isMoreMax)
+								? getDayCellStyle(day.events)
+								: undefined;
+
 							return (
 								<div
 									key={format(day.date, 'yyyyMMdd')}
 									className={cn(css.item, {
 										[css.item__disabled]: !isSameMonth || isLessMin || isMoreMax,
+										[css.item__hasEvents]: !!dayCellStyle,
 									})}
+									style={dayCellStyle}
 								>
 									<TextField
 										size="small"
@@ -125,6 +157,15 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 											const width = toEnd * 100 - 8 + '%';
 
 											if (event.slot?.display) {
+												const eventStyle: React.CSSProperties = {
+													width: event.isManyDays ? width : undefined,
+													cursor: event?.onClick ? 'pointer' : undefined,
+												};
+												if (event.color) {
+													eventStyle.backgroundColor = event.color + '55';
+													eventStyle.borderLeft = `3px solid ${event.color}`;
+													eventStyle.paddingLeft = '8px';
+												}
 												return (
 													<TextField
 														onClick={event.onClick}
@@ -139,15 +180,17 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 																	event.slot?.position === 2 && event.slot?.display,
 																[css.event__itemThree]:
 																	event.slot?.position === 3 && event.slot?.display,
+																[css.event__itemFour]:
+																	event.slot?.position === 4 && event.slot?.display,
+																[css.event__itemFive]:
+																	event.slot?.position === 5 && event.slot?.display,
 															},
 															{
 																[css.event__vacation]: event.type === 'vacation',
+																[css.event__colored]: !!event.color,
 															}
 														)}
-														style={{
-															width: event.isManyDays ? width : undefined,
-															cursor: event?.onClick ? 'pointer' : undefined,
-														}}
+														style={eventStyle}
 														key={event.id}
 													>
 														{!!event.icon && (

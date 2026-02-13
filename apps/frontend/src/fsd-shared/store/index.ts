@@ -14,6 +14,7 @@ import { CrmOrganizationTypeApi, CrmOrganizationTypeReducer } from '@fsd/entitie
 import { CrmPhoneApi } from '@fsd/entities/crm-phone';
 import { CrmRealizationApi, CrmRealizationSliceReducer } from '@fsd/entities/crm-realization';
 import { CrmTaskApi, CrmTaskReducer } from '@fsd/entities/crm-task';
+import { CalendarEventApi, CalendarParticipantApi, CalendarReminderApi } from '@fsd/entities/calendar-event';
 import { CrmWorkingBaseApi, CrmWorkingBaseSliceReducer } from '@fsd/entities/crm-working-base';
 import { SearchReducer } from '@fsd/entities/search';
 import { StaffApi, StaffReducer } from '@fsd/entities/staff';
@@ -61,6 +62,9 @@ export const rootReducer = combineReducers({
 	[TodoApi.reducerPath]: TodoApi.reducer,
 	crm_task: CrmTaskReducer,
 	[CrmTaskApi.reducerPath]: CrmTaskApi.reducer,
+	[CalendarEventApi.reducerPath]: CalendarEventApi.reducer,
+	[CalendarParticipantApi.reducerPath]: CalendarParticipantApi.reducer,
+	[CalendarReminderApi.reducerPath]: CalendarReminderApi.reducer,
 });
 
 export const ReduxStore = () =>
@@ -84,7 +88,10 @@ export const ReduxStore = () =>
 				.concat(Account1CApi.middleware)
 				.concat(VoipApi.middleware)
 				.concat(TodoApi.middleware)
-				.concat(CrmTaskApi.middleware);
+				.concat(CrmTaskApi.middleware)
+				.concat(CalendarEventApi.middleware)
+				.concat(CalendarParticipantApi.middleware)
+				.concat(CalendarReminderApi.middleware);
 		},
 	});
 

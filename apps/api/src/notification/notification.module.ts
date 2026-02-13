@@ -7,6 +7,7 @@ import { CronBirthdayService } from './services/cron/birthday';
 import { CronLatenessService } from './services/cron/lateness';
 import { CronTaskReminderService } from './services/cron/task-reminder';
 import { CronOrganizationPowerService } from './services/cron/organization-power';
+import { CronCalendarEventService } from './services/cron/calendar-event';
 import { CronController } from './controllers/cron.controller';
 import { UserModule } from 'src/user/user.module';
 import { ProductionCalendarModule } from '../production-calendar/production-calendar.module';
@@ -20,6 +21,7 @@ import { VacationCalendarModule } from '../vacation-calendar/vacation-calendar.m
 		CronLatenessService,
 		CronTaskReminderService,
 		CronOrganizationPowerService,
+		CronCalendarEventService,
 	],
 	controllers: [NotificationController, TelegramController, CronController],
 	exports: [TelegramService],

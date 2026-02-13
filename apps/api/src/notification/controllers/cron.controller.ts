@@ -3,6 +3,7 @@ import { CronBirthdayService } from '../services/cron/birthday';
 import { CronLatenessService } from '../services/cron/lateness';
 import { CronTaskReminderService } from '../services/cron/task-reminder';
 import { CronOrganizationPowerService } from '../services/cron/organization-power';
+import { CronCalendarEventService } from '../services/cron/calendar-event';
 
 @Controller('notification/cron')
 export class CronController {
@@ -10,7 +11,8 @@ export class CronController {
 		private readonly cronBirthdayService: CronBirthdayService,
 		private readonly cronLatenessService: CronLatenessService,
 		private readonly cronTaskReminderService: CronTaskReminderService,
-		private readonly cronOrganizationPowerService: CronOrganizationPowerService
+		private readonly cronOrganizationPowerService: CronOrganizationPowerService,
+		private readonly cronCalendarEventService: CronCalendarEventService
 	) {}
 
 	// ==================== Birthday ====================
@@ -84,5 +86,43 @@ export class CronController {
 	@Get('/organization/getPowerStatistics')
 	async organizationGetPowerStatistics(): Promise<{ full: number; medium: number; low: number; empty: number; total: number }> {
 		return await this.cronOrganizationPowerService.getPowerStatistics();
+	}
+
+	// ==================== Calendar Event Reminders ====================
+
+	@Get('/calendar-event/checkAllReminders')
+	async calendarEventCheckAllReminders(): Promise<{
+		reminder1Day: number;
+		reminder2Hours: number;
+		reminder1Hour: number;
+		reminders: number;
+		customReminders: number;
+	}> {
+		return await this.cronCalendarEventService.checkAllEventReminders();
+	}
+
+	@Get('/calendar-event/sendReminder1Day')
+	async calendarEventSendReminder1Day(): Promise<{ sent: number }> {
+		return await this.cronCalendarEventService.sendReminder1Day();
+	}
+
+	@Get('/calendar-event/sendReminder2Hours')
+	async calendarEventSendReminder2Hours(): Promise<{ sent: number }> {
+		return await this.cronCalendarEventService.sendReminder2Hours();
+	}
+
+	@Get('/calendar-event/sendReminder1Hour')
+	async calendarEventSendReminder1Hour(): Promise<{ sent: number }> {
+		return await this.cronCalendarEventService.sendReminder1Hour();
+	}
+
+	@Get('/calendar-event/processReminders')
+	async calendarEventProcessReminders(): Promise<{ sent: number }> {
+		return await this.cronCalendarEventService.processReminders();
+	}
+
+	@Get('/calendar-event/processCustomReminders')
+	async calendarEventProcessCustomReminders(): Promise<{ sent: number }> {
+		return await this.cronCalendarEventService.processCustomReminders();
 	}
 }
