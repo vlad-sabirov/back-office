@@ -15,6 +15,10 @@
 0 9 * * 1-5 /usr/bin/curl --silent http://localhost/api/notification/cron/lateness/forgotToCheckIn &>/dev/null
 # Отчет руководителю о посещаемости его команды
 30 9 * * 1-5 /usr/bin/curl --silent http://localhost/api/notification/cron/lateness/teamAttendanceReport &>/dev/null
+# Напоминания по задачам (каждый час с 7 до 22, пн-сб)
+0 7-22 * * 1-6 /usr/bin/curl --silent http://localhost/api/notification/cron/task/checkAllDeadlines &>/dev/null
+# Напоминания по событиям календаря (каждые 30 минут с 7 до 22, пн-сб)
+*/30 7-22 * * 1-6 /usr/bin/curl --silent http://localhost/api/notification/cron/calendar-event/checkAllReminders &>/dev/null
 
 # -------
 # Системное

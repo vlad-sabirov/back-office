@@ -264,7 +264,7 @@ const CalendarDiaryPage: FC = observer(() => {
 								className={css.userSelect}
 							/>
 						)}
-						<Button onClick={handleCreateEvent}>Создать событие</Button>
+						<Button onClick={handleCreateEvent} className={css.btnPrimary}>Создать</Button>
 					</div>
 				}
 				loading={isFetching}
@@ -303,7 +303,7 @@ const CalendarDiaryPage: FC = observer(() => {
 			<Modal
 				opened={formModalOpened}
 				onClose={handleFormModalClose}
-				title={editingEvent ? 'Редактирование события' : 'Создание события'}
+				title={editingEvent ? 'Редактирование события' : 'Создание'}
 				size="lg"
 			>
 				<CalendarEventForm
@@ -393,7 +393,7 @@ const CalendarDiaryPage: FC = observer(() => {
 						<Group position="right">
 							{viewingEvent.organizationId && (
 								<Button
-									variant="light"
+									className={css.btnOutline}
 									onClick={() => {
 										handleDetailModalClose();
 										router.push(`/crm/organization/${viewingEvent.organizationId}`);
@@ -402,10 +402,10 @@ const CalendarDiaryPage: FC = observer(() => {
 									Перейти к организации
 								</Button>
 							)}
-							<Button variant="outline" onClick={handleDetailModalClose}>
+							<Button className={css.btnOutline} onClick={handleDetailModalClose}>
 								Закрыть
 							</Button>
-							<Button onClick={handleEditEvent}>
+							<Button className={css.btnPrimary} onClick={handleEditEvent}>
 								Редактировать
 							</Button>
 						</Group>
@@ -472,7 +472,7 @@ const CalendarDiaryPage: FC = observer(() => {
 						<Group position="right">
 							{viewingTask.organizationId && (
 								<Button
-									variant="light"
+									className={css.btnOutline}
 									onClick={() => {
 										handleDetailModalClose();
 										router.push(`/crm/organization/${viewingTask.organizationId}`);
@@ -481,7 +481,7 @@ const CalendarDiaryPage: FC = observer(() => {
 									Перейти к организации
 								</Button>
 							)}
-							<Button variant="outline" onClick={handleDetailModalClose}>
+							<Button className={css.btnOutline} onClick={handleDetailModalClose}>
 								Закрыть
 							</Button>
 						</Group>

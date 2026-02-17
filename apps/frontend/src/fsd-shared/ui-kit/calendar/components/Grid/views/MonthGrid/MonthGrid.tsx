@@ -172,7 +172,6 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 														className={cn(
 															css.event,
 															{
-																[css.event__singleDay]: event.isManyDays,
 																[css.event__manyDay]: event.isManyDays,
 																[css.event__itemOne]:
 																	event.slot?.position === 1 && event.slot?.display,

@@ -24,14 +24,27 @@
 .item {
 	@apply relative outline outline-1 outline-neutral-50;
 	min-height: 190px;
-	transition: background-color 0.2s ease;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease;
+	cursor: pointer;
 
 	p {
 		padding-right: 15px;
 	}
 
+	&:hover {
+		background-color: rgba(79, 127, 240, 0.06);
+		box-shadow: inset 0 0 0 2px rgba(79, 127, 240, 0.3);
+		z-index: 1;
+	}
+
 	&__disabled {
 		@apply pointer-events-none select-none bg-neutral-bg;
+		cursor: default;
+
+		&:hover {
+			background-color: transparent;
+			box-shadow: none;
+		}
 	}
 
 	&__hasEvents {

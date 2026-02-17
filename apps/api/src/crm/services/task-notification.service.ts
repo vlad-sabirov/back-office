@@ -3,6 +3,7 @@ import { PrismaService } from '../../common';
 import { TelegramService } from '../../notification/services/telegram.service';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { utcToZonedTime } from 'date-fns-tz';
 
 @Injectable()
 export class TaskNotificationService extends PrismaService {
@@ -12,11 +13,14 @@ export class TaskNotificationService extends PrismaService {
 		super();
 	}
 
+	private readonly timeZone = 'Asia/Tashkent';
+
 	/**
-	 * Форматирование даты для сообщений
+	 * Форматирование даты для сообщений (с учётом таймзоны)
 	 */
 	private formatDate(date: Date): string {
-		return format(date, 'd MMMM yyyy, HH:mm', { locale: ru });
+		const zonedDate = utcToZonedTime(date, this.timeZone);
+		return format(zonedDate, 'd MMMM yyyy, HH:mm', { locale: ru });
 	}
 
 	/**

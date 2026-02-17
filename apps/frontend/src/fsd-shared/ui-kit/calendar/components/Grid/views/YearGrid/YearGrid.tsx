@@ -77,8 +77,9 @@ export const YearGrid: FC<YearGridProps> = observer(({ ctx, className, ...props 
 										day.holiday && format(day.holiday.dateStart, 'yyyyMMdd') === key;
 									const isHolidayEnd = day.holiday && format(day.holiday.dateEnd, 'yyyyMMdd') === key;
 									const hasEvent = !!day.events?.length;
-									const hasVacation =
-										hasEvent && day.events?.filter((event) => event.type === 'vacation');
+									const vacationEvents =
+										hasEvent ? day.events?.filter((event) => event.type === 'vacation') : [];
+									const hasVacation = !!vacationEvents?.length;
 
 									return (
 										<>
@@ -107,16 +108,16 @@ export const YearGrid: FC<YearGridProps> = observer(({ ctx, className, ...props 
 												>
 													{!hasVacation && dayName}
 													{!!hasVacation && (
-														<Tooltip label={hasVacation[0].title}>
+														<Tooltip label={vacationEvents![0].title}>
 															<div
-																onClick={hasVacation[0]?.onClick}
+																onClick={vacationEvents![0]?.onClick}
 																style={{
-																	cursor: hasVacation[0]?.onClick
+																	cursor: vacationEvents![0]?.onClick
 																		? 'pointer'
 																		: undefined,
 																}}
 															>
-																{hasVacation[0].icon}
+																{vacationEvents![0].icon}
 															</div>
 														</Tooltip>
 													)}

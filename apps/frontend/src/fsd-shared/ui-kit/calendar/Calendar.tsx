@@ -1,4 +1,4 @@
-import { Context, FC, createContext, useContext, useEffect, useState } from 'react';
+import { Context, FC, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import CalendarStore from './Calendar.store';
 import { Grid, Header, Navigation } from './components';
 import cn from 'classnames';
@@ -6,8 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { CalendarProps } from '.';
 import css from './Calendar.module.scss';
 
-const calendarStore = new CalendarStore();
-const CalendarContext = createContext(calendarStore);
+const CalendarContext = createContext(new CalendarStore());
 
 const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 	({ date, events, min, max, startDay, view, views, ctx, loading, className, ...props }) => {
@@ -15,7 +14,7 @@ const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 		const CalendarStore = useContext(ctx);
 
 		useEffect(() => {
-			if (events) CalendarStore.setEvents(events);
+			CalendarStore.setEvents(events || []);
 			if (!date)
 				CalendarStore.setDate(min && new Date() < min ? min : max && new Date() > max ? max : new Date());
 			if (date) CalendarStore.setDate(min && date < min ? min : max && date > max ? max : date);
@@ -43,10 +42,11 @@ const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 
 const withHOC = <T extends CalendarProps>(Component: FC<T & { ctx: Context<CalendarStore> }>) => {
 	return function withHOCComponent(props: T) {
+		const store = useMemo(() => new CalendarStore(), []);
 		const newProps: T & { ctx: Context<CalendarStore> } = { ...props, ctx: CalendarContext };
 
 		return (
-			<CalendarContext.Provider value={calendarStore}>
+			<CalendarContext.Provider value={store}>
 				<Component {...newProps} />
 			</CalendarContext.Provider>
 		);

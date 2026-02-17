@@ -51,7 +51,7 @@ export const getEventsFromDays = ({ dates, events }: getEventsFromDaysProps): ge
 						? 5
 						: 0;
 
-					if (!findPrev?.slot?.position) positionStamp[position - 1] = 1;
+					if (!findPrev?.slot?.position && position > 0) positionStamp[position - 1] = 1;
 
 					const display = !findPrev && index < limitDisplay;
 
