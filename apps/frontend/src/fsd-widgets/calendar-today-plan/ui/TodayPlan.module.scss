@@ -1,12 +1,28 @@
 .block {
-	min-height: 200px;
+	@apply m-0;
+
+	& > div {
+		min-height: 160px;
+		max-height: 160px;
+	}
 }
+
+.blockMany {
+	@apply m-0;
+
+	& > div {
+		min-height: 160px;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
 
 .loader {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 120px;
+	height: 100px;
 }
 
 .empty {
@@ -14,7 +30,7 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 120px;
+	height: 100px;
 	gap: 8px;
 }
 
@@ -30,14 +46,13 @@
 	grid-auto-flow: column;
 	grid-auto-columns: minmax(0, 1fr);
 	gap: 0;
-	overflow-x: auto;
 }
 
 .item {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	padding: 10px 8px;
+	padding: 8px;
 	border-bottom: 1px solid var(--color-neutral-50);
 	min-width: 0;
 

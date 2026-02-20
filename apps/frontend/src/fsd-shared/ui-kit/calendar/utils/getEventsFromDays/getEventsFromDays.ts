@@ -24,7 +24,8 @@ export const getEventsFromDays = ({ dates, events }: getEventsFromDaysProps): ge
 					: foundedEvent.push({ ...event });
 		});
 
-		return { date, events: foundedEvent, holiday: foundedHoliday, transfer: foundedTransfer };
+		const hiddenCount = Math.max(0, foundedEvent.length - limitDisplay);
+		return { date, events: foundedEvent, holiday: foundedHoliday, transfer: foundedTransfer, hiddenCount };
 	});
 
 	result.map((day, dayIndex) => {

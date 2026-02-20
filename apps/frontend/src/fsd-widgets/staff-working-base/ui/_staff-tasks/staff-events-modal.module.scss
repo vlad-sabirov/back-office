@@ -1,0 +1,216 @@
+.eventsList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+.empty {
+	@apply m-0 text-neutral-400 italic;
+	text-align: center;
+	padding: 32px 0;
+}
+
+.eventItem {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 16px;
+	background-color: #f5f7fa;
+	border-radius: 8px;
+	border-left: 3px solid #4f7ff0;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	text-decoration: none;
+}
+
+.eventItem:hover {
+	background-color: #eef2f7;
+}
+
+.eventItemMeeting {
+	border-left-color: #42a5f5;
+}
+
+.eventItemCall {
+	border-left-color: #66bb6a;
+}
+
+.eventItemNote {
+	border-left-color: #ab47bc;
+}
+
+.eventItemReminder {
+	border-left-color: #ffa726;
+}
+
+.eventContent {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+}
+
+.eventHeader {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+	min-width: 0;
+}
+
+.typeDot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.eventTitle {
+	@apply m-0 text-neutral-700;
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.typeLabel {
+	flex-shrink: 0;
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.typeLabelMeeting {
+	background-color: #42a5f5;
+}
+
+.typeLabelCall {
+	background-color: #66bb6a;
+}
+
+.typeLabelNote {
+	background-color: #ab47bc;
+}
+
+.typeLabelReminder {
+	background-color: #ffa726;
+}
+
+.eventMeta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.dateRange {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #6b7a8f;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.calendarIcon {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	color: #96a2b6;
+}
+
+.organization {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #6b7a8f;
+	font-size: 13px;
+	max-width: 180px;
+}
+
+.organization span {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.orgIcon {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	color: #96a2b6;
+}
+
+.arrowIcon {
+	width: 16px;
+	height: 16px;
+	color: #96a2b6;
+	flex-shrink: 0;
+	transform: rotate(-90deg);
+}
+
+.eventItem:hover .arrowIcon {
+	color: #4f7ff0;
+}
+
+.eventItemCompleted {
+	border-left-color: #66bb6a;
+	background-color: #f6faf6;
+}
+
+.eventItemCompleted:hover {
+	background-color: #edf5ed;
+}
+
+.eventItemCancelled {
+	border-left-color: #96a2b6;
+	background-color: #f5f5f5;
+}
+
+.eventItemCancelled:hover {
+	background-color: #ebebeb;
+}
+
+.statusCompleted {
+	flex-shrink: 0;
+	padding: 2px 8px;
+	background-color: #66bb6a;
+	color: #fff;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.statusCancelled {
+	flex-shrink: 0;
+	padding: 2px 8px;
+	background-color: #96a2b6;
+	color: #fff;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.completedDate {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #66bb6a;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.cancelledDate {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #96a2b6;
+	font-size: 13px;
+	white-space: nowrap;
+}

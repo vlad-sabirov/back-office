@@ -3,6 +3,7 @@ import { PrismaService } from '../../common';
 import { TelegramService } from '../../notification/services/telegram.service';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { utcToZonedTime } from 'date-fns-tz';
 
 interface AddParticipantsDto {
 	eventId: number;
@@ -161,6 +162,18 @@ export class CalendarParticipantService extends PrismaService {
 
 	// Private методы
 
+	private readonly timeZone = 'Asia/Tashkent';
+
+	private formatTime(date: Date): string {
+		const zonedDate = utcToZonedTime(date, this.timeZone);
+		return format(zonedDate, 'HH:mm', { locale: ru });
+	}
+
+	private formatDate(date: Date): string {
+		const zonedDate = utcToZonedTime(date, this.timeZone);
+		return format(zonedDate, 'd MMMM yyyy', { locale: ru });
+	}
+
 	private formatEventType(type: string): string {
 		const types: Record<string, string> = {
 			meeting: '📅 Встреча',
@@ -184,8 +197,8 @@ export class CalendarParticipantService extends PrismaService {
 			const message = `📨 <b>Приглашение на ${this.formatEventType(event.type).toLowerCase()}</b>
 
 "${event.title}"
-🕐 ${format(new Date(event.dateStart), 'HH:mm', { locale: ru })} — ${format(new Date(event.dateEnd), 'HH:mm', { locale: ru })}
-📅 ${format(new Date(event.dateStart), 'd MMMM yyyy', { locale: ru })}
+🕐 ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}
+📅 ${this.formatDate(new Date(event.dateStart))}
 ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}\n` : ''}
 👤 От: ${author?.lastName || ''} ${author?.firstName || ''}`;
 
@@ -210,7 +223,7 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 			const message = `${this.formatEventType(event.type)}: ${participant?.lastName || ''} ${participant?.firstName || ''} ${statusText}
 
 "${event.title}"
-📅 ${format(new Date(event.dateStart), 'd MMMM yyyy', { locale: ru })}`;
+📅 ${this.formatDate(new Date(event.dateStart))}`;
 
 			await this.telegramService.sendMessage(Number(author.telegramId), message);
 		} catch (error) {

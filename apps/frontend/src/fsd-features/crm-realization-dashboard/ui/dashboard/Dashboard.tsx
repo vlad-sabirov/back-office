@@ -13,6 +13,16 @@ export const Dashboard: FC = () => {
 	const { userId, parent, team } = useUserDeprecated();
 	const reportAll = useCrmRealizationGetDataMonthAll();
 
+	// Данные ещё не загрузились — ждём (не возвращаем null преждевременно)
+	if (isAccess === undefined || isAdmin === undefined) {
+		return null;
+	}
+
+	// Нет доступа — скрываем
+	if (!isAccess && !isAdmin) {
+		return null;
+	}
+
 	if (isAdmin) {
 		return <Boss />;
 	}

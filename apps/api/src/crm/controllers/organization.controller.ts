@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { Access } from 'src/auth/decorators/roles-auth.decorator';
 import { AccessGuard } from 'src/auth/guards/access.guard';
+import { TokenService } from 'src/auth/services/token.service';
 import { OrganizationVoipEntity } from 'src/crm/entity/organization-voip.entity';
 import { MutationEmailDto, MutationOrganizationDto, MutationPhoneDto, QueryOrganizationDto } from '../dto';
 import { IOrganizationInnEntity, OrganizationEntity } from '../entity';
@@ -10,7 +11,20 @@ import { delay } from 'src/common';
 
 @Controller('crm/organization')
 export class OrganizationController {
-	constructor(private readonly organizationService: OrganizationService) {}
+	constructor(
+		private readonly organizationService: OrganizationService,
+		private readonly tokenService: TokenService,
+	) {}
+
+	private getCurrentUserId(authorization: string): number | null {
+		try {
+			const token = authorization?.replace('Bearer ', '');
+			const payload = this.tokenService.validateAccessToken(token);
+			return payload?.id || null;
+		} catch {
+			return null;
+		}
+	}
 
 	@Post()
 	async create(@Body() createDto: MutationOrganizationDto): Promise<OrganizationEntity> {
@@ -22,6 +36,22 @@ export class OrganizationController {
 	async findById(@Param('id') id: number | string): Promise<OrganizationEntity> {
 		await delay(process.env.DELAY);
 		return await this.organizationService.findById(id, { requisites: true });
+	}
+
+	@Get('/upcoming-transitions')
+	@Access('crm', 'crmAdmin', 'boss', 'admin', 'developer')
+	@UseGuards(AccessGuard)
+	async getUpcomingTransitions(@Headers('authorization') authorization: string) {
+		const userId = this.getCurrentUserId(authorization);
+		if (!userId) return [];
+		return await this.organizationService.getUpcomingTransitions(userId);
+	}
+
+	@Get('/power-by-staff')
+	@Access('crmAdmin', 'boss', 'admin', 'developer')
+	@UseGuards(AccessGuard)
+	async getPowerByStaff() {
+		return await this.organizationService.getPowerByStaff();
 	}
 
 	@Get('/deleteMe')

@@ -4,6 +4,7 @@ import { ContactEntity } from './contact.entity';
 import { TaskEntity } from './task.entity';
 
 export type CalendarEventType = 'meeting' | 'call' | 'note' | 'reminder';
+export type CalendarEventStatus = 'active' | 'completed' | 'cancelled';
 
 export interface CalendarEventParticipantEntity {
 	id: number;
@@ -23,6 +24,8 @@ export interface CalendarEventEntity {
 	dateEnd: Date;
 	isAllDay: boolean;
 	location?: string | null;
+	status: string;
+	completedAt?: Date | null;
 	// Reminder fields
 	reminderSent1Day?: boolean;
 	reminderSent2Hours?: boolean;

@@ -1,26 +1,16 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { observer } from 'mobx-react-lite';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { Grid, Loader, Text, Badge, Stack, Group, Modal, Paper, Select, Button } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
+import { Grid, Loader, Text, Badge, Button } from '@mantine/core';
+import { useViewportSize } from '@mantine/hooks';
 import { CalendarEventService, ICalendarEventEntity, CalendarEventConst, EnCalendarEventType } from '@fsd/entities/calendar-event';
-import { ICrmTaskEntity, CrmTaskConst, CrmTaskService, EnCrmTaskStatus } from '@fsd/entities/crm-task';
-import { ContentBlock, Icon } from '@fsd/shared/ui-kit';
+import { ICrmTaskEntity } from '@fsd/entities/crm-task';
+import { EventDetailModal } from '@fsd/features/calendar-event-detail-modal';
+import { TaskDetailModal } from '@fsd/features/crm-task-detail-modal';
+import { ContentBlock, Icon, TextField } from '@fsd/shared/ui-kit';
 import css from './TodayPlan.module.scss';
-
-const eventTypeConfig: Record<string, { label: string; color: string }> = {
-	meeting: { label: 'Встреча', color: 'blue' },
-	call: { label: 'Звонок', color: 'green' },
-	note: { label: 'Заметка', color: 'yellow' },
-	reminder: { label: 'Напоминание', color: 'orange' },
-};
-
-const taskStatusOptions = Object.entries(CrmTaskConst.Status).map(([value, config]) => ({
-	value,
-	label: config.label,
-}));
 
 interface EventItemProps {
 	event: ICalendarEventEntity;
@@ -59,7 +49,6 @@ interface TaskItemProps {
 }
 
 const TaskItem: FC<TaskItemProps> = ({ task, onClick }) => {
-	const priorityConfig = CrmTaskConst.Priority[task.priority as keyof typeof CrmTaskConst.Priority];
 	const deadlineStr = task.deadline ? format(new Date(task.deadline), 'HH:mm') : '';
 
 	return (
@@ -84,8 +73,19 @@ const TaskItem: FC<TaskItemProps> = ({ task, onClick }) => {
 
 export const TodayPlan: FC = observer(() => {
 	const router = useRouter();
+	const { width: screenWidth } = useViewportSize();
+	const [spanCount, setSpanCount] = useState<number>(25);
 	const [fetchTodayPlan, { data, isLoading }] = CalendarEventService.getTodayPlan();
-	const [updateTaskStatus] = CrmTaskService.updateStatus();
+
+	useEffect(() => {
+		if (screenWidth >= 300 && screenWidth <= 1200) setSpanCount(40);
+		if (screenWidth >= 1200 && screenWidth <= 1300) setSpanCount(35);
+		if (screenWidth >= 1300 && screenWidth <= 1550) setSpanCount(30);
+		if (screenWidth >= 1550 && screenWidth <= 1850) setSpanCount(25);
+		if (screenWidth >= 1850 && screenWidth <= 2350) setSpanCount(20);
+		if (screenWidth >= 2350 && screenWidth <= 2850) setSpanCount(15);
+		if (screenWidth >= 2850 && screenWidth <= 3600) setSpanCount(12);
+	}, [screenWidth]);
 
 	const [viewingEvent, setViewingEvent] = useState<ICalendarEventEntity | null>(null);
 	const [viewingTask, setViewingTask] = useState<ICrmTaskEntity | null>(null);
@@ -95,38 +95,24 @@ export const TodayPlan: FC = observer(() => {
 	}, [fetchTodayPlan]);
 
 	const todayStr = format(new Date(), "d MMMM, EEEE", { locale: ru });
-	const hasItems = data && (data.events.length > 0 || data.tasks.length > 0);
+	const totalItems = (data?.events.length ?? 0) + (data?.tasks.length ?? 0);
+	const hasItems = totalItems > 0;
 
-	const handleCloseModal = useCallback(() => {
-		setViewingEvent(null);
-		setViewingTask(null);
-	}, []);
+	const dynamicSpan = useMemo(() => {
+		if (totalItems <= 1) return spanCount;
+		if (totalItems <= 5) return 50;
+		return 100;
+	}, [totalItems, spanCount]);
 
-	const handleTaskStatusChange = useCallback(async (status: string) => {
-		if (!viewingTask) return;
-		try {
-			await updateTaskStatus({ id: viewingTask.id, status }).unwrap();
-			showNotification({ color: 'green', message: 'Статус задачи обновлён' });
-			setViewingTask({ ...viewingTask, status });
-			fetchTodayPlan();
-		} catch (e: any) {
-			const message = e?.data?.message || 'Ошибка при смене статуса';
-			showNotification({ color: 'red', message });
-		}
-	}, [viewingTask, updateTaskStatus, fetchTodayPlan]);
-
-	const handleGoToOrganization = useCallback((orgId: number) => {
-		handleCloseModal();
-		router.push(`/crm/organization/${orgId}`);
-	}, [router, handleCloseModal]);
+	const reload = () => fetchTodayPlan();
 
 	return (
-		<Grid.Col span={50}>
-			<ContentBlock
-				title="План на сегодня"
-				subtitle={todayStr}
-				className={css.block}
-			>
+		<Grid.Col span={dynamicSpan}>
+			<ContentBlock className={totalItems <= 1 ? css.block : css.blockMany}>
+				<TextField mode="heading" size="small">
+					План на сегодня — {todayStr}
+				</TextField>
+
 				{isLoading ? (
 					<div className={css.loader}>
 						<Loader size="sm" />
@@ -137,6 +123,14 @@ export const TodayPlan: FC = observer(() => {
 						<Text size="sm" color="dimmed">
 							На сегодня ничего не запланировано
 						</Text>
+						<Button
+							variant="light"
+							size="xs"
+							compact
+							onClick={() => router.push('/calendar')}
+						>
+							Добавить задачу
+						</Button>
 					</div>
 				) : (
 					<div className={css.list}>
@@ -150,172 +144,21 @@ export const TodayPlan: FC = observer(() => {
 				)}
 			</ContentBlock>
 
-			{/* Модалка просмотра события */}
-			<Modal
+			<EventDetailModal
+				event={viewingEvent}
 				opened={!!viewingEvent}
-				onClose={handleCloseModal}
-				title="Событие"
-				size="md"
-			>
-				{viewingEvent && (
-					<Stack spacing="md">
-						<Group position="apart">
-							<Badge color={eventTypeConfig[viewingEvent.type]?.color || 'gray'}>
-								{eventTypeConfig[viewingEvent.type]?.label || viewingEvent.type}
-							</Badge>
-							{viewingEvent.isAllDay && <Badge color="gray">Весь день</Badge>}
-						</Group>
+				onClose={() => setViewingEvent(null)}
+				onUpdated={reload}
+				onDeleted={reload}
+			/>
 
-						<Text size="xl" weight={600}>{viewingEvent.title}</Text>
-
-						{viewingEvent.description && (
-							<Text color="dimmed">{viewingEvent.description}</Text>
-						)}
-
-						<Paper p="sm" withBorder>
-							<Stack spacing="xs">
-								<Group spacing="xs">
-									<Text size="sm" color="dimmed">Начало:</Text>
-									<Text size="sm">
-										{format(new Date(viewingEvent.dateStart), 'd MMMM yyyy, HH:mm', { locale: ru })}
-									</Text>
-								</Group>
-								<Group spacing="xs">
-									<Text size="sm" color="dimmed">Окончание:</Text>
-									<Text size="sm">
-										{format(new Date(viewingEvent.dateEnd), 'd MMMM yyyy, HH:mm', { locale: ru })}
-									</Text>
-								</Group>
-								{viewingEvent.location && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Место:</Text>
-										<Text size="sm">{viewingEvent.location}</Text>
-									</Group>
-								)}
-								{viewingEvent.assignee && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Исполнитель:</Text>
-										<Text size="sm">
-											{viewingEvent.assignee.lastName} {viewingEvent.assignee.firstName}
-										</Text>
-									</Group>
-								)}
-								{viewingEvent.organization && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Организация:</Text>
-										<Text size="sm">
-											{(viewingEvent.organization as any).nameRu || (viewingEvent.organization as any).nameEn}
-										</Text>
-									</Group>
-								)}
-								{viewingEvent.participants && viewingEvent.participants.length > 0 && (
-									<Group spacing="xs" align="flex-start">
-										<Text size="sm" color="dimmed">Участники:</Text>
-										<Stack spacing={4}>
-											{viewingEvent.participants.map((p: any) => (
-												<Text key={p.id} size="sm">
-													{p.user?.lastName} {p.user?.firstName}
-													{p.status === 'accepted' && ' ✓'}
-													{p.status === 'declined' && ' ✗'}
-												</Text>
-											))}
-										</Stack>
-									</Group>
-								)}
-							</Stack>
-						</Paper>
-
-						<Group position="right">
-							{viewingEvent.organizationId && (
-								<Button variant="light" onClick={() => handleGoToOrganization(viewingEvent.organizationId!)}>
-									Перейти к организации
-								</Button>
-							)}
-							<Button variant="outline" onClick={handleCloseModal}>
-								Закрыть
-							</Button>
-						</Group>
-					</Stack>
-				)}
-			</Modal>
-
-			{/* Модалка просмотра задачи */}
-			<Modal
+			<TaskDetailModal
+				task={viewingTask}
 				opened={!!viewingTask}
-				onClose={handleCloseModal}
-				title="Задача"
-				size="md"
-			>
-				{viewingTask && (
-					<Stack spacing="md">
-						<Badge color="violet">Задача CRM</Badge>
-
-						<Text size="xl" weight={600}>{viewingTask.title}</Text>
-
-						{viewingTask.description && (
-							<Text color="dimmed">{viewingTask.description}</Text>
-						)}
-
-						<Paper p="sm" withBorder>
-							<Stack spacing="xs">
-								{viewingTask.deadline && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Дедлайн:</Text>
-										<Text size="sm">
-											{format(new Date(viewingTask.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}
-										</Text>
-									</Group>
-								)}
-								<Group spacing="xs">
-									<Text size="sm" color="dimmed">Статус:</Text>
-									<Select
-										size="xs"
-										data={taskStatusOptions}
-										value={viewingTask.status}
-										onChange={(value) => value && handleTaskStatusChange(value)}
-										style={{ width: 160 }}
-									/>
-								</Group>
-								{viewingTask.author && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Автор:</Text>
-										<Text size="sm">
-											{viewingTask.author.lastName} {viewingTask.author.firstName}
-										</Text>
-									</Group>
-								)}
-								{viewingTask.assignee && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Исполнитель:</Text>
-										<Text size="sm">
-											{viewingTask.assignee.lastName} {viewingTask.assignee.firstName}
-										</Text>
-									</Group>
-								)}
-								{viewingTask.organization && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Организация:</Text>
-										<Text size="sm">
-											{(viewingTask.organization as any).nameRu || (viewingTask.organization as any).nameEn}
-										</Text>
-									</Group>
-								)}
-							</Stack>
-						</Paper>
-
-						<Group position="right">
-							{viewingTask.organizationId && (
-								<Button variant="light" onClick={() => handleGoToOrganization(viewingTask.organizationId!)}>
-									Перейти к организации
-								</Button>
-							)}
-							<Button variant="outline" onClick={handleCloseModal}>
-								Закрыть
-							</Button>
-						</Group>
-					</Stack>
-				)}
-			</Modal>
+				onClose={() => setViewingTask(null)}
+				onUpdated={reload}
+				onDeleted={reload}
+			/>
 		</Grid.Col>
 	);
 });

@@ -53,7 +53,7 @@ export const WorkingBase: FC = () => {
 		return reportLast.users?.find((report) => report.userId === user.id) ?? null;
 	}, [reportLast, user?.id]);
 	const reportUserPrev = useMemo(() => {
-		if (!user?.id || !reportLast) {
+		if (!user?.id || !reportLast || !reportPrevDate || !reportAll[reportPrevDate]) {
 			return null;
 		}
 		return reportAll[reportPrevDate].users?.find((report) => report.userId === user.id) ?? null;
@@ -91,7 +91,7 @@ export const WorkingBase: FC = () => {
 		);
 	}, [user?.id, reportLast, teamIds, parent]);
 	const reportParentPrev = useMemo(() => {
-		if (!user?.id || !reportLast) {
+		if (!user?.id || !reportLast || !reportPrevDate || !reportAll[reportPrevDate]) {
 			return null;
 		}
 		return (
@@ -138,7 +138,18 @@ export const WorkingBase: FC = () => {
 		if (screenWidth >= 3150 && screenWidth <= 3600) setSpanCount(12);
 	}, [screenWidth]);
 
-	if ((!reportUser && !reportParent) || !rolesAlias?.includes('crm')) {
+	// Роли ещё не загрузились — ждём
+	if (rolesAlias === null) {
+		return null;
+	}
+
+	// У пользователя нет роли crm — не показываем
+	if (!rolesAlias.includes('crm')) {
+		return null;
+	}
+
+	// Данные ещё не загрузились — не показываем (появится после загрузки)
+	if (!reportUser && !reportParent) {
 		return null;
 	}
 

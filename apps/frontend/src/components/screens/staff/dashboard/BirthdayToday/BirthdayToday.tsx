@@ -34,8 +34,12 @@ export const BirthdayToday: FC<BirthdayTodayProps> = ({ className }) => {
 		let isMounted = true;
 
 		(async () => {
-			const [response] = await UserService.findBirthdayToday();
-			if (response && isMounted) setData(response);
+			try {
+				const [response] = await UserService.findBirthdayToday();
+				if (response && isMounted) setData(response);
+			} catch {
+				// API error — widget stays hidden
+			}
 		})();
 
 		return () => {

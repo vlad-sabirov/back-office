@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { format, subDays } from 'date-fns';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
+import { format, subDays, differenceInDays } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { PrismaService } from '../../../common';
 import { TelegramService } from '../telegram.service';
@@ -13,6 +14,8 @@ interface PowerConfig {
 
 @Injectable()
 export class CronOrganizationPowerService extends PrismaService {
+	private readonly logger = new Logger(CronOrganizationPowerService.name);
+
 	private readonly defaultPowerConfig: PowerConfig = {
 		medium: 30,
 		low: 60,
@@ -27,10 +30,150 @@ export class CronOrganizationPowerService extends PrismaService {
 	}
 
 	/**
-	 * Проверка изменений Power статусов организаций
+	 * Предупреждение за 3 дня до смены статуса
+	 */
+	sendPreWarning3Days = async (config?: PowerConfig): Promise<{ sent: number }> => {
+		const powerConfig = config || this.defaultPowerConfig;
+		const now = new Date();
+		let sentCount = 0;
+
+		const transitions: { daysAgo: number; from: string; to: string }[] = [
+			{ daysAgo: powerConfig.medium - 3, from: 'full', to: 'medium' },
+			{ daysAgo: powerConfig.low - 3, from: 'medium', to: 'low' },
+			{ daysAgo: powerConfig.empty - 3, from: 'low', to: 'empty' },
+		];
+
+		for (const transition of transitions) {
+			const windowStart = subDays(now, transition.daysAgo + 1);
+			const windowEnd = subDays(now, transition.daysAgo);
+
+			const orgs = await this.crmOrganization.findMany({
+				where: {
+					last1CUpdate: {
+						gt: windowStart,
+						lte: windowEnd,
+					},
+				},
+				include: { user: true },
+			});
+
+			for (const org of orgs) {
+				const alreadyWarned = await this.crmOrganizationPowerLog.findFirst({
+					where: {
+						organizationId: org.id,
+						newStatus: transition.to,
+						preWarned3Days: true,
+					},
+				});
+
+				if (!alreadyWarned) {
+					const manager = org.user as any;
+					if (manager?.telegramId) {
+						const message = this.buildPreWarningMessage(org, transition.from, transition.to, 3);
+						await this.telegramService.sendMessage(Number(manager.telegramId), message);
+						sentCount++;
+					}
+					await this.crmOrganizationPowerLog.create({
+						data: {
+							organizationId: org.id,
+							previousStatus: transition.from,
+							newStatus: transition.to,
+							preWarned3Days: true,
+						},
+					});
+				}
+			}
+		}
+
+		this.logger.log(`Pre-warning 3 days sent: ${sentCount}`);
+		return { sent: sentCount };
+	};
+
+	/**
+	 * Предупреждение за 1 день до смены статуса
+	 */
+	sendPreWarning1Day = async (config?: PowerConfig): Promise<{ sent: number }> => {
+		const powerConfig = config || this.defaultPowerConfig;
+		const now = new Date();
+		let sentCount = 0;
+
+		const transitions: { daysAgo: number; from: string; to: string }[] = [
+			{ daysAgo: powerConfig.medium - 1, from: 'full', to: 'medium' },
+			{ daysAgo: powerConfig.low - 1, from: 'medium', to: 'low' },
+			{ daysAgo: powerConfig.empty - 1, from: 'low', to: 'empty' },
+		];
+
+		for (const transition of transitions) {
+			const windowStart = subDays(now, transition.daysAgo + 1);
+			const windowEnd = subDays(now, transition.daysAgo);
+
+			const orgs = await this.crmOrganization.findMany({
+				where: {
+					last1CUpdate: {
+						gt: windowStart,
+						lte: windowEnd,
+					},
+				},
+				include: { user: true },
+			});
+
+			for (const org of orgs) {
+				const alreadyWarned = await this.crmOrganizationPowerLog.findFirst({
+					where: {
+						organizationId: org.id,
+						newStatus: transition.to,
+						preWarned1Day: true,
+					},
+				});
+
+				if (!alreadyWarned) {
+					const manager = org.user as any;
+					if (manager?.telegramId) {
+						const message = this.buildPreWarningMessage(org, transition.from, transition.to, 1);
+						await this.telegramService.sendMessage(Number(manager.telegramId), message);
+						sentCount++;
+					}
+					// Обновить существующую запись или создать новую
+					const existingLog = await this.crmOrganizationPowerLog.findFirst({
+						where: {
+							organizationId: org.id,
+							newStatus: transition.to,
+							preWarned3Days: true,
+						},
+					});
+					if (existingLog) {
+						await this.crmOrganizationPowerLog.update({
+							where: { id: existingLog.id },
+							data: { preWarned1Day: true },
+						});
+					} else {
+						await this.crmOrganizationPowerLog.create({
+							data: {
+								organizationId: org.id,
+								previousStatus: transition.from,
+								newStatus: transition.to,
+								preWarned1Day: true,
+							},
+						});
+					}
+				}
+			}
+		}
+
+		this.logger.log(`Pre-warning 1 day sent: ${sentCount}`);
+		return { sent: sentCount };
+	};
+
+	/**
+	 * Проверка изменений Power статусов организаций + предупреждения
 	 * Запускается ежедневно в 9:00
 	 */
-	checkPowerStatusChanges = async (config?: PowerConfig): Promise<{ notifications: number }> => {
+	@Cron('0 9 * * *')
+	async checkPowerStatusChanges(config?: PowerConfig): Promise<{ notifications: number; preWarning3Days: number; preWarning1Day: number }> {
+		this.logger.log('Running scheduled power status check...');
+		const pw3 = await this.sendPreWarning3Days(config);
+		const pw1 = await this.sendPreWarning1Day(config);
+
 		const powerConfig = config || this.defaultPowerConfig;
 		const now = new Date();
 
@@ -116,8 +259,10 @@ export class CronOrganizationPowerService extends PrismaService {
 			}
 		}
 
-		return { notifications: notificationCount };
-	};
+		const result = { notifications: notificationCount, preWarning3Days: pw3.sent, preWarning1Day: pw1.sent };
+		this.logger.log(`Power status check complete: ${JSON.stringify(result)}`);
+		return result;
+	}
 
 	/**
 	 * Получить статистику по Power статусам
@@ -215,6 +360,30 @@ export class CronOrganizationPowerService extends PrismaService {
 		} else if (newStatus === 'empty') {
 			message += `\n🚨 <i>Срочно требуется контакт!</i>`;
 		}
+
+		return message;
+	};
+
+	private buildPreWarningMessage = (org: any, fromStatus: string, toStatus: string, daysLeft: number): string => {
+		const statusLabels: Record<string, string> = {
+			full: '🟢 Активные',
+			medium: '🟡 Теплые',
+			low: '🟠 Холодные',
+			empty: '🔴 Забытые',
+		};
+
+		const urgency = daysLeft === 1 ? '🚨' : '⚠️';
+		const daysText = daysLeft === 1 ? 'Завтра' : `Через ${daysLeft} дня`;
+
+		let message = `${urgency} <b>${daysText} сменится статус организации</b>\n\n`;
+		message += `<b>${org.nameRu || org.nameEn || 'Без названия'}</b>\n`;
+		message += `${statusLabels[fromStatus]} → ${statusLabels[toStatus]}\n\n`;
+
+		if (org.last1CUpdate) {
+			message += `<b>Последняя покупка:</b> ${format(new Date(org.last1CUpdate), 'd MMMM yyyy', { locale: ru })}\n`;
+		}
+
+		message += `\n📞 <i>Позвоните клиенту, чтобы предотвратить смену статуса!</i>`;
 
 		return message;
 	};

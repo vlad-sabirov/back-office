@@ -11,11 +11,35 @@ interface IProps {
 	className?: string;
 }
 
+const eventTypeLabels: Record<string, string> = {
+	meeting: 'Встреча',
+	call: 'Звонок',
+	note: 'Заметка',
+	reminder: 'Напоминание',
+};
+
+const formatLogPayload = (payload: string): string => {
+	try {
+		const data = JSON.parse(payload);
+		if (data.action === 'event_created') {
+			const type = eventTypeLabels[data.type] || data.type || 'Событие';
+			return `${type} создана: "${data.title}"`;
+		}
+		if (data.action === 'task_created') {
+			return `Задача создана: "${data.title}"`;
+		}
+		return payload;
+	} catch {
+		return payload;
+	}
+};
+
 export const Log: FC<IProps> = ({ history, className }) => {
 	const user = useMemo(() => history.user, [history.user]);
 	const date = useMemo(() => {
 		return format(parseISO(history.createdAt), 'dd MMMM yyyy (HH:mm)', { locale: dateFnsLocaleRu });
 	}, [history.createdAt]);
+	const displayPayload = useMemo(() => formatLogPayload(history.payload as string), [history.payload]);
 
 	if (!user || history.type != EnCrmHistoryTypes.Log) {
 		return null;
@@ -27,7 +51,7 @@ export const Log: FC<IProps> = ({ history, className }) => {
 				{date}
 			</TextField>
 			<TextField className={css.log} size={'small'}>
-				{history.payload}
+				{displayPayload}
 			</TextField>
 		</div>
 	);

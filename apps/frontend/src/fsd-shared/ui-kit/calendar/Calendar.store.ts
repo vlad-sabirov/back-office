@@ -45,4 +45,9 @@ export default class CalendarStore {
 	setLoading(value: boolean) {
 		this.loading = value;
 	}
+
+	onDayOverflowClick: ((date: Date, events: CalendarPropsEvent[]) => void) | null = null;
+	setOnDayOverflowClick(fn: ((date: Date, events: CalendarPropsEvent[]) => void) | null) {
+		this.onDayOverflowClick = fn;
+	}
 }

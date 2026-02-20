@@ -12,6 +12,7 @@ export interface QueryCalendarEventDto {
 	taskId?: CombiningType<number | string>;
 	dateStart?: CombiningType<Date | string>;
 	dateEnd?: CombiningType<Date | string>;
+	status?: CombiningType<string | string[]>;
 	isAllDay?: CombiningType<boolean>;
 	createdAt?: CombiningType<Date | string>;
 }

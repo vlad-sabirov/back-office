@@ -20,7 +20,7 @@ export const LatenessTodayDashboard: FC<LatenessTodayDashboardProps> = ({ classN
 	const random = useRandom();
 	const interval = useInterval(() => getData(), random.calc(15000, 20000));
 
-	const getData = () => GetAllToday.get(SELF_DATE).then((res) => setData(res));
+	const getData = () => GetAllToday.get(SELF_DATE).then((res) => setData(res)).catch(() => {});
 
 	useEffect(() => {
 		getData();

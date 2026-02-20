@@ -5,4 +5,5 @@ export interface getEventsFromDaysResponse {
 	events?: CalendarPropsEvent[];
 	holiday?: CalendarPropsEvent;
 	transfer?: CalendarPropsEvent;
+	hiddenCount: number;
 }

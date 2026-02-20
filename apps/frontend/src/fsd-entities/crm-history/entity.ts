@@ -7,6 +7,7 @@ export enum EnCrmHistoryTypes {
 	Log = 'log',
 	Call = 'call',
 	Task = 'task',
+	CalendarEvent = 'calendar_event',
 }
 
 export enum EnCrmHistoryEntities {

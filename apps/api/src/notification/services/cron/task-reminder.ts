@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { PrismaService } from '../../../common';
@@ -201,9 +202,11 @@ export class CronTaskReminderService extends PrismaService {
 	};
 
 	/**
-	 * Сводка по всем дедлайнам (запускается каждый час)
+	 * Сводка по всем дедлайнам
+	 * Запускается автоматически каждые 5 минут с 7:00 до 22:00
 	 */
-	checkAllDeadlines = async (): Promise<{ reminder3Days: number; reminder1Day: number; reminder2Hours: number; overdue: number }> => {
+	@Cron('*/5 7-22 * * *')
+	async checkAllDeadlines(): Promise<{ reminder3Days: number; reminder1Day: number; reminder2Hours: number; overdue: number }> {
 		const r3 = await this.sendReminder3Days();
 		const r1 = await this.sendReminder1Day();
 		const r2h = await this.sendReminder2Hours();
@@ -215,7 +218,7 @@ export class CronTaskReminderService extends PrismaService {
 			reminder2Hours: r2h.sent,
 			overdue: overdue.sent,
 		};
-	};
+	}
 
 	// ==================== Private ====================
 

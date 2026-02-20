@@ -72,6 +72,10 @@ export const ManyChild: FC = () => {
 		[reportAll]
 	);
 
+	if (!teamReportToday && !employeeReportToday && teamReportAll.length === 0 && employeeReportAll.length === 0) {
+		return null;
+	}
+
 	return (
 		<div className={css.root}>
 			<div className={css.leftSection}>

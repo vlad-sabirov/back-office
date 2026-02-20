@@ -30,6 +30,7 @@
     "@nestjs/elasticsearch": "^9.0.0",
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/platform-express": "^9.0.3",
+    "@nestjs/schedule": "^6.1.1",
     "@nestjs/serve-static": "^3.0.0",
     "@prisma/client": "^4.0.0",
     "app-root-path": "^3.0.0",

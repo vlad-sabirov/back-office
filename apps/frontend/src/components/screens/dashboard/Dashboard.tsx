@@ -4,6 +4,8 @@ import Head from 'next/head';
 import { LatenessAccess } from '@fsd/entities/lateness';
 import { CrmRealizationDashboard } from '@fsd/features/crm-realization-dashboard';
 import { CrmWorkingBaseDashboardWidget } from '@fsd/widgets/crm-working-base-dashboard';
+import { CrmUpcomingTransitionsWidget } from '@fsd/widgets/crm-upcoming-transitions';
+import { CrmStaffPowerOverviewWidget } from '@fsd/widgets/crm-staff-power-overview';
 import { TodayPlan } from '@fsd/widgets/calendar-today-plan';
 import { useAccess, useUserDeprecated } from '@hooks';
 import { Grid } from '@mantine/core';
@@ -34,6 +36,9 @@ export const Dashboard: FC = observer(() => {
 					<BirthdayToday />
 
 					{rolesAlias?.includes('crm') && <CrmWorkingBaseDashboardWidget />}
+					{rolesAlias?.includes('crm') && <CrmUpcomingTransitionsWidget />}
+					{/* TODO: вернуть позже — виджет "Организации сотрудников" для crmAdmin */}
+					{/* {CheckAccess(['crmAdmin', 'boss', 'developer']) && <CrmStaffPowerOverviewWidget />} */}
 					{isBoss ? (
 						<LogisticVedDashboardBoss />
 					) : (

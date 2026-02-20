@@ -100,14 +100,18 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 								? getDayCellStyle(day.events)
 								: undefined;
 
+							const hasHidden = !!day.hiddenCount && day.hiddenCount > 0;
+
 							return (
 								<div
 									key={format(day.date, 'yyyyMMdd')}
 									className={cn(css.item, {
 										[css.item__disabled]: !isSameMonth || isLessMin || isMoreMax,
 										[css.item__hasEvents]: !!dayCellStyle,
+										[css.item__hasHidden]: hasHidden,
 									})}
 									style={dayCellStyle}
+									onClick={hasHidden ? () => CalendarStore.onDayOverflowClick?.(day.date, day.events || []) : undefined}
 								>
 									<TextField
 										size="small"
@@ -200,6 +204,12 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 												);
 											}
 										})}
+
+									{hasHidden && (
+										<TextField size="small" className={css.overflowHint}>
+											+{day.hiddenCount} ещё
+										</TextField>
+									)}
 								</div>
 							);
 						});

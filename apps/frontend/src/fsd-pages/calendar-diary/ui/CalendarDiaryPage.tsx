@@ -2,18 +2,20 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { observer } from 'mobx-react-lite';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addMonths, subMonths, isSameDay, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Button, Select, Modal, Group, ActionIcon, Text, Stack, Badge, Paper } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { Icon } from '@fsd/shared/ui-kit';
 import { CalendarEventService, ICalendarEventEntity, EnCalendarEventType, CalendarEventConst } from '@fsd/entities/calendar-event';
-import { ICrmTaskEntity, CrmTaskService, CrmTaskConst, EnCrmTaskStatus } from '@fsd/entities/crm-task';
+import { ICrmTaskEntity } from '@fsd/entities/crm-task';
 import { IStaffEntity } from '@fsd/entities/staff';
 import { Calendar, CalendarPropsEvent, Header } from '@fsd/shared/ui-kit';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
 import { useAccess, useUserDeprecated } from '@hooks';
 import { CalendarEventForm } from '@fsd/widgets/calendar-event-form';
+import { EventDetailModal } from '@fsd/features/calendar-event-detail-modal';
+import { TaskDetailModal } from '@fsd/features/crm-task-detail-modal';
 import css from './CalendarDiaryPage.module.scss';
 
 interface DateRange {
@@ -32,21 +34,8 @@ const getDateRange = (date: Date): DateRange => {
 	};
 };
 
-// Типы событий для отображения
-const eventTypeConfig: Record<string, { label: string; color: string }> = {
-	meeting: { label: 'Встреча', color: 'blue' },
-	call: { label: 'Звонок', color: 'green' },
-	note: { label: 'Заметка', color: 'yellow' },
-	reminder: { label: 'Напоминание', color: 'orange' },
-};
-
-// Цвета для ячеек календаря — события
-const eventCalendarColors: Record<string, string> = {
-	meeting: '#dbeafe',   // голубой
-	call: '#d1fae5',      // зелёный
-	note: '#fef9c3',      // жёлтый
-	reminder: '#f3e8ff',  // фиолетовый
-};
+// Получить конфиг типа события из единого источника
+const getEventTypeConfig = (type: string) => CalendarEventConst.Type[type as EnCalendarEventType];
 
 // Цвета для ячеек календаря — задачи по приоритету
 const taskPriorityColors: Record<string, string> = {
@@ -57,17 +46,11 @@ const taskPriorityColors: Record<string, string> = {
 };
 
 
-const taskStatusOptions = Object.entries(CrmTaskConst.Status).map(([value, config]) => ({
-	value,
-	label: config.label,
-}));
-
 const CalendarDiaryPage: FC = observer(() => {
 	const router = useRouter();
 	const CheckAccess = useAccess();
 	const { user } = useUserDeprecated();
 	const isBoss = CheckAccess(['developer', 'boss', 'crmAdmin', 'admin']);
-	const [updateTaskStatus] = CrmTaskService.updateStatus();
 
 	// Staff данные из Redux store
 	const staffAll = useStateSelector((state) => state.staff.data.all);
@@ -82,6 +65,10 @@ const CalendarDiaryPage: FC = observer(() => {
 	const [viewingEvent, setViewingEvent] = useState<ICalendarEventEntity | null>(null);
 	const [viewingTask, setViewingTask] = useState<ICrmTaskEntity | null>(null);
 	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+	const [dayModalOpened, setDayModalOpened] = useState(false);
+	const [dayModalDate, setDayModalDate] = useState<Date | null>(null);
+	const [dayModalEvents, setDayModalEvents] = useState<ICalendarEventEntity[]>([]);
+	const [dayModalTasks, setDayModalTasks] = useState<ICrmTaskEntity[]>([]);
 
 	// RTK Query
 	const [fetchRangeWithTasks, { data: rangeData, isLoading, isFetching }] = CalendarEventService.getRangeWithTasks();
@@ -146,6 +133,29 @@ const CalendarDiaryPage: FC = observer(() => {
 		setDetailModalOpened(true);
 	}, []);
 
+	// Клик по бейджу "+N ещё" — показать все события дня
+	const handleDayOverflowClick = useCallback((date: Date, _events: CalendarPropsEvent[]) => {
+		if (!rangeData) return;
+
+		const targetDay = startOfDay(date);
+
+		const dayEvents = rangeData.events.filter((e) => {
+			const eventStart = startOfDay(new Date(e.dateStart));
+			const eventEnd = endOfDay(new Date(e.dateEnd));
+			return isWithinInterval(targetDay, { start: eventStart, end: eventEnd });
+		});
+
+		const dayTasks = rangeData.tasks.filter((t) => {
+			if (!t.deadline) return false;
+			return isSameDay(startOfDay(new Date(t.deadline)), targetDay);
+		});
+
+		setDayModalDate(date);
+		setDayModalEvents(dayEvents);
+		setDayModalTasks(dayTasks);
+		setDayModalOpened(true);
+	}, [rangeData]);
+
 	// Маппинг событий для Calendar компонента с onClick
 	const calendarEvents = useMemo<CalendarPropsEvent[]>(() => {
 		if (!rangeData) return [];
@@ -159,7 +169,7 @@ const CalendarDiaryPage: FC = observer(() => {
 			dateEnd: new Date(event.dateEnd),
 			isAllDay: event.isAllDay,
 			ctx: 'event',
-			color: eventCalendarColors[event.type] || '#e0e7ff',
+			color: getEventTypeConfig(event.type)?.bg || '#e0e7ff',
 			onClick: () => handleEventClick(event),
 		}));
 
@@ -188,14 +198,6 @@ const CalendarDiaryPage: FC = observer(() => {
 		setFormModalOpened(true);
 	}, [currentDate]);
 
-	const handleEditEvent = useCallback(() => {
-		if (viewingEvent) {
-			setEditingEvent(viewingEvent);
-			setDetailModalOpened(false);
-			setFormModalOpened(true);
-		}
-	}, [viewingEvent]);
-
 	const handleFormModalClose = useCallback(() => {
 		setFormModalOpened(false);
 		setEditingEvent(null);
@@ -212,20 +214,6 @@ const CalendarDiaryPage: FC = observer(() => {
 		handleFormModalClose();
 		loadEvents();
 	}, [loadEvents, handleFormModalClose]);
-
-	// Смена статуса задачи
-	const handleTaskStatusChange = useCallback(async (status: string) => {
-		if (!viewingTask) return;
-		try {
-			await updateTaskStatus({ id: viewingTask.id, status }).unwrap();
-			showNotification({ color: 'green', message: 'Статус задачи обновлён' });
-			setViewingTask({ ...viewingTask, status });
-			loadEvents();
-		} catch (e: any) {
-			const message = e?.data?.message || 'Ошибка при смене статуса';
-			showNotification({ color: 'red', message });
-		}
-	}, [viewingTask, updateTaskStatus, loadEvents]);
 
 	// Форматирование даты для заголовка
 	const dateTitle = useMemo(() => {
@@ -296,6 +284,7 @@ const CalendarDiaryPage: FC = observer(() => {
 					events={calendarEvents}
 					loading={isLoading && !rangeData}
 					startDay="monday"
+					onDayOverflowClick={handleDayOverflowClick}
 				/>
 			</div>
 
@@ -315,179 +304,92 @@ const CalendarDiaryPage: FC = observer(() => {
 				/>
 			</Modal>
 
-			{/* Модалка просмотра события */}
+			{/* Модалка всех событий дня (overflow) */}
 			<Modal
-				opened={detailModalOpened}
-				onClose={handleDetailModalClose}
-				title={viewingEvent ? 'Событие' : 'Задача'}
+				opened={dayModalOpened}
+				onClose={() => setDayModalOpened(false)}
+				title={dayModalDate ? `Все события за ${format(dayModalDate, 'd MMMM yyyy', { locale: ru })}` : 'События дня'}
 				size="md"
 			>
-				{viewingEvent && (
-					<Stack spacing="md">
-						<Group position="apart">
-							<Badge color={eventTypeConfig[viewingEvent.type]?.color || 'gray'}>
-								{eventTypeConfig[viewingEvent.type]?.label || viewingEvent.type}
-							</Badge>
-							{viewingEvent.isAllDay && <Badge color="gray">Весь день</Badge>}
-						</Group>
-
-						<Text size="xl" weight={600}>{viewingEvent.title}</Text>
-
-						{viewingEvent.description && (
-							<Text color="dimmed">{viewingEvent.description}</Text>
-						)}
-
-						<Paper p="sm" withBorder>
-							<Stack spacing="xs">
-								<Group spacing="xs">
-									<Text size="sm" color="dimmed">Начало:</Text>
-									<Text size="sm">
-										{format(new Date(viewingEvent.dateStart), 'd MMMM yyyy, HH:mm', { locale: ru })}
-									</Text>
-								</Group>
-								<Group spacing="xs">
-									<Text size="sm" color="dimmed">Окончание:</Text>
-									<Text size="sm">
-										{format(new Date(viewingEvent.dateEnd), 'd MMMM yyyy, HH:mm', { locale: ru })}
-									</Text>
-								</Group>
-								{viewingEvent.location && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Место:</Text>
-										<Text size="sm">{viewingEvent.location}</Text>
-									</Group>
-								)}
-								{viewingEvent.assignee && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Исполнитель:</Text>
-										<Text size="sm">
-											{viewingEvent.assignee.lastName} {viewingEvent.assignee.firstName}
-										</Text>
-									</Group>
-								)}
-								{viewingEvent.organization && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Организация:</Text>
-										<Text size="sm">
-											{viewingEvent.organization.nameRu || viewingEvent.organization.nameEn}
-										</Text>
-									</Group>
-								)}
-								{viewingEvent.participants && viewingEvent.participants.length > 0 && (
-									<Group spacing="xs" align="flex-start">
-										<Text size="sm" color="dimmed">Участники:</Text>
-										<Stack spacing={4}>
-											{viewingEvent.participants.map((p: any) => (
-												<Text key={p.id} size="sm">
-													{p.user?.lastName} {p.user?.firstName}
-													{p.status === 'accepted' && ' ✓'}
-													{p.status === 'declined' && ' ✗'}
-												</Text>
-											))}
-										</Stack>
-									</Group>
-								)}
-							</Stack>
+				<Stack spacing="sm">
+					{dayModalEvents.map((event) => (
+						<Paper
+							key={event.id}
+							p="sm"
+							withBorder
+							style={{
+								cursor: 'pointer',
+								borderLeft: `4px solid ${getEventTypeConfig(event.type)?.bg || '#e0e7ff'}`,
+							}}
+							onClick={() => {
+								setDayModalOpened(false);
+								handleEventClick(event);
+							}}
+						>
+							<Group position="apart">
+								<div>
+									<Text weight={500}>{event.title}</Text>
+									{event.description && (
+										<Text size="sm" color="dimmed" lineClamp={1}>{event.description}</Text>
+									)}
+								</div>
+								<Badge color={getEventTypeConfig(event.type)?.color || 'gray'} size="sm">
+									{getEventTypeConfig(event.type)?.label || event.type}
+								</Badge>
+							</Group>
+							<Text size="xs" color="dimmed" mt={4}>
+								{format(new Date(event.dateStart), 'HH:mm', { locale: ru })}
+								{' — '}
+								{format(new Date(event.dateEnd), 'HH:mm', { locale: ru })}
+							</Text>
 						</Paper>
+					))}
 
-						<Group position="right">
-							{viewingEvent.organizationId && (
-								<Button
-									className={css.btnOutline}
-									onClick={() => {
-										handleDetailModalClose();
-										router.push(`/crm/organization/${viewingEvent.organizationId}`);
-									}}
-								>
-									Перейти к организации
-								</Button>
+					{dayModalTasks.map((task) => (
+						<Paper
+							key={task.id}
+							p="sm"
+							withBorder
+							style={{
+								cursor: 'pointer',
+								borderLeft: `4px solid ${taskPriorityColors[task.priority] || '#bfdbfe'}`,
+							}}
+							onClick={() => {
+								setDayModalOpened(false);
+								handleTaskClick(task);
+							}}
+						>
+							<Group position="apart">
+								<Text weight={500}>📋 {task.title}</Text>
+								<Badge color="violet" size="sm">Задача</Badge>
+							</Group>
+							{task.description && (
+								<Text size="sm" color="dimmed" lineClamp={1}>{task.description}</Text>
 							)}
-							<Button className={css.btnOutline} onClick={handleDetailModalClose}>
-								Закрыть
-							</Button>
-							<Button className={css.btnPrimary} onClick={handleEditEvent}>
-								Редактировать
-							</Button>
-						</Group>
-					</Stack>
-				)}
-
-				{viewingTask && (
-					<Stack spacing="md">
-						<Badge color="violet">Задача CRM</Badge>
-
-						<Text size="xl" weight={600}>{viewingTask.title}</Text>
-
-						{viewingTask.description && (
-							<Text color="dimmed">{viewingTask.description}</Text>
-						)}
-
-						<Paper p="sm" withBorder>
-							<Stack spacing="xs">
-								{viewingTask.deadline && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Дедлайн:</Text>
-										<Text size="sm">
-											{format(new Date(viewingTask.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}
-										</Text>
-									</Group>
-								)}
-								<Group spacing="xs">
-									<Text size="sm" color="dimmed">Статус:</Text>
-									<Select
-										size="xs"
-										data={taskStatusOptions}
-										value={viewingTask.status}
-										onChange={(value) => value && handleTaskStatusChange(value)}
-										style={{ width: 160 }}
-									/>
-								</Group>
-								{viewingTask.author && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Автор:</Text>
-										<Text size="sm">
-											{viewingTask.author.lastName} {viewingTask.author.firstName}
-										</Text>
-									</Group>
-								)}
-								{viewingTask.assignee && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Исполнитель:</Text>
-										<Text size="sm">
-											{viewingTask.assignee.lastName} {viewingTask.assignee.firstName}
-										</Text>
-									</Group>
-								)}
-								{viewingTask.organization && (
-									<Group spacing="xs">
-										<Text size="sm" color="dimmed">Организация:</Text>
-										<Text size="sm">
-											{(viewingTask.organization as any).nameRu || (viewingTask.organization as any).nameEn}
-										</Text>
-									</Group>
-								)}
-							</Stack>
 						</Paper>
+					))}
 
-						<Group position="right">
-							{viewingTask.organizationId && (
-								<Button
-									className={css.btnOutline}
-									onClick={() => {
-										handleDetailModalClose();
-										router.push(`/crm/organization/${viewingTask.organizationId}`);
-									}}
-								>
-									Перейти к организации
-								</Button>
-							)}
-							<Button className={css.btnOutline} onClick={handleDetailModalClose}>
-								Закрыть
-							</Button>
-						</Group>
-					</Stack>
-				)}
+					{dayModalEvents.length === 0 && dayModalTasks.length === 0 && (
+						<Text color="dimmed" align="center">Нет событий</Text>
+					)}
+				</Stack>
 			</Modal>
+
+			<EventDetailModal
+				event={viewingEvent}
+				opened={detailModalOpened && !!viewingEvent}
+				onClose={handleDetailModalClose}
+				onUpdated={loadEvents}
+				onDeleted={loadEvents}
+			/>
+
+			<TaskDetailModal
+				task={viewingTask}
+				opened={detailModalOpened && !!viewingTask}
+				onClose={handleDetailModalClose}
+				onUpdated={loadEvents}
+				onDeleted={loadEvents}
+			/>
 		</>
 	);
 });

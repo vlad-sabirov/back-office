@@ -5,7 +5,7 @@ export type {
 	IRangeWithTasksResponse,
 	ITodayPlanResponse,
 } from './entity';
-export { EnCalendarEventType } from './entity';
+export { EnCalendarEventType, EnCalendarEventStatus } from './entity';
 
 // Config
 export { Const as CalendarEventConst } from './config/const';

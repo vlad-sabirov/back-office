@@ -10,6 +10,12 @@ export enum EnCalendarEventType {
 	Reminder = 'reminder',
 }
 
+export enum EnCalendarEventStatus {
+	Active = 'active',
+	Completed = 'completed',
+	Cancelled = 'cancelled',
+}
+
 export interface ICalendarEventEntity {
 	id: number;
 	type: EnCalendarEventType | string;
@@ -19,6 +25,8 @@ export interface ICalendarEventEntity {
 	dateEnd: string;
 	isAllDay: boolean;
 	location?: string | null;
+	status: EnCalendarEventStatus | string;
+	completedAt?: string | null;
 	// Relations
 	author?: IStaffEntity;
 	authorId: number;

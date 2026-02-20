@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { utcToZonedTime } from 'date-fns-tz';
@@ -267,27 +268,32 @@ ${reminder.event.organization ? `🏢 ${reminder.event.organization.nameRu || re
 	};
 
 	/**
-	 * Сводка — все напоминания по событиям календаря (запускается каждые 30 минут)
+	 * Сводка — все напоминания по событиям календаря
+	 * Запускается автоматически каждые 5 минут с 7:00 до 22:00
 	 */
-	checkAllEventReminders = async (): Promise<{
+	@Cron('*/5 7-22 * * *')
+	async checkAllEventReminders(): Promise<{
 		reminder1Day: number;
 		reminder2Hours: number;
 		reminder1Hour: number;
 		reminders: number;
 		customReminders: number;
-	}> => {
+	}> {
+		this.logger.log('Running scheduled calendar event reminders check...');
 		const r1d = await this.sendReminder1Day();
 		const r2h = await this.sendReminder2Hours();
 		const r1h = await this.sendReminder1Hour();
 		const rem = await this.processReminders();
 		const custom = await this.processCustomReminders();
 
-		return {
+		const result = {
 			reminder1Day: r1d.sent,
 			reminder2Hours: r2h.sent,
 			reminder1Hour: r1h.sent,
 			reminders: rem.sent,
 			customReminders: custom.sent,
 		};
-	};
+		this.logger.log(`Reminders check complete: ${JSON.stringify(result)}`);
+		return result;
+	}
 }

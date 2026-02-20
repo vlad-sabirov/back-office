@@ -5,6 +5,7 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import TailwindColors from '@config/tailwind/color';
 import { CrmHistoryConst, EnCrmHistoryTypes } from '@fsd/entities/crm-history';
 import { ICrmTaskEntity } from '@fsd/entities/crm-task';
+import { ICalendarEventEntity } from '@fsd/entities/calendar-event';
 import { useFeed } from '@fsd/entities/crm-history/lib/useFeed/useFeed';
 import { useAccess, useStateSelector } from '@fsd/shared/lib/hooks';
 import { Loader } from '@mantine/core';
@@ -40,6 +41,18 @@ export const History: FC<IHistoryProps> = () => {
 				{feed.map((historyItem) => {
 					if ('isSystem' in historyItem && !isDisplaySystemHistories && historyItem.isSystem) {
 						return null;
+					}
+
+					// Календарные события — проверяем feedType до type,
+					// т.к. event.type ('call','meeting') может совпасть с EnCrmHistoryTypes.Call
+					if ('feedType' in historyItem && historyItem.feedType == EnCrmHistoryTypes.CalendarEvent) {
+						return (
+							<Item.CalendarEvent
+								event={historyItem as ICalendarEventEntity}
+								key={`calendar_event_${historyItem.id}`}
+								className={css.historyItem}
+							/>
+						);
 					}
 
 					if (historyItem.type == EnCrmHistoryTypes.Task) {

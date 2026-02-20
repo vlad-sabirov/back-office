@@ -120,6 +120,17 @@ export class CalendarEventController {
 		return await this.calendarEventService.getByTaskId(id);
 	}
 
+	@Patch('/byId/:id/status')
+	async updateStatus(
+		@Param('id') id: number | string,
+		@Body('status') status: string,
+		@Headers('authorization') authorization: string
+	): Promise<any> {
+		await delay(process.env.DELAY);
+		const currentUserId = this.getCurrentUserId(authorization);
+		return await this.calendarEventService.updateStatus({ id, status, currentUserId });
+	}
+
 	@Patch('/byId/:id')
 	async updateById(
 		@Param('id') id: number | string,

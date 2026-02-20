@@ -516,6 +516,129 @@ export class OrganizationService extends PrismaService implements OnModuleInit {
 		this.elasticSearchInit().then();
 	};
 
+	/**
+	 * Организации, которые скоро сменят Power статус (для виджета CRM)
+	 */
+	getUpcomingTransitions = async (userId: number, days: number = 3): Promise<{
+		id: number;
+		nameRu: string;
+		nameEn: string;
+		currentStatus: string;
+		nextStatus: string;
+		daysLeft: number;
+		last1CUpdate: Date | null;
+	}[]> => {
+		const now = new Date();
+		const thresholds = [
+			{ threshold: 30, from: 'full', to: 'medium' },
+			{ threshold: 60, from: 'medium', to: 'low' },
+			{ threshold: 90, from: 'low', to: 'empty' },
+		];
+
+		const results: any[] = [];
+
+		for (const { threshold, from, to } of thresholds) {
+			// Окно: от (threshold - days) до threshold дней назад
+			const windowStart = subDays(now, threshold);
+			const windowEnd = subDays(now, threshold - days);
+
+			const orgs = await this.crmOrganization.findMany({
+				where: {
+					userId,
+					last1CUpdate: {
+						gt: windowStart,
+						lte: windowEnd,
+					},
+				},
+				select: { id: true, nameRu: true, nameEn: true, last1CUpdate: true },
+			});
+
+			for (const org of orgs) {
+				const daysSinceUpdate = org.last1CUpdate
+					? Math.floor((now.getTime() - new Date(org.last1CUpdate).getTime()) / (1000 * 60 * 60 * 24))
+					: threshold;
+				results.push({
+					id: org.id,
+					nameRu: org.nameRu || '',
+					nameEn: org.nameEn || '',
+					currentStatus: from,
+					nextStatus: to,
+					daysLeft: threshold - daysSinceUpdate,
+					last1CUpdate: org.last1CUpdate,
+				});
+			}
+		}
+
+		return results.sort((a, b) => a.daysLeft - b.daysLeft);
+	};
+
+	/**
+	 * Статистика Power по сотрудникам (для виджета crmAdmin)
+	 */
+	getPowerByStaff = async (): Promise<{
+		userId: number;
+		firstName: string;
+		lastName: string;
+		full: number;
+		medium: number;
+		low: number;
+		empty: number;
+		total: number;
+	}[]> => {
+		const now = new Date();
+		const mediumDate = subDays(now, 30);
+		const lowDate = subDays(now, 60);
+		const emptyDate = subDays(now, 90);
+
+		// Найти всех пользователей с организациями
+		const users = await this.user.findMany({
+			where: {
+				roles: { some: { alias: 'crm' } },
+			},
+			select: { id: true, firstName: true, lastName: true },
+		});
+
+		const results: any[] = [];
+
+		for (const user of users) {
+			const baseWhere = { userId: user.id, NOT: [{ userId: 0 }, { userId: 1 }] };
+
+			const [full, medium, low, empty, total] = await Promise.all([
+				this.crmOrganization.count({
+					where: { ...baseWhere, last1CUpdate: { gt: mediumDate } },
+				}),
+				this.crmOrganization.count({
+					where: { ...baseWhere, last1CUpdate: { lte: mediumDate, gt: lowDate } },
+				}),
+				this.crmOrganization.count({
+					where: { ...baseWhere, last1CUpdate: { lte: lowDate, gt: emptyDate } },
+				}),
+				this.crmOrganization.count({
+					where: {
+						...baseWhere,
+						OR: [{ last1CUpdate: { lte: emptyDate } }, { last1CUpdate: null }],
+					},
+				}),
+				this.crmOrganization.count({ where: { userId: user.id } }),
+			]);
+
+			if (total > 0) {
+				results.push({
+					userId: user.id,
+					firstName: user.firstName,
+					lastName: user.lastName,
+					full,
+					medium,
+					low,
+					empty,
+					total,
+				});
+			}
+		}
+
+		return results;
+	};
+
 	deleteMe = async (): Promise<string> => {
 		const organizations = await this.crmOrganization.findMany();
 		const response: { name: string; inn: number }[] = [];

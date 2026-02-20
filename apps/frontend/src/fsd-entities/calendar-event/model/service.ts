@@ -12,6 +12,7 @@ interface IFindManyRequest {
 		organizationId?: number;
 		contactId?: number;
 		taskId?: number;
+		status?: string | string[];
 		isAllDay?: boolean;
 	};
 	filter?: {
@@ -109,6 +110,12 @@ export const CalendarEventApi = createApi({
 			query: ({ id, data }) => ({ url: `/byId/${id}`, method: 'PATCH', body: data }),
 		}),
 
+		// Обновить статус события (active / completed / cancelled)
+		updateStatus: builder.mutation<ICalendarEventEntity, { id: number | string; status: string }>({
+			invalidatesTags: ['list', 'current', 'range', 'today'],
+			query: ({ id, status }) => ({ url: `/byId/${id}/status`, method: 'PATCH', body: { status } }),
+		}),
+
 		// Удалить событие
 		delete: builder.mutation<ICalendarEventEntity, number | string>({
 			invalidatesTags: ['list', 'range', 'today'],
@@ -128,6 +135,7 @@ export const CalendarEventService = {
 	getById: CalendarEventApi.useLazyGetByIdQuery,
 	create: CalendarEventApi.useCreateMutation,
 	update: CalendarEventApi.useUpdateMutation,
+	updateStatus: CalendarEventApi.useUpdateStatusMutation,
 	delete: CalendarEventApi.useDeleteMutation,
 };
 

@@ -9,7 +9,7 @@ import css from './Calendar.module.scss';
 const CalendarContext = createContext(new CalendarStore());
 
 const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
-	({ date, events, min, max, startDay, view, views, ctx, loading, className, ...props }) => {
+	({ date, events, min, max, startDay, view, views, ctx, loading, onDayOverflowClick, className, ...props }) => {
 		const [isLoaded, setIsLoaded] = useState<boolean>(false);
 		const CalendarStore = useContext(ctx);
 
@@ -25,8 +25,9 @@ const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 			if (!view && views) CalendarStore.setView(views[0]);
 			if (views) CalendarStore.setViews(views);
 			CalendarStore.setLoading(!!loading);
+			CalendarStore.setOnDayOverflowClick(onDayOverflowClick || null);
 			setIsLoaded(true);
-		}, [CalendarStore, events, date, max, min, startDay, view, views, loading]);
+		}, [CalendarStore, events, date, max, min, startDay, view, views, loading, onDayOverflowClick]);
 
 		if (!isLoaded) return <div></div>;
 

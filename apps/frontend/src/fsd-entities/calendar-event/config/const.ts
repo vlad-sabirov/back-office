@@ -1,14 +1,19 @@
-import { EnCalendarEventType } from '../entity';
+import { EnCalendarEventType, EnCalendarEventStatus } from '../entity';
 
 export const Const = {
 	State: {
 		ReducerName: 'calendar_event',
 	},
 	Type: {
-		[EnCalendarEventType.Meeting]: { label: 'Встреча', color: 'blue', icon: 'calendar' },
-		[EnCalendarEventType.Call]: { label: 'Звонок', color: 'green', icon: 'phone' },
-		[EnCalendarEventType.Note]: { label: 'Заметка', color: 'gray', icon: 'note' },
-		[EnCalendarEventType.Reminder]: { label: 'Напоминание', color: 'orange', icon: 'bell' },
+		[EnCalendarEventType.Meeting]: { label: 'Встреча', color: 'blue', icon: 'calendar', hex: '#42a5f5', bg: '#e3f2fd' },
+		[EnCalendarEventType.Call]: { label: 'Звонок', color: 'green', icon: 'phone', hex: '#66bb6a', bg: '#e8f5e9' },
+		[EnCalendarEventType.Note]: { label: 'Заметка', color: 'grape', icon: 'note', hex: '#ab47bc', bg: '#f3e5f5' },
+		[EnCalendarEventType.Reminder]: { label: 'Напоминание', color: 'orange', icon: 'bell', hex: '#ffa726', bg: '#fff3e0' },
+	},
+	Status: {
+		[EnCalendarEventStatus.Active]: { label: 'Активное', color: 'blue', hex: '#4f7ff0' },
+		[EnCalendarEventStatus.Completed]: { label: 'Выполнено', color: 'green', hex: '#66bb6a' },
+		[EnCalendarEventStatus.Cancelled]: { label: 'Отменено', color: 'gray', hex: '#96a2b6' },
 	},
 	Form: {
 		Title: {

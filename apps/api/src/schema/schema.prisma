@@ -519,6 +519,8 @@ model CrmOrganizationPowerLog {
   id             Int             @id @default(autoincrement())
   previousStatus String
   newStatus      String
+  preWarned3Days Boolean         @default(false)
+  preWarned1Day  Boolean         @default(false)
   // -------
   organization   CrmOrganization @relation("crm_organization_power_log", fields: [organizationId], references: [id])
   organizationId Int
@@ -538,6 +540,8 @@ model CalendarEvent {
   dateEnd           DateTime
   isAllDay          Boolean                    @default(false)
   location          String?
+  status            String                     @default("active") // active, completed, cancelled
+  completedAt       DateTime?
   // Notification fields
   reminderSent1Day  Boolean                    @default(false)
   reminderSent2Hours Boolean                   @default(false)
@@ -561,6 +565,7 @@ model CalendarEvent {
   updatedAt         DateTime                   @updatedAt
 
   @@index([assigneeId, dateStart])
+  @@index([assigneeId, status])
   @@index([dateStart, dateEnd])
   @@index([organizationId])
   @@index([contactId])

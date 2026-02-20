@@ -8,8 +8,7 @@ import { useStateSelector } from '@fsd/shared/lib/hooks';
 import { TextField, Icon, Select } from '@fsd/shared/ui-kit';
 import { ActionIcon } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { TaskEditModal } from './TaskEditModal';
-import { TaskDeleteModal } from './TaskDeleteModal';
+import { TaskDetailModal } from '@fsd/features/crm-task-detail-modal';
 import css from './task.module.scss';
 
 const statusOptions = [
@@ -25,10 +24,8 @@ interface IProps {
 }
 
 export const Task: FC<IProps> = ({ task, className }) => {
-	const [editModalOpened, setEditModalOpened] = useState(false);
-	const [deleteModalOpened, setDeleteModalOpened] = useState(false);
+	const [detailModalOpened, setDetailModalOpened] = useState(false);
 
-	// Получаем текущего пользователя и его роли
 	const currentUserId = useStateSelector((state) => state.app.auth.userId);
 	const currentUserRoles = useStateSelector((state) => state.app.auth.roles) || [];
 
@@ -38,8 +35,6 @@ export const Task: FC<IProps> = ({ task, className }) => {
 	const historyActions = useCrmHistoryActions();
 	const [updateTaskStatus] = CrmTaskService.updateStatus();
 
-	// Проверка прав на редактирование/удаление
-	// Можно если: ты автор ИЛИ имеешь роль boss/admin/developer/crmAdmin
 	const canModify = useMemo(() => {
 		const isAuthor = task.authorId === Number(currentUserId);
 		const hasAdminRole = currentUserRoles.some((role: string) =>
@@ -48,7 +43,6 @@ export const Task: FC<IProps> = ({ task, className }) => {
 		return isAuthor || hasAdminRole;
 	}, [task.authorId, currentUserId, currentUserRoles]);
 
-	// Исполнитель тоже может менять статус
 	const canChangeStatus = useMemo(() => {
 		const isAssignee = task.assigneeId === Number(currentUserId);
 		return canModify || isAssignee;
@@ -65,10 +59,16 @@ export const Task: FC<IProps> = ({ task, className }) => {
 		}
 	}, [task.id, updateTaskStatus, historyActions]);
 
-	const openEditModal = useCallback(() => setEditModalOpened(true), []);
-	const closeEditModal = useCallback(() => setEditModalOpened(false), []);
-	const openDeleteModal = useCallback(() => setDeleteModalOpened(true), []);
-	const closeDeleteModal = useCallback(() => setDeleteModalOpened(false), []);
+	const openDetailModal = useCallback(() => setDetailModalOpened(true), []);
+	const closeDetailModal = useCallback(() => setDetailModalOpened(false), []);
+
+	const handleUpdated = useCallback(() => {
+		historyActions.reloadTimestamp();
+	}, [historyActions]);
+
+	const handleDeleted = useCallback(() => {
+		historyActions.reloadTimestamp();
+	}, [historyActions]);
 
 	const createdDate = useMemo(() => {
 		return format(parseISO(task.createdAt), 'dd MMMM yyyy', { locale: dateFnsLocaleRu });
@@ -110,16 +110,11 @@ export const Task: FC<IProps> = ({ task, className }) => {
 				<TextField size={'small'} className={css.label}>
 					Создал{author.sex === 'female' && 'а'} задачу
 				</TextField>
-				{canModify && (
-					<div className={css.actions}>
-						<ActionIcon size="sm" variant="subtle" onClick={openEditModal} title="Редактировать">
-							<Icon name="edit" className={css.actionIcon} />
-						</ActionIcon>
-						<ActionIcon size="sm" variant="subtle" color="red" onClick={openDeleteModal} title="Удалить">
-							<Icon name="trash" className={css.actionIcon} />
-						</ActionIcon>
-					</div>
-				)}
+				<div className={css.actions}>
+					<ActionIcon size="sm" variant="subtle" onClick={openDetailModal} title="Подробнее">
+						<Icon name="eye" className={css.actionIcon} />
+					</ActionIcon>
+				</div>
 			</div>
 
 			<div className={css.taskContent}>
@@ -185,8 +180,13 @@ export const Task: FC<IProps> = ({ task, className }) => {
 				)}
 			</div>
 
-			<TaskEditModal task={task} opened={editModalOpened} onClose={closeEditModal} />
-			<TaskDeleteModal task={task} opened={deleteModalOpened} onClose={closeDeleteModal} />
+			<TaskDetailModal
+				task={detailModalOpened ? task : null}
+				opened={detailModalOpened}
+				onClose={closeDetailModal}
+				onUpdated={handleUpdated}
+				onDeleted={handleDeleted}
+			/>
 		</div>
 	);
 };

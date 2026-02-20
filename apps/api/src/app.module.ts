@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaService } from './common';
 import { UserModule } from './user/user.module';
 import { UserRoleModule } from './user-role/user-role.module';
@@ -14,6 +15,7 @@ import { VacationCalendarModule } from './vacation-calendar/vacation-calendar.mo
 
 @Module({
 	imports: [
+		ScheduleModule.forRoot(),
 		UserModule,
 		UserRoleModule,
 		AuthModule,

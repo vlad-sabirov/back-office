@@ -34,6 +34,10 @@ export const Once: FC = () => {
 		return output;
 	}, [parent, reportAll, userId]);
 
+	if (!myReportToday && myReportAll.length === 0) {
+		return null;
+	}
+
 	return (
 		<div className={css.root}>
 			<ContentBlock className={css.history}>

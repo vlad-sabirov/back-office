@@ -43,9 +43,14 @@ export const BirthdayUpcoming: FC<BirthdayUpcomingProps> = ({ className }) => {
 		setIsLoading(true);
 
 		(async () => {
-			const [response] = await UserService.findBirthdayUpcoming(6);
-			if (response && isMounted) setData(response);
-			setIsLoading(false);
+			try {
+				const [response] = await UserService.findBirthdayUpcoming(6);
+				if (response && isMounted) setData(response);
+			} catch {
+				// API error — keep empty state
+			} finally {
+				if (isMounted) setIsLoading(false);
+			}
 		})();
 
 		return () => {

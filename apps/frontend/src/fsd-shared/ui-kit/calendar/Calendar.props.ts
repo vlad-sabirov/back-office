@@ -35,4 +35,5 @@ export interface CalendarProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivE
 	views?: typeof CalendarPropsView[number][];
 	events?: CalendarPropsEvent[];
 	loading?: boolean;
+	onDayOverflowClick?: (date: Date, events: CalendarPropsEvent[]) => void;
 }

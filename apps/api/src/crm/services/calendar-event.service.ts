@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../common';
 import { MutationCalendarEventDto } from '../dto/mutation-calendar-event.dto';
 import { QueryCalendarEventDto, QueryCalendarEventRangeDto } from '../dto/query-calendar-event.dto';
-import { CalendarEventConstants, CalendarEventTypes } from '../constants/calendar-event.constants';
+import { CalendarEventConstants, CalendarEventTypes, CalendarEventStatuses } from '../constants/calendar-event.constants';
 import { CalendarEventNotificationService } from './calendar-event-notification.service';
 
 interface CalendarEventFilter {
@@ -301,6 +301,18 @@ export class CalendarEventService extends PrismaService {
 		if (updateDto.taskId !== undefined) {
 			data.taskId = updateDto.taskId ? Number(updateDto.taskId) : null;
 		}
+		if ((updateDto as any).status !== undefined) {
+			const newStatus = (updateDto as any).status;
+			if (!CalendarEventStatuses.includes(newStatus as any)) {
+				throw new HttpException(CalendarEventConstants.VALIDATION_STATUS, HttpStatus.BAD_REQUEST);
+			}
+			data.status = newStatus;
+			if (newStatus === 'completed' || newStatus === 'cancelled') {
+				data.completedAt = new Date();
+			} else if (newStatus === 'active') {
+				data.completedAt = null;
+			}
+		}
 
 		// Валидация дат после применения изменений
 		const finalDateStart = data.dateStart || event.dateStart;
@@ -329,6 +341,44 @@ export class CalendarEventService extends PrismaService {
 		}
 
 		return updatedEvent;
+	};
+
+	updateStatus = async ({
+		id,
+		status,
+		currentUserId,
+	}: {
+		id: number | string;
+		status: string;
+		currentUserId?: number;
+	}): Promise<any> => {
+		if (!CalendarEventStatuses.includes(status as any)) {
+			throw new HttpException(CalendarEventConstants.VALIDATION_STATUS, HttpStatus.BAD_REQUEST);
+		}
+
+		const event = await this.findById(id);
+		if (!event) throw new HttpException(CalendarEventConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
+
+		if (currentUserId) {
+			const canModify = await this.canModifyEvent(currentUserId, event);
+			if (!canModify) {
+				throw new HttpException(CalendarEventConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
+			}
+		}
+
+		const data: any = { status };
+
+		if (status === 'completed' || status === 'cancelled') {
+			data.completedAt = new Date();
+		} else if (status === 'active') {
+			data.completedAt = null;
+		}
+
+		return this.calendarEvent.update({
+			where: { id: Number(id) },
+			data,
+			include: this.defaultInclude,
+		});
 	};
 
 	deleteById = async (id: number | string, currentUserId?: number): Promise<any> => {
@@ -372,6 +422,13 @@ export class CalendarEventService extends PrismaService {
 		if (where.organizationId) result.organizationId = Number(where.organizationId);
 		if (where.contactId) result.contactId = Number(where.contactId);
 		if (where.taskId) result.taskId = Number(where.taskId);
+		if (where.status) {
+			if (Array.isArray(where.status)) {
+				result.status = { in: where.status };
+			} else {
+				result.status = where.status;
+			}
+		}
 		if (where.isAllDay !== undefined) result.isAllDay = where.isAllDay;
 
 		return result;
