@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Markup } from 'telegraf';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { utcToZonedTime } from 'date-fns-tz';
@@ -683,7 +684,13 @@ export class TaskService extends PrismaService {
 		}
 
 		try {
-			await this.telegramService.sendMessage(Number(assignee.telegramId), message);
+			const keyboard = Markup.inlineKeyboard([[
+				Markup.button.callback('▶️ В работе', `ts:${task.id}:wip`),
+				Markup.button.callback('✅ Выполнено', `ts:${task.id}:done`),
+			], [
+				Markup.button.callback('🔍 Описание', `td:${task.id}:info`),
+			]]);
+			await this.telegramService.sendMessageWithKeyboard(Number(assignee.telegramId), message, keyboard);
 		} catch (error) {
 			console.error('Ошибка отправки Telegram уведомления о назначении задачи:', error);
 		}

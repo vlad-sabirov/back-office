@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Markup } from 'telegraf';
 import { PrismaService } from '../../common';
 import { TelegramService } from '../../notification/services/telegram.service';
 import { format } from 'date-fns';
@@ -45,9 +46,13 @@ export class CalendarEventNotificationService extends PrismaService {
 	}
 
 	/**
-	 * Отправка сообщения пользователю
+	 * Отправка сообщения пользователю (с опциональными inline-кнопками)
 	 */
-	private async sendToUser(userId: number, message: string): Promise<void> {
+	private async sendToUser(
+		userId: number,
+		message: string,
+		keyboard?: ReturnType<typeof Markup.inlineKeyboard>
+	): Promise<void> {
 		try {
 			const user = await this.user.findUnique({
 				where: { id: userId },
@@ -55,7 +60,11 @@ export class CalendarEventNotificationService extends PrismaService {
 			});
 
 			if (user?.telegramId) {
-				await this.telegramService.sendMessage(Number(user.telegramId), message);
+				if (keyboard) {
+					await this.telegramService.sendMessageWithKeyboard(Number(user.telegramId), message, keyboard);
+				} else {
+					await this.telegramService.sendMessage(Number(user.telegramId), message);
+				}
 				this.logger.log(`Sent notification to user ${userId} (${user.lastName} ${user.firstName})`);
 			}
 		} catch (error) {
@@ -66,26 +75,60 @@ export class CalendarEventNotificationService extends PrismaService {
 	/**
 	 * Уведомление о создании события
 	 */
+	private isSentinelDate(date: Date | string): boolean {
+		return new Date(date).getFullYear() === 2099;
+	}
+
+	private formatDateTimeBlock(event: any): string {
+		if (event.type === 'note' && this.isSentinelDate(event.dateStart)) {
+			if (event.createdAt) {
+				return `🕐 Создано: ${this.formatDate(new Date(event.createdAt))}, ${this.formatTime(new Date(event.createdAt))}\n`;
+			}
+			return '';
+		}
+		return `🕐 ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}\n📅 ${this.formatDate(new Date(event.dateStart))}\n`;
+	}
+
 	async notifyEventCreated(event: any): Promise<void> {
 		// Уведомляем только если assignee !== author
 		if (event.assigneeId === event.authorId) return;
 
 		const message = `${this.formatEventType(event.type)} <b>создано для вас</b>
-"${event.title}"
-🕐 ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}
-📅 ${this.formatDate(new Date(event.dateStart))}
-${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}\n` : ''}${event.contact ? `👤 Контакт: ${event.contact.name}\n` : ''}👤 Автор: ${event.author?.lastName || ''} ${event.author?.firstName || ''}`;
+<b>Название:</b> ${event.title}
+${this.formatDateTimeBlock(event)}${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}\n` : ''}${event.contact ? `👤 Контакт: ${event.contact.name}\n` : ''}👤 Автор: ${event.author?.lastName || ''} ${event.author?.firstName || ''}`;
 
-		await this.sendToUser(event.assigneeId, message);
+		// Кнопки для ответственного (только для встреч/звонков)
+		if (event.type === 'meeting' || event.type === 'call') {
+			const keyboard = Markup.inlineKeyboard([[
+				Markup.button.callback('✅ Готово', `ev:${event.id}:done`),
+				Markup.button.callback('❌ Отменено', `ev:${event.id}:cancel`),
+			], [
+				Markup.button.callback('🔍 Описание', `ev:${event.id}:info`),
+			]]);
+			await this.sendToUser(event.assigneeId, message, keyboard);
+		} else {
+			await this.sendToUser(event.assigneeId, message);
+		}
 
-		// Уведомляем участников
+		// Уведомляем участников с кнопками Принять/Отклонить
 		if (event.participants && event.participants.length > 0) {
 			for (const participant of event.participants) {
 				if (participant.userId !== event.authorId && participant.userId !== event.assigneeId) {
-					await this.sendToUser(
-						participant.userId,
-						`📨 <b>Вас пригласили на ${this.formatEventType(event.type).toLowerCase()}</b>\n${message}`
-					);
+					const inviteMessage = `📨 <b>Вас пригласили на ${this.formatEventType(event.type).toLowerCase()}</b>\n` +
+						`<b>Название:</b> ${event.title}\n` +
+						`🕐 ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}\n` +
+						`📅 ${this.formatDate(new Date(event.dateStart))}\n` +
+						`${event.location ? `📍 ${event.location}\n` : ''}` +
+						`${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}\n` : ''}` +
+						`👤 Организатор: ${event.author?.lastName || ''} ${event.author?.firstName || ''}`;
+
+					const keyboard = Markup.inlineKeyboard([[
+						Markup.button.callback('✅ Принять', `me:${event.id}:accept`),
+						Markup.button.callback('❌ Отклонить', `me:${event.id}:decline`),
+					], [
+						Markup.button.callback('🔍 Описание', `ev:${event.id}:info`),
+					]]);
+					await this.sendToUser(participant.userId, inviteMessage, keyboard);
 				}
 			}
 		}
@@ -100,9 +143,7 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 		const message = `✏️ <b>${this.formatEventType(event.type)} изменено</b>
 "${event.title}"
 Изменения: ${changes.join(', ')}
-🕐 ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}
-📅 ${this.formatDate(new Date(event.dateStart))}
-${event.location ? `📍 ${event.location}` : ''}`;
+${this.formatDateTimeBlock(event)}${event.location ? `📍 ${event.location}` : ''}`;
 
 		await this.sendToUser(event.assigneeId, message);
 
@@ -124,8 +165,7 @@ ${event.location ? `📍 ${event.location}` : ''}`;
 
 		const message = `❌ <b>${this.formatEventType(event.type)} отменено</b>
 "${event.title}"
-📅 ${this.formatDate(new Date(event.dateStart))}
-🕐 ${this.formatTime(new Date(event.dateStart))}`;
+${this.formatDateTimeBlock(event)}`;
 
 		await this.sendToUser(event.assigneeId, message);
 

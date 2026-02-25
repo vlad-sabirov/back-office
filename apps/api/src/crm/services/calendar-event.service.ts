@@ -132,13 +132,14 @@ export class CalendarEventService extends PrismaService {
 			],
 		};
 
-		let where: any = dateCondition;
+		let where: any = { ...dateCondition, status: { notIn: ['completed', 'cancelled'] } };
 
 		if (params.userId) {
 			const userId = Number(params.userId);
 			const isViewingOthersCalendar = requestingUserId !== undefined && requestingUserId !== userId;
 			const andConditions: any[] = [
 				dateCondition,
+				{ status: { notIn: ['completed', 'cancelled'] } },
 				{
 					OR: [
 						{ assigneeId: userId },
@@ -177,7 +178,7 @@ export class CalendarEventService extends PrismaService {
 			],
 		};
 
-		let eventsWhere: any = dateCondition;
+		let eventsWhere: any = { ...dateCondition, status: { notIn: ['completed', 'cancelled'] } };
 
 		const tasksWhere: any = {
 			deadline: { gte: from, lte: to },
@@ -189,6 +190,7 @@ export class CalendarEventService extends PrismaService {
 			const isViewingOthersCalendar = requestingUserId !== undefined && requestingUserId !== userId;
 			const andConditions: any[] = [
 				dateCondition,
+				{ status: { notIn: ['completed', 'cancelled'] } },
 				{
 					OR: [
 						{ assigneeId: userId },
