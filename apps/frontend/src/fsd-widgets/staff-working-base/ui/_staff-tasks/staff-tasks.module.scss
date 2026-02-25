@@ -65,6 +65,25 @@
 	}
 }
 
+.taskRowClickable {
+	cursor: pointer;
+	border-radius: 6px;
+	padding: 3px 6px;
+	margin-left: -6px;
+	transition: background-color 0.15s ease;
+
+	&:hover {
+		background-color: #f0f2f5;
+	}
+}
+
+.rowOpenIcon {
+	margin-left: auto;
+	opacity: 0.4;
+	width: 14px;
+	height: 14px;
+}
+
 .iconUrgent {
 	color: #f9515a;
 	font-size: 10px;

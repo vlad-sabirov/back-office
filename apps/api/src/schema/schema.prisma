@@ -490,6 +490,7 @@ model CrmTask {
   organizationId     Int?
   modifications      CrmTaskModification[] @relation("crm_task_modifications")
   calendarEvents     CalendarEvent[]       @relation("calendar_event_task")
+  reminders          CalendarReminder[]    @relation("crm_task_reminders")
   // -------
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -589,18 +590,21 @@ model CalendarEventParticipant {
 }
 
 model CalendarReminder {
-  id        Int           @id @default(autoincrement())
-  event     CalendarEvent @relation("calendar_event_reminders", fields: [eventId], references: [id], onDelete: Cascade)
-  eventId   Int
-  user      User          @relation("calendar_reminder_user", fields: [userId], references: [id])
+  id        Int            @id @default(autoincrement())
+  event     CalendarEvent? @relation("calendar_event_reminders", fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   Int?
+  task      CrmTask?       @relation("crm_task_reminders", fields: [taskId], references: [id], onDelete: Cascade)
+  taskId    Int?
+  user      User           @relation("calendar_reminder_user", fields: [userId], references: [id])
   userId    Int
   remindAt  DateTime
-  isSent    Boolean       @default(false)
+  isSent    Boolean        @default(false)
   // -------
-  createdAt DateTime      @default(now())
+  createdAt DateTime       @default(now())
 
   @@index([remindAt, isSent])
   @@index([eventId])
+  @@index([taskId])
   @@index([userId])
   @@map("calendar_reminder")
 }

@@ -2,7 +2,8 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../common';
 
 interface CreateReminderDto {
-	eventId: number;
+	eventId?: number;
+	taskId?: number;
 	remindAt: Date | string;
 }
 
@@ -22,52 +23,66 @@ export class CalendarReminderService extends PrismaService {
 	private readonly logger = new Logger(CalendarReminderService.name);
 
 	/**
-	 * Создать напоминание о событии
+	 * Создать напоминание о событии или задаче
 	 */
 	create = async (dto: CreateReminderDto, userId: number): Promise<CalendarReminderEntity> => {
-		// Проверить, что событие существует
-		const event = await this.calendarEvent.findUnique({
-			where: { id: dto.eventId },
-		});
+		const remindAt = new Date(dto.remindAt);
 
-		if (!event) {
-			throw new HttpException('Событие не найдено', HttpStatus.NOT_FOUND);
+		if (remindAt < new Date()) {
+			throw new HttpException('Время напоминания не может быть в прошлом', HttpStatus.BAD_REQUEST);
 		}
 
-		// Проверить, что пользователь — участник или ответственный
+		// === Напоминание для задачи ===
+		if (dto.taskId) {
+			const task = await this.crmTask.findUnique({ where: { id: dto.taskId } });
+			if (!task) throw new HttpException('Задача не найдена', HttpStatus.NOT_FOUND);
+			if (task.assigneeId !== userId && task.authorId !== userId) {
+				throw new HttpException('Нет доступа к задаче', HttpStatus.FORBIDDEN);
+			}
+
+			const existing = await this.calendarReminder.findFirst({
+				where: { taskId: dto.taskId, userId, isSent: false },
+			});
+
+			if (existing) {
+				return this.calendarReminder.update({
+					where: { id: existing.id },
+					data: { remindAt },
+					include: { task: true },
+				});
+			}
+
+			return this.calendarReminder.create({
+				data: { taskId: dto.taskId, userId, remindAt },
+				include: { task: true },
+			});
+		}
+
+		// === Напоминание для события ===
+		if (!dto.eventId) {
+			throw new HttpException('Укажите eventId или taskId', HttpStatus.BAD_REQUEST);
+		}
+
+		const event = await this.calendarEvent.findUnique({ where: { id: dto.eventId } });
+		if (!event) throw new HttpException('Событие не найдено', HttpStatus.NOT_FOUND);
+
 		const isParticipant = await this.calendarEventParticipant.findUnique({
-			where: {
-				eventId_userId: { eventId: dto.eventId, userId },
-			},
+			where: { eventId_userId: { eventId: dto.eventId, userId } },
 		});
 
 		if (event.assigneeId !== userId && event.authorId !== userId && !isParticipant) {
 			throw new HttpException('Вы не являетесь участником события', HttpStatus.FORBIDDEN);
 		}
 
-		const remindAt = new Date(dto.remindAt);
-
-		// Проверить, что напоминание не в прошлом
-		if (remindAt < new Date()) {
-			throw new HttpException('Время напоминания не может быть в прошлом', HttpStatus.BAD_REQUEST);
-		}
-
-		// Проверить, что напоминание до начала события
 		if (remindAt >= new Date(event.dateStart)) {
 			throw new HttpException('Напоминание должно быть до начала события', HttpStatus.BAD_REQUEST);
 		}
 
-		// Проверить, нет ли уже такого напоминания
 		const existing = await this.calendarReminder.findFirst({
-			where: {
-				eventId: dto.eventId,
-				userId,
-				isSent: false,
-			},
+			where: { eventId: dto.eventId, userId, isSent: false },
 		});
 
 		if (existing) {
-			// Обновить существующее напоминание
 			return this.calendarReminder.update({
 				where: { id: existing.id },
 				data: { remindAt },
@@ -75,13 +90,8 @@ export class CalendarReminderService extends PrismaService {
 			});
 		}
 
-		// Создать новое напоминание
 		return this.calendarReminder.create({
-			data: {
-				eventId: dto.eventId,
-				userId,
-				remindAt,
-			},
+			data: { eventId: dto.eventId, userId, remindAt },
 			include: { event: true },
 		});
 	};

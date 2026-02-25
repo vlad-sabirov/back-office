@@ -13,14 +13,16 @@ interface IProps {
 	userName?: string;
 	onReload?: () => void;
 	completedOnly?: boolean;
+	cancelledOnly?: boolean;
+	filterPriority?: EnCrmTaskPriority;
+	filterOverdue?: boolean;
 }
 
-export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, onReload, completedOnly }) => {
+export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, onReload, completedOnly, cancelledOnly, filterPriority, filterOverdue }) => {
 	const [viewingTask, setViewingTask] = useState<ICrmTaskEntity | null>(null);
 
 	const sortedTasks = useMemo(() => {
 		if (completedOnly) {
-			// Выполненные задачи — сортируем по дате обновления (новые первые)
 			return tasks
 				.filter((t) => t.status === EnCrmTaskStatus.Completed)
 				.sort((a, b) => {
@@ -30,10 +32,22 @@ export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, 
 				});
 		}
 
-		// Активные задачи — сначала просроченные, потом по дедлайну
-		const activeTasks = tasks.filter(
+		if (cancelledOnly) {
+			return tasks
+				.filter((t) => t.status === EnCrmTaskStatus.Cancelled)
+				.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+		}
+
+		// Активные задачи
+		let activeTasks = tasks.filter(
 			(t) => t.status === EnCrmTaskStatus.Pending || t.status === EnCrmTaskStatus.InProgress
 		);
+
+		if (filterOverdue) {
+			activeTasks = activeTasks.filter((t) => t.deadline && new Date(t.deadline) < new Date());
+		} else if (filterPriority) {
+			activeTasks = activeTasks.filter((t) => t.priority === filterPriority);
+		}
 
 		return activeTasks.sort((a, b) => {
 			const aOverdue = a.deadline ? isPast(parseISO(a.deadline)) : false;
@@ -50,7 +64,7 @@ export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, 
 
 			return 0;
 		});
-	}, [tasks, completedOnly]);
+	}, [tasks, completedOnly, cancelledOnly, filterPriority, filterOverdue]);
 
 	const handleTaskClick = useCallback((task: ICrmTaskEntity) => {
 		setViewingTask(task);
@@ -75,13 +89,19 @@ export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, 
 			<Modal
 				opened={opened}
 				onClose={onClose}
-				title={completedOnly ? `Выполненные задачи: ${userName || 'сотрудника'}` : `Задачи: ${userName || 'сотрудника'}`}
+				title={
+				completedOnly ? `Выполненные задачи: ${userName || 'сотрудника'}` :
+				cancelledOnly ? `Отменённые задачи: ${userName || 'сотрудника'}` :
+				filterOverdue ? `Просроченные задачи: ${userName || 'сотрудника'}` :
+				filterPriority ? `Задачи (${CrmTaskConst.Priority[filterPriority]?.label || filterPriority}): ${userName || 'сотрудника'}` :
+				`Задачи: ${userName || 'сотрудника'}`
+			}
 				size={700}
 			>
 				<div className={css.tasksList}>
 					{sortedTasks.length === 0 ? (
 						<TextField className={css.empty}>
-							{completedOnly ? 'Нет выполненных задач' : 'Нет активных задач'}
+							{completedOnly ? 'Нет выполненных задач' : cancelledOnly ? 'Нет отменённых задач' : filterOverdue ? 'Нет просроченных задач' : filterPriority ? 'Нет задач с таким приоритетом' : 'Нет активных задач'}
 						</TextField>
 					) : (
 						sortedTasks.map((task) => (
@@ -109,11 +129,12 @@ interface ITaskItemProps {
 
 const TaskItem: FC<ITaskItemProps> = ({ task, onClick }) => {
 	const isCompleted = task.status === EnCrmTaskStatus.Completed;
+	const isCancelled = task.status === EnCrmTaskStatus.Cancelled;
 
 	const isOverdue = useMemo(() => {
-		if (isCompleted || !task.deadline) return false;
+		if (isCompleted || isCancelled || !task.deadline) return false;
 		return isPast(parseISO(task.deadline));
-	}, [task.deadline, isCompleted]);
+	}, [task.deadline, isCompleted, isCancelled]);
 
 	const deadlineDate = useMemo(() => {
 		if (!task.deadline) return null;
@@ -135,7 +156,7 @@ const TaskItem: FC<ITaskItemProps> = ({ task, onClick }) => {
 	const author = task.author;
 	const authorName = author ? `${author.lastName || ''} ${author.firstName || ''}`.trim() : 'Неизвестно';
 
-	const itemClass = `${css.taskItem} ${isOverdue ? css.taskItemOverdue : ''} ${isCompleted ? css.taskItemCompleted : ''}`;
+	const itemClass = `${css.taskItem} ${isOverdue ? css.taskItemOverdue : ''} ${isCompleted ? css.taskItemCompleted : ''} ${isCancelled ? css.taskItemCancelled : ''}`;
 
 	return (
 		<div className={itemClass} onClick={() => onClick(task)}>
@@ -145,6 +166,7 @@ const TaskItem: FC<ITaskItemProps> = ({ task, onClick }) => {
 					<TextField className={css.taskTitle}>{task.title}</TextField>
 					{isOverdue && <span className={css.overdueLabel}>Просрочено</span>}
 					{isCompleted && <span className={css.completedLabel}>Выполнено</span>}
+					{isCancelled && <span className={css.cancelledLabel}>Отменено</span>}
 				</div>
 				<div className={css.taskMeta}>
 					<div className={css.organization}>

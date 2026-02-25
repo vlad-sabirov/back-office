@@ -15,6 +15,7 @@ export interface QueryCalendarEventDto {
 	status?: CombiningType<string | string[]>;
 	isAllDay?: CombiningType<boolean>;
 	createdAt?: CombiningType<Date | string>;
+	participantUserId?: number | string;
 }
 
 export interface QueryCalendarEventRangeDto {

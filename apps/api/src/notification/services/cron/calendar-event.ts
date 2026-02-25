@@ -68,28 +68,37 @@ export class CronCalendarEventService extends PrismaService {
 	}
 
 	/**
-	 * Напоминание о встречах/звонках за 1 день
+	 * Напоминание о встречах/звонках за 1 день (окно: 2ч–24ч)
 	 */
 	sendReminder1Day = async (): Promise<{ sent: number }> => {
 		const now = new Date();
+		const lowerBound = new Date(now);
+		lowerBound.setHours(lowerBound.getHours() + 2); // > 2 часов
 		const in1Day = new Date(now);
 		in1Day.setDate(in1Day.getDate() + 1);
-		in1Day.setHours(23, 59, 59, 999);
 
 		const events = await this.calendarEvent.findMany({
 			where: {
-				dateStart: { lte: in1Day, gt: now },
+				dateStart: { lte: in1Day, gt: lowerBound }, // только окно 2ч–24ч
 				reminderSent1Day: false,
 				type: { in: ['meeting', 'call'] },
+				// Пропускаем события с пользовательским напоминанием
+				NOT: { reminders: { some: {} } },
 			},
 			include: { assignee: true, organization: true, contact: true },
 		});
 
 		let sentCount = 0;
 		for (const event of events) {
-			const message = `⏰ <b>${this.formatEventType(event.type)} завтра</b>
-"${event.title}"
-🕐 ${this.formatTime(new Date(event.dateStart))}
+			// Определяем "сегодня" или "завтра" по таймзоне
+			const zonedNow = utcToZonedTime(now, this.timeZone);
+			const zonedEvent = utcToZonedTime(new Date(event.dateStart), this.timeZone);
+			const isToday = format(zonedNow, 'yyyy-MM-dd') === format(zonedEvent, 'yyyy-MM-dd');
+			const dayLabel = isToday ? 'сегодня' : 'завтра';
+
+			const message = `⏰ <b>${this.formatEventType(event.type)} — ${dayLabel}</b>
+<b>Название:</b> ${event.title}
+<b>Начало:</b> ${this.formatDate(new Date(event.dateStart))}, ${this.formatTime(new Date(event.dateStart))}
 ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}` : ''}`;
 
 			if (await this.sendToUser(event.assigneeId, message)) {
@@ -107,27 +116,31 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 	};
 
 	/**
-	 * Напоминание о встречах за 2 часа + участники
+	 * Напоминание о встречах за 2 часа + участники (окно: 1ч–2ч)
 	 */
 	sendReminder2Hours = async (): Promise<{ sent: number }> => {
 		const now = new Date();
+		const lowerBound = new Date(now);
+		lowerBound.setHours(lowerBound.getHours() + 1); // > 1 часа
 		const in2Hours = new Date(now);
 		in2Hours.setHours(in2Hours.getHours() + 2);
 
 		const events = await this.calendarEvent.findMany({
 			where: {
-				dateStart: { lte: in2Hours, gt: now },
+				dateStart: { lte: in2Hours, gt: lowerBound }, // только окно 1ч–2ч
 				reminderSent2Hours: false,
 				type: 'meeting',
+				// Пропускаем события с пользовательским напоминанием
+				NOT: { reminders: { some: {} } },
 			},
 			include: { assignee: true, organization: true, contact: true, participants: true },
 		});
 
 		let sentCount = 0;
 		for (const event of events) {
-			const message = `📅 <b>Встреча через 2 часа</b>
-"${event.title}"
-🕐 ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}
+			const message = `⏰ <b>${this.formatEventType(event.type)} через 2 часа</b>
+<b>Название:</b> ${event.title}
+<b>Начало:</b> ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}
 ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}` : ''}`;
 
 			if (await this.sendToUser(event.assigneeId, message)) {
@@ -166,15 +179,17 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 				dateStart: { lte: in1Hour, gt: now },
 				reminderSent1Hour: false,
 				type: 'call',
+				// Пропускаем события с пользовательским напоминанием
+				NOT: { reminders: { some: {} } },
 			},
 			include: { assignee: true, organization: true, contact: true },
 		});
 
 		let sentCount = 0;
 		for (const event of events) {
-			const message = `📞 <b>Звонок через 1 час</b>
-"${event.title}"
-🕐 ${this.formatTime(new Date(event.dateStart))}
+			const message = `⏰ <b>${this.formatEventType(event.type)} через 1 час</b>
+<b>Название:</b> ${event.title}
+<b>Начало:</b> ${this.formatTime(new Date(event.dateStart))}
 ${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}\n` : ''}${event.contact ? `👤 Контакт: ${event.contact.name}` : ''}`;
 
 			if (await this.sendToUser(event.assigneeId, message)) {
@@ -241,17 +256,36 @@ ${reminder.description ? `${reminder.description}\n` : ''}${reminder.organizatio
 				event: {
 					include: { organization: true },
 				},
+				task: {
+					include: { organization: true },
+				},
 				user: true,
 			},
 		});
 
 		let sentCount = 0;
 		for (const reminder of reminders) {
-			const message = `🔔 <b>Напоминание о событии</b>
-"${reminder.event.title}"
-🕐 ${this.formatTime(new Date(reminder.event.dateStart))}
-📅 ${this.formatDate(new Date(reminder.event.dateStart))}
-${reminder.event.organization ? `🏢 ${reminder.event.organization.nameRu || reminder.event.organization.nameEn}` : ''}`;
+			let message: string;
+
+			if (reminder.event) {
+				const ev = reminder.event as any;
+				message = `🔔 <b>Напоминание: ${this.formatEventType(ev.type)}</b>
+<b>Название:</b> ${ev.title}
+<b>Начало:</b> ${this.formatDate(new Date(ev.dateStart))}, ${this.formatTime(new Date(ev.dateStart))}
+${ev.dateEnd ? `<b>Окончание:</b> ${this.formatTime(new Date(ev.dateEnd))}\n` : ''}${ev.location ? `📍 ${ev.location}\n` : ''}${ev.organization ? `🏢 ${ev.organization.nameRu || ev.organization.nameEn}` : ''}`;
+			} else if (reminder.task) {
+				const task = reminder.task as any;
+				message = `🔔 <b>Напоминание о задаче</b>
+"${task.title}"
+${task.deadline ? `📅 Дедлайн: ${this.formatDate(new Date(task.deadline))}, ${this.formatTime(new Date(task.deadline))}\n` : ''}${task.organization ? `🏢 ${task.organization.nameRu || task.organization.nameEn}` : ''}`;
+			} else {
+				// Нет ни события ни задачи — просто помечаем как отправленное
+				await this.calendarReminder.update({
+					where: { id: reminder.id },
+					data: { isSent: true },
+				});
+				continue;
+			}
 
 			if (await this.sendToUser(reminder.userId, message)) {
 				sentCount++;
@@ -271,7 +305,7 @@ ${reminder.event.organization ? `🏢 ${reminder.event.organization.nameRu || re
 	 * Сводка — все напоминания по событиям календаря
 	 * Запускается автоматически каждые 5 минут с 7:00 до 22:00
 	 */
-	@Cron('*/5 7-22 * * *')
+	@Cron('*/5 7-22 * * *', { timeZone: 'Asia/Tashkent' })
 	async checkAllEventReminders(): Promise<{
 		reminder1Day: number;
 		reminder2Hours: number;

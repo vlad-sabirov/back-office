@@ -62,14 +62,19 @@ export class CalendarEventController {
 	async getByDateRange(
 		@Query('from') from: string,
 		@Query('to') to: string,
-		@Query('userId') userId?: string
+		@Query('userId') userId?: string,
+		@Headers('authorization') authorization?: string
 	): Promise<any[]> {
 		await delay(process.env.DELAY);
-		return await this.calendarEventService.getByDateRange({
-			from,
-			to,
-			userId: userId ? Number(userId) : undefined,
-		});
+		const requestingUserId = this.getCurrentUserId(authorization);
+		return await this.calendarEventService.getByDateRange(
+			{
+				from,
+				to,
+				userId: userId ? Number(userId) : undefined,
+			},
+			requestingUserId
+		);
 	}
 
 	/**
@@ -80,14 +85,19 @@ export class CalendarEventController {
 	async getRangeWithTasks(
 		@Query('from') from: string,
 		@Query('to') to: string,
-		@Query('userId') userId?: string
+		@Query('userId') userId?: string,
+		@Headers('authorization') authorization?: string
 	): Promise<RangeWithTasksResult> {
 		await delay(process.env.DELAY);
-		return await this.calendarEventService.getRangeWithTasks({
-			from,
-			to,
-			userId: userId ? Number(userId) : undefined,
-		});
+		const requestingUserId = this.getCurrentUserId(authorization);
+		return await this.calendarEventService.getRangeWithTasks(
+			{
+				from,
+				to,
+				userId: userId ? Number(userId) : undefined,
+			},
+			requestingUserId
+		);
 	}
 
 	/**

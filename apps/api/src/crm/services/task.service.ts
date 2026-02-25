@@ -1,12 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { utcToZonedTime } from 'date-fns-tz';
 import { PrismaService } from '../../common';
 import { TelegramService } from '../../notification/services/telegram.service';
 import { MutationTaskDto } from '../dto/mutation-task.dto';
 import { QueryTaskDto } from '../dto/query-task.dto';
 import { TaskEntity } from '../entity/task.entity';
 import { TaskConstants } from '../constants/task.constants';
+import { ROLE_HIERARCHY, CHILD_TO_HEAD, HEAD_ROLES, SUPER_ADMIN_ROLES, BOSS_ROLE, CRM_ADMIN_ROLE } from '../constants/role-hierarchy.constants';
 
 interface TaskFilter {
 	orderBy?: { [key: string]: 'asc' | 'desc' };
@@ -35,11 +37,18 @@ export class TaskService extends PrismaService {
 	}
 
 	create = async ({ createDto, currentUserId }: { createDto: MutationTaskDto; currentUserId?: number }): Promise<TaskEntity> => {
-		// Проверка прав: можно создавать задачи только в своих организациях
-		// (где пользователь является ответственным менеджером)
+		// Проверка прав: организация
 		if (createDto.organizationId && currentUserId) {
 			const canCreate = await this.canCreateTaskInOrganization(currentUserId, Number(createDto.organizationId));
 			if (!canCreate) {
+				throw new HttpException(TaskConstants.FORBIDDEN_NOT_MANAGER, HttpStatus.FORBIDDEN);
+			}
+		}
+
+		// Проверка прав: можно ли создавать задачи для данного пользователя (по иерархии ролей)
+		if (currentUserId && createDto.assigneeId) {
+			const canCreateForUser = await this.canCreateTaskForUser(currentUserId, Number(createDto.assigneeId));
+			if (!canCreateForUser) {
 				throw new HttpException(TaskConstants.FORBIDDEN_NOT_MANAGER, HttpStatus.FORBIDDEN);
 			}
 		}
@@ -58,8 +67,8 @@ export class TaskService extends PrismaService {
 		const task = await this.crmTask.create({
 			data,
 			include: {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 			},
 		});
@@ -76,8 +85,8 @@ export class TaskService extends PrismaService {
 		return this.crmTask.findUnique({
 			where: { id: Number(id) },
 			include: include || {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -101,8 +110,8 @@ export class TaskService extends PrismaService {
 		return this.crmTask.findFirst({
 			where: parsedWhere,
 			include: include || {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -127,8 +136,8 @@ export class TaskService extends PrismaService {
 		return this.crmTask.findMany({
 			where: parsedWhere,
 			include: include || {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -146,8 +155,8 @@ export class TaskService extends PrismaService {
 		return this.crmTask.findMany({
 			where: { organizationId: Number(id) },
 			include: {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -163,8 +172,8 @@ export class TaskService extends PrismaService {
 		return this.crmTask.findMany({
 			where: { assigneeId: Number(id) },
 			include: {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -182,8 +191,8 @@ export class TaskService extends PrismaService {
 				OR: [{ assigneeId: userId }, { authorId: userId }],
 			},
 			include: {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -294,8 +303,8 @@ export class TaskService extends PrismaService {
 		return this.crmTask.findUnique({
 			where: { id: Number(id) },
 			include: {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -347,14 +356,19 @@ export class TaskService extends PrismaService {
 			if (currentUserId !== task.assigneeId && task.assignee?.telegramId) {
 				await this.sendTaskModifiedNotification(task, [statusChangeText], currentUserId);
 			}
+
+			// Уведомить автора (руководителя) если статус изменил исполнитель
+			if (currentUserId !== task.authorId && task.author?.telegramId) {
+				await this.sendTaskStatusNotificationToAuthor(task, statusChangeText, currentUserId);
+			}
 		}
 
 		// Вернуть задачу с включёнными модификациями
 		return this.crmTask.findUnique({
 			where: { id: Number(id) },
 			include: {
-				author: true,
-				assignee: true,
+				author: { include: { roles: true } },
+				assignee: { include: { roles: true } },
 				organization: true,
 				modifications: {
 					include: { modifiedBy: true },
@@ -404,7 +418,7 @@ export class TaskService extends PrismaService {
 				status: { notIn: ['completed', 'cancelled'] },
 				[reminderField]: false,
 			},
-			include: { author: true, assignee: true, organization: true },
+			include: { author: { include: { roles: true } }, assignee: { include: { roles: true } }, organization: true },
 		});
 	};
 
@@ -417,7 +431,7 @@ export class TaskService extends PrismaService {
 				status: { notIn: ['completed', 'cancelled'] },
 				overdueNotified: false,
 			},
-			include: { author: true, assignee: true, organization: true },
+			include: { author: { include: { roles: true } }, assignee: { include: { roles: true } }, organization: true },
 		});
 	};
 
@@ -471,17 +485,55 @@ export class TaskService extends PrismaService {
 	};
 
 	/**
-	 * Проверка: может ли пользователь создавать задачи в организации
-	 * Условие: пользователь является ответственным менеджером организации ИЛИ имеет роль boss/admin/developer
+	 * Получить пользователя с ролями и подчинёнными
 	 */
-	private canCreateTaskInOrganization = async (userId: number, organizationId: number): Promise<boolean> => {
-		// Проверить роли пользователя (boss, admin, developer могут создавать везде)
+	private getUserWithRolesAndChildren = async (userId: number) => {
+		return this.user.findUnique({
+			where: { id: userId },
+			include: { roles: true, child: true },
+		});
+	};
+
+	/**
+	 * Проверить, является ли пользователь Boss
+	 */
+	private isUserBoss = async (userId: number): Promise<boolean> => {
 		const user = await this.user.findUnique({
 			where: { id: userId },
 			include: { roles: true },
 		});
+		return user?.roles?.some((role) => role.alias === BOSS_ROLE) || false;
+	};
 
-		if (user?.roles?.some((role) => ['boss', 'admin', 'developer', 'crmAdmin'].includes(role.alias))) {
+	/**
+	 * Проверка: может ли пользователь создавать задачи в организации
+	 *
+	 * Правила:
+	 * 1. admin/developer — везде
+	 * 2. boss — везде, кроме организаций boss-ов
+	 * 3. crmAdmin — везде, кроме boss
+	 * 4. Главная роль — может создавать задачи для дочерних ролей
+	 * 5. Ответственный менеджер организации
+	 * 6. Дочерняя роль — для подчинённых (через _user_child)
+	 */
+	private canCreateTaskInOrganization = async (userId: number, organizationId: number): Promise<boolean> => {
+		const user = await this.getUserWithRolesAndChildren(userId);
+		if (!user?.roles) return false;
+
+		const userRoleAliases = user.roles.map((r) => r.alias);
+
+		// admin/developer — полный доступ
+		if (userRoleAliases.some((alias) => SUPER_ADMIN_ROLES.includes(alias))) {
+			return true;
+		}
+
+		// boss — полный доступ
+		if (userRoleAliases.includes(BOSS_ROLE)) {
+			return true;
+		}
+
+		// crmAdmin — полный доступ
+		if (userRoleAliases.includes(CRM_ADMIN_ROLE)) {
 			return true;
 		}
 
@@ -490,30 +542,123 @@ export class TaskService extends PrismaService {
 			where: { id: organizationId },
 		});
 
-		if (!organization) {
-			return false;
+		if (organization && organization.userId === userId) {
+			return true;
 		}
 
-		return organization.userId === userId;
+		return false;
+	};
+
+	/**
+	 * Проверка: может ли пользователь создавать задачу для другого пользователя
+	 * (без привязки к организации)
+	 *
+	 * Правила аналогичны canCreateEventForUser
+	 */
+	private canCreateTaskForUser = async (currentUserId: number, targetUserId: number): Promise<boolean> => {
+		if (currentUserId === targetUserId) return true;
+
+		const user = await this.getUserWithRolesAndChildren(currentUserId);
+		if (!user?.roles) return false;
+
+		const userRoleAliases = user.roles.map((r) => r.alias);
+
+		// admin/developer
+		if (userRoleAliases.some((alias) => SUPER_ADMIN_ROLES.includes(alias))) return true;
+
+		// boss — кроме других boss
+		if (userRoleAliases.includes(BOSS_ROLE)) {
+			const targetIsBoss = await this.isUserBoss(targetUserId);
+			return !targetIsBoss;
+		}
+
+		// crmAdmin — кроме boss
+		if (userRoleAliases.includes(CRM_ADMIN_ROLE)) {
+			const targetIsBoss = await this.isUserBoss(targetUserId);
+			return !targetIsBoss;
+		}
+
+		// Главная роль → дочерняя роль
+		const targetUser = await this.user.findUnique({
+			where: { id: targetUserId },
+			include: { roles: true },
+		});
+		if (targetUser?.roles) {
+			const targetRoleAliases = targetUser.roles.map((r) => r.alias);
+			for (const headRole of userRoleAliases) {
+				const childRole = ROLE_HIERARCHY[headRole];
+				if (childRole && targetRoleAliases.includes(childRole)) {
+					return true;
+				}
+			}
+		}
+
+		// Подчинённые (через _user_child)
+		if (user.child?.some((child) => child.id === targetUserId)) return true;
+
+		return false;
 	};
 
 	/**
 	 * Проверка: может ли пользователь редактировать/удалять задачу
-	 * Условие: пользователь является автором задачи ИЛИ имеет роль boss/admin/developer
+	 *
+	 * Правила:
+	 * 1. Автор — всегда может
+	 * 2. admin/developer — полный доступ
+	 * 3. boss — всё, кроме задач другого boss
+	 * 4. crmAdmin — всё, кроме задач boss
+	 * 5. Главная роль — задачи дочерних ролей
+	 * 6. Дочерняя роль — задачи подчинённых
 	 */
 	private canModifyTask = async (userId: number, task: TaskEntity): Promise<boolean> => {
-		// Проверить роли пользователя (boss, admin, developer могут редактировать все)
-		const user = await this.user.findUnique({
-			where: { id: userId },
-			include: { roles: true },
-		});
+		if (task.authorId === userId) return true;
 
-		if (user?.roles?.some((role) => ['boss', 'admin', 'developer', 'crmAdmin'].includes(role.alias))) {
+		// Создал для себя — только автор может редактировать
+		if (task.authorId === task.assigneeId) return false;
+
+		const user = await this.getUserWithRolesAndChildren(userId);
+		if (!user?.roles) return false;
+
+		const userRoleAliases = user.roles.map((r) => r.alias);
+
+		// admin/developer
+		if (userRoleAliases.some((alias) => SUPER_ADMIN_ROLES.includes(alias))) return true;
+
+		// boss — кроме задач другого boss
+		if (userRoleAliases.includes(BOSS_ROLE)) {
+			const authorIsBoss = await this.isUserBoss(task.authorId);
+			if (authorIsBoss && task.authorId !== userId) return false;
+			const assigneeIsBoss = await this.isUserBoss(task.assigneeId);
+			if (assigneeIsBoss && task.assigneeId !== userId) return false;
 			return true;
 		}
 
-		// Проверить, является ли пользователь автором задачи
-		return task.authorId === userId;
+		// crmAdmin — кроме задач boss
+		if (userRoleAliases.includes(CRM_ADMIN_ROLE)) {
+			const assigneeIsBoss = await this.isUserBoss(task.assigneeId);
+			if (assigneeIsBoss) return false;
+			return true;
+		}
+
+		// Главная роль → задачи дочерних ролей
+		const assignee = await this.user.findUnique({
+			where: { id: task.assigneeId },
+			include: { roles: true },
+		});
+		if (assignee?.roles) {
+			const assigneeRoleAliases = assignee.roles.map((r) => r.alias);
+			for (const headRole of userRoleAliases) {
+				const childRole = ROLE_HIERARCHY[headRole];
+				if (childRole && assigneeRoleAliases.includes(childRole)) {
+					return true;
+				}
+			}
+		}
+
+		// Подчинённые (через _user_child)
+		if (user.child?.some((child) => child.id === task.assigneeId)) return true;
+
+		return false;
 	};
 
 	private sendTaskAssignedNotification = async (task: TaskEntity): Promise<void> => {
@@ -529,7 +674,8 @@ export class TaskService extends PrismaService {
 		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
 
 		if (task.deadline) {
-			message += `<b>Дедлайн:</b> ${format(new Date(task.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}\n`;
+			const zonedDeadline = utcToZonedTime(new Date(task.deadline), 'Asia/Tashkent');
+			message += `<b>Дедлайн:</b> ${format(zonedDeadline, 'd MMMM yyyy, HH:mm', { locale: ru })}\n`;
 		}
 
 		if (organization) {
@@ -540,6 +686,32 @@ export class TaskService extends PrismaService {
 			await this.telegramService.sendMessage(Number(assignee.telegramId), message);
 		} catch (error) {
 			console.error('Ошибка отправки Telegram уведомления о назначении задачи:', error);
+		}
+	};
+
+	private sendTaskStatusNotificationToAuthor = async (task: TaskEntity, statusChange: string, changedById: number): Promise<void> => {
+		const author = task.author as any;
+		if (!author?.telegramId) return;
+
+		const changedBy = await this.user.findUnique({
+			where: { id: changedById },
+		});
+
+		const organization = task.organization as any;
+
+		let message = `📋 <b>${author?.firstName || ''}</b>, статус вашей задачи изменён!\n\n`;
+		message += `<b>Кем:</b> ${changedBy?.firstName || ''} ${changedBy?.lastName || ''}\n`;
+		message += `<b>Задача:</b> ${task.title}\n`;
+		message += `<b>${statusChange}</b>\n`;
+
+		if (organization) {
+			message += `<b>Организация:</b> ${organization.nameRu || organization.nameEn || ''}\n`;
+		}
+
+		try {
+			await this.telegramService.sendMessage(Number(author.telegramId), message);
+		} catch (error) {
+			console.error('Ошибка отправки уведомления автору о смене статуса задачи:', error);
 		}
 	};
 

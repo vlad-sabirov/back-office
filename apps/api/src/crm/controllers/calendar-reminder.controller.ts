@@ -25,7 +25,7 @@ export class CalendarReminderController {
 	 */
 	@Post()
 	async create(
-		@Body() body: { eventId: number; remindAt: string },
+		@Body() body: { eventId?: number; taskId?: number; remindAt: string },
 		@Headers('authorization') authorization: string
 	): Promise<any> {
 		const userId = this.getCurrentUserId(authorization);

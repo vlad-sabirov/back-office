@@ -1,0 +1,211 @@
+.root {
+	@apply m-0;
+
+	& > div {
+		position: relative;
+		min-height: 200px;
+	}
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16px;
+}
+
+.openAllBtn {
+	@apply p-0;
+	min-width: 28px;
+	height: 28px;
+}
+
+.meetingsList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.meetingItem {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 10px 14px;
+	background-color: #fff8f0;
+	border-radius: 8px;
+	border-left: 3px solid #e67e22;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.meetingItem:hover {
+	background-color: #fdebd0;
+}
+
+.meetingContent {
+	flex: 1;
+	min-width: 0;
+}
+
+.meetingTitle {
+	@apply m-0 text-neutral-700;
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.meetingMeta {
+	@apply m-0 text-neutral-400;
+	font-size: 12px;
+	margin-top: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.meetingDate {
+	font-size: 11px;
+	color: #e67e22;
+	margin-top: 4px;
+}
+
+.participantStatuses {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-top: 4px;
+}
+
+.statusBadge {
+	font-size: 11px;
+	font-weight: 500;
+	padding: 2px 7px;
+	border-radius: 10px;
+	white-space: nowrap;
+}
+
+.statusAccepted {
+	background-color: #d3f9d8;
+	color: #2f9e44;
+}
+
+.statusPending {
+	background-color: #fff3cd;
+	color: #856404;
+}
+
+.statusDeclined {
+	background-color: #f1f3f5;
+	color: #868e96;
+}
+
+.arrowIcon {
+	width: 16px;
+	height: 16px;
+	color: #96a2b6;
+	flex-shrink: 0;
+	transform: rotate(-90deg);
+	margin-top: 2px;
+	transition: color 0.2s ease;
+}
+
+.meetingItem:hover .arrowIcon {
+	color: #e67e22;
+}
+
+.empty {
+	@apply m-0 text-neutral-400 italic;
+	text-align: center;
+	padding: 24px 0;
+}
+
+/* "Всего встреч: N" — кнопка открыть всё */
+.activeFooter {
+	@apply mt-16;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	border-radius: 6px;
+	padding: 4px 8px;
+	margin-left: -8px;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: #f0f2f5;
+	}
+
+	&:hover .activeFooterText {
+		color: #4f7ff0;
+	}
+
+	&:hover .activeFooterIcon {
+		color: #4f7ff0;
+	}
+}
+
+.activeFooterText {
+	@apply m-0 text-neutral-400 italic;
+	transition: color 0.2s ease;
+}
+
+.activeFooterIcon {
+	width: 14px;
+	height: 14px;
+	color: #96a2b6;
+	transition: color 0.2s ease;
+}
+
+/* Выполнено / Отменено — стиль как в виджете «События» */
+.footer {
+	@apply mt-20;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.footerSecond {
+	@apply mt-4;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.footerText {
+	@apply m-0 text-neutral-400 italic;
+}
+
+.footerTextGreen {
+	@apply m-0 italic;
+	color: #66bb6a;
+}
+
+.footerClickable {
+	cursor: pointer;
+	border-radius: 6px;
+	padding: 4px 8px;
+	margin-left: -8px;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: #f0f2f5;
+	}
+
+	&:hover .footerText,
+	&:hover .footerTextGreen {
+		color: #4f7ff0;
+	}
+
+	&:hover .footerIcon {
+		color: #4f7ff0;
+	}
+}
+
+.footerIcon {
+	width: 14px;
+	height: 14px;
+	color: #96a2b6;
+	transition: color 0.2s ease;
+}

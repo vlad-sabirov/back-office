@@ -72,6 +72,15 @@ export class CalendarParticipantController {
 	}
 
 	/**
+	 * Получить все участия пользователя во встречах
+	 * GET /crm/calendar-participant/byUserId/:userId
+	 */
+	@Get('/byUserId/:userId')
+	async getByUserId(@Param('userId') userId: string): Promise<any[]> {
+		return this.participantService.getUserParticipations(Number(userId));
+	}
+
+	/**
 	 * Получить мои приглашения (pending)
 	 * GET /crm/calendar-participant/my-invitations
 	 */

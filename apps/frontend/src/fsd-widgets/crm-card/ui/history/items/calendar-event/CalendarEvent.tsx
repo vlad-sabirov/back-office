@@ -4,6 +4,8 @@ import { ICalendarEventEntity, EnCalendarEventType, CalendarEventConst } from '@
 import { useCrmHistoryActions } from '@fsd/entities/crm-history';
 import { StaffAvatar } from '@fsd/entities/staff';
 import { dateFnsLocaleRu } from '@fsd/shared/lib/date-fns.ru.locale';
+import { useStateSelector } from '@fsd/shared/lib/hooks';
+import { ROLE_HIERARCHY } from '@fsd/shared/lib/role-hierarchy';
 import { TextField, Icon } from '@fsd/shared/ui-kit';
 import { ActionIcon } from '@mantine/core';
 import { EventDetailModal } from '@fsd/features/calendar-event-detail-modal';
@@ -23,13 +25,46 @@ const typeLabels: Record<string, string> = {
 
 export const CalendarEvent: FC<IProps> = ({ event, className }) => {
 	const [detailModalOpened, setDetailModalOpened] = useState(false);
+	const [openInEditMode, setOpenInEditMode] = useState(false);
 	const historyActions = useCrmHistoryActions();
+
+	const currentUserId = useStateSelector((state) => state.app.auth.userId);
+	const currentUserRoles = useStateSelector((state) => state.app.auth.roles) || [];
 
 	const author = useMemo(() => event.author, [event.author]);
 	const assignee = useMemo(() => event.assignee, [event.assignee]);
 
-	const openDetailModal = useCallback(() => setDetailModalOpened(true), []);
-	const closeDetailModal = useCallback(() => setDetailModalOpened(false), []);
+	const canEditAndDelete = useMemo(() => {
+		const isAuthor = event.authorId === Number(currentUserId);
+		const isAssignee = event.assigneeId === Number(currentUserId);
+		// Создал для себя — только автор может редактировать
+		if (event.authorId === event.assigneeId) return isAuthor;
+		const isBoss = currentUserRoles.some((role: string) =>
+			['boss', 'admin', 'developer', 'crmAdmin'].includes(role)
+		);
+		const assigneeRoles = (event.assignee?.roles as any[] || []).map((r: any) => r.alias || r);
+		const isHeadForAssignee = currentUserRoles.some((role: string) => {
+			const childRole = ROLE_HIERARCHY[role];
+			return childRole && assigneeRoles.includes(childRole);
+		});
+		const authorRoles = (event.author?.roles as any[] || []).map((r: any) => r.alias || r);
+		const isCreatedByHead = authorRoles.some((r: string) => Object.keys(ROLE_HIERARCHY).includes(r));
+		const canModify = isAuthor || isBoss || isHeadForAssignee;
+		return canModify && !(isAssignee && !isAuthor && isCreatedByHead && !isBoss && !isHeadForAssignee);
+	}, [event, currentUserId, currentUserRoles]);
+
+	const openDetailModal = useCallback(() => {
+		setOpenInEditMode(false);
+		setDetailModalOpened(true);
+	}, []);
+	const openEditModal = useCallback(() => {
+		setOpenInEditMode(true);
+		setDetailModalOpened(true);
+	}, []);
+	const closeDetailModal = useCallback(() => {
+		setDetailModalOpened(false);
+		setOpenInEditMode(false);
+	}, []);
 
 	const handleUpdated = useCallback(() => {
 		historyActions.reloadTimestamp();
@@ -77,6 +112,11 @@ export const CalendarEvent: FC<IProps> = ({ event, className }) => {
 					<ActionIcon size="sm" variant="subtle" onClick={openDetailModal} title="Подробнее">
 						<Icon name="eye" className={css.actionIcon} />
 					</ActionIcon>
+					{canEditAndDelete && (
+						<ActionIcon size="sm" variant="subtle" onClick={openEditModal} title="Редактировать">
+							<Icon name="edit" className={css.actionIcon} />
+						</ActionIcon>
+					)}
 				</div>
 			</div>
 
@@ -115,6 +155,7 @@ export const CalendarEvent: FC<IProps> = ({ event, className }) => {
 				onClose={closeDetailModal}
 				onUpdated={handleUpdated}
 				onDeleted={handleDeleted}
+				defaultEditing={openInEditMode}
 			/>
 		</div>
 	);

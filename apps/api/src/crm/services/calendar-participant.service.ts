@@ -146,6 +146,26 @@ export class CalendarParticipantService extends PrismaService {
 	};
 
 	/**
+	 * Получить все участия пользователя во встречах (по userId)
+	 */
+	getUserParticipations = async (userId: number): Promise<any[]> => {
+		return this.calendarEventParticipant.findMany({
+			where: { userId },
+			include: {
+				event: {
+					include: {
+						author: { include: { roles: true } },
+						assignee: { include: { roles: true } },
+						organization: true,
+						participants: { include: { user: true } },
+					},
+				},
+			},
+			orderBy: { createdAt: 'desc' },
+		});
+	};
+
+	/**
 	 * Получить приглашения пользователя
 	 */
 	getUserInvitations = async (userId: number): Promise<any[]> => {

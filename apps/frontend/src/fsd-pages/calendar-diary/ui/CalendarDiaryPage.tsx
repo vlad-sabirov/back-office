@@ -12,10 +12,11 @@ import { ICrmTaskEntity } from '@fsd/entities/crm-task';
 import { IStaffEntity } from '@fsd/entities/staff';
 import { Calendar, CalendarPropsEvent, Header } from '@fsd/shared/ui-kit';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
-import { useAccess, useUserDeprecated } from '@hooks';
+import { useAccess, useUserDeprecated, useRoles } from '@hooks';
 import { CalendarEventForm } from '@fsd/widgets/calendar-event-form';
 import { EventDetailModal } from '@fsd/features/calendar-event-detail-modal';
 import { TaskDetailModal } from '@fsd/features/crm-task-detail-modal';
+import { HEAD_ROLES, CHILD_ROLES, getChildRolesForUser } from '@fsd/shared/lib/role-hierarchy';
 import css from './CalendarDiaryPage.module.scss';
 
 interface DateRange {
@@ -50,10 +51,27 @@ const CalendarDiaryPage: FC = observer(() => {
 	const router = useRouter();
 	const CheckAccess = useAccess();
 	const { user } = useUserDeprecated();
-	const isBoss = CheckAccess(['developer', 'boss', 'crmAdmin', 'admin']);
+	const currentRoles = useRoles();
+	const isBoss = CheckAccess(['developer', 'boss', 'admin']);
+	const isHeadRole = currentRoles.some((r) => HEAD_ROLES.includes(r));
+	const isChildRole = currentRoles.some((r) => CHILD_ROLES.includes(r));
 
 	// Staff данные из Redux store
 	const staffAll = useStateSelector((state) => state.staff.data.all);
+
+	// Прямые подчинённые текущего пользователя через поле child (из API include)
+	const currentUserData = useMemo(() =>
+		staffAll.find((s: any) => s.id === user?.id),
+	[staffAll, user?.id]);
+
+	const directChildIds = useMemo(() => {
+		const children = (currentUserData as any)?.child || [];
+		return new Set<number>(children.map((c: any) => c.id));
+	}, [currentUserData]);
+
+	const hasDirectSubordinates = directChildIds.size > 0;
+
+	const canSeeOthers = isBoss || isHeadRole || isChildRole || hasDirectSubordinates;
 
 	// State
 	const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -73,19 +91,52 @@ const CalendarDiaryPage: FC = observer(() => {
 	// RTK Query
 	const [fetchRangeWithTasks, { data: rangeData, isLoading, isFetching }] = CalendarEventService.getRangeWithTasks();
 
-	// Фильтруем подчинённых для руководителей
+	// Фильтруем подчинённых для руководителей (без уволенных)
 	const subordinates = useMemo(() => {
-		if (!isBoss || staffAll.length === 0) return [];
-		// Для boss/admin показываем всех сотрудников
-		if (CheckAccess(['developer', 'boss', 'admin'])) {
-			return staffAll;
-		}
-		// Для crmAdmin показываем только своих подчинённых
-		return staffAll.filter((s: IStaffEntity) => {
-			const parentId = s.parentId ?? s.parent?.id;
-			return parentId === user?.id;
+		if (!canSeeOthers || staffAll.length === 0) return [];
+
+		// Исключаем уволенных сотрудников и текущего пользователя
+		const EXCLUDED_POSITIONS = ['грузчик', 'водитель', 'техничка'];
+		const activeStaff = staffAll.filter((s: IStaffEntity) => {
+			if (s.isFired || s.id === user?.id) return false;
+			const pos = (s.workPosition || '').toLowerCase().trim();
+			return !EXCLUDED_POSITIONS.includes(pos);
 		});
-	}, [staffAll, isBoss, user?.id, CheckAccess]);
+
+		// admin/developer — все сотрудники
+		if (CheckAccess(['developer', 'admin'])) {
+			return activeStaff;
+		}
+
+		// boss — все, кроме других boss
+		if (CheckAccess(['boss'])) {
+			return activeStaff.filter((s: IStaffEntity) =>
+				!s.roles?.some((r) => r.alias === 'boss')
+			);
+		}
+
+		// Главная роль (head) — сотрудники с дочерней ролью + прямые подчинённые
+		const childRoles = getChildRolesForUser(currentRoles);
+		if (childRoles.length > 0) {
+			const headRoleStaff = activeStaff.filter((s: IStaffEntity) =>
+				s.roles?.some((r) => childRoles.includes(r.alias))
+			);
+
+			// Прямые подчинённые через child массив текущего пользователя
+			const directChildren = activeStaff.filter((s: IStaffEntity) =>
+				directChildIds.has(s.id)
+			);
+
+			// Объединить без дубликатов
+			const combined = new Map<number, IStaffEntity>();
+			headRoleStaff.forEach((s) => combined.set(s.id, s));
+			directChildren.forEach((s) => combined.set(s.id, s));
+			return Array.from(combined.values());
+		}
+
+		// Дочерняя роль / руководитель без роли — прямые подчинённые через child
+		return activeStaff.filter((s: IStaffEntity) => directChildIds.has(s.id));
+	}, [staffAll, canSeeOthers, user?.id, CheckAccess, currentRoles, directChildIds]);
 
 	// Определяем userId для запроса (выбранный пользователь или текущий)
 	const effectiveUserId = selectedUserId || (user?.id ? String(user.id) : undefined);
@@ -238,42 +289,44 @@ const CalendarDiaryPage: FC = observer(() => {
 				<title>Ежедневник. Back Office</title>
 			</Head>
 
-			<Header
-				title="Ежедневник"
-				contentRight={
-					<div className={css.headerRight}>
-						{isBoss && subordinates.length > 0 && (
-							<Select
-								placeholder="Выберите сотрудника"
-								data={userSelectData}
-								value={selectedUserId || ''}
-								onChange={(value) => setSelectedUserId(value || null)}
-								clearable
-								className={css.userSelect}
-							/>
-						)}
-						<Button onClick={handleCreateEvent} className={css.btnPrimary}>Создать</Button>
-					</div>
-				}
-				loading={isFetching}
-			/>
+			<div className={css.stickyTop}>
+				<Header
+					title="Ежедневник"
+					contentRight={
+						<div className={css.headerRight}>
+							{canSeeOthers && subordinates.length > 0 && (
+								<Select
+									placeholder="Выберите сотрудника"
+									data={userSelectData}
+									value={selectedUserId || ''}
+									onChange={(value) => setSelectedUserId(value || null)}
+									clearable
+									className={css.userSelect}
+								/>
+							)}
+							<Button onClick={handleCreateEvent} className={css.btnPrimary}>Создать</Button>
+						</div>
+					}
+					loading={isFetching}
+				/>
 
-			{/* Навигация по датам */}
-			<div className={css.navigation}>
-				<Group spacing="sm">
-					<ActionIcon variant="light" onClick={handlePrev} title="Предыдущий месяц">
-						<Icon name="arrow-small" style={{ transform: 'rotate(90deg)' }} />
-					</ActionIcon>
-					<Button variant="subtle" onClick={handleToday}>
-						Сегодня
-					</Button>
-					<ActionIcon variant="light" onClick={handleNext} title="Следующий месяц">
-						<Icon name="arrow-small" style={{ transform: 'rotate(-90deg)' }} />
-					</ActionIcon>
-					<Text weight={500} className={css.dateTitle}>{dateTitle}</Text>
-				</Group>
+				{/* Навигация по датам */}
+				<div className={css.navigation}>
+					<Group spacing="sm">
+						<ActionIcon variant="light" onClick={handlePrev} title="Предыдущий месяц">
+							<Icon name="arrow-small" style={{ transform: 'rotate(90deg)' }} />
+						</ActionIcon>
+						<Button variant="subtle" onClick={handleToday}>
+							Сегодня
+						</Button>
+						<ActionIcon variant="light" onClick={handleNext} title="Следующий месяц">
+							<Icon name="arrow-small" style={{ transform: 'rotate(-90deg)' }} />
+						</ActionIcon>
+						<Text weight={500} className={css.dateTitle}>{dateTitle}</Text>
+					</Group>
 
-				{isFetching && <Text size="sm" color="dimmed">Загрузка...</Text>}
+					{isFetching && <Text size="sm" color="dimmed">Загрузка...</Text>}
+				</div>
 			</div>
 
 			<div className={css.calendarWrapper}>

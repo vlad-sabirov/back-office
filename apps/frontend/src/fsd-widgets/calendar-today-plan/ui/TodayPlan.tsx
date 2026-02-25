@@ -1,14 +1,14 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
 import { observer } from 'mobx-react-lite';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { Grid, Loader, Text, Badge, Button } from '@mantine/core';
+import { Grid, Loader, Text, Badge, Button, Modal } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import { CalendarEventService, ICalendarEventEntity, CalendarEventConst, EnCalendarEventType } from '@fsd/entities/calendar-event';
-import { ICrmTaskEntity } from '@fsd/entities/crm-task';
+import { ICrmTaskEntity, CrmTaskConst, EnCrmTaskPriority } from '@fsd/entities/crm-task';
 import { EventDetailModal } from '@fsd/features/calendar-event-detail-modal';
 import { TaskDetailModal } from '@fsd/features/crm-task-detail-modal';
+import { CalendarEventForm } from '@fsd/widgets/calendar-event-form';
 import { ContentBlock, Icon, TextField } from '@fsd/shared/ui-kit';
 import css from './TodayPlan.module.scss';
 
@@ -48,16 +48,31 @@ interface TaskItemProps {
 	onClick?: () => void;
 }
 
+const priorityBorderColor: Record<string, string> = {
+	[EnCrmTaskPriority.Low]: '#96a2b6',
+	[EnCrmTaskPriority.Normal]: '#4f7ff0',
+	[EnCrmTaskPriority.High]: '#ffa726',
+	[EnCrmTaskPriority.Urgent]: '#f9515a',
+};
+
 const TaskItem: FC<TaskItemProps> = ({ task, onClick }) => {
 	const deadlineStr = task.deadline ? format(new Date(task.deadline), 'HH:mm') : '';
+	const priorityConfig = CrmTaskConst.Priority[task.priority as EnCrmTaskPriority]
+		|| CrmTaskConst.Priority[EnCrmTaskPriority.Normal];
+	const borderColor = priorityBorderColor[task.priority] || priorityBorderColor[EnCrmTaskPriority.Normal];
 
 	return (
-		<div className={`${css.item} ${css.itemClickable}`} onClick={onClick}>
+		<div
+			className={`${css.item} ${css.itemClickable}`}
+			onClick={onClick}
+			style={{ borderLeft: `3px solid ${borderColor}`, paddingLeft: '6px' }}
+		>
 			<div className={css.itemTime}>{deadlineStr || '—'}</div>
 			<div className={css.itemContent}>
-				<Badge color="violet" size="xs" className={css.badge}>
-					Задача
-				</Badge>
+				<div style={{ display: 'flex', gap: 4, marginBottom: 2, flexWrap: 'wrap' }}>
+					<Badge color="violet" size="xs">Задача</Badge>
+					<Badge color={priorityConfig.color} size="xs">{priorityConfig.label}</Badge>
+				</div>
 				<Text size="sm" weight={500} lineClamp={1}>
 					{task.title}
 				</Text>
@@ -72,7 +87,6 @@ const TaskItem: FC<TaskItemProps> = ({ task, onClick }) => {
 };
 
 export const TodayPlan: FC = observer(() => {
-	const router = useRouter();
 	const { width: screenWidth } = useViewportSize();
 	const [spanCount, setSpanCount] = useState<number>(25);
 	const [fetchTodayPlan, { data, isLoading }] = CalendarEventService.getTodayPlan();
@@ -89,6 +103,7 @@ export const TodayPlan: FC = observer(() => {
 
 	const [viewingEvent, setViewingEvent] = useState<ICalendarEventEntity | null>(null);
 	const [viewingTask, setViewingTask] = useState<ICrmTaskEntity | null>(null);
+	const [formModalOpened, setFormModalOpened] = useState(false);
 
 	useEffect(() => {
 		fetchTodayPlan();
@@ -127,7 +142,8 @@ export const TodayPlan: FC = observer(() => {
 							variant="light"
 							size="xs"
 							compact
-							onClick={() => router.push('/calendar')}
+							onClick={() => setFormModalOpened(true)}
+							style={{ marginTop: '-8px' }}
 						>
 							Добавить задачу
 						</Button>
@@ -159,6 +175,19 @@ export const TodayPlan: FC = observer(() => {
 				onUpdated={reload}
 				onDeleted={reload}
 			/>
+
+			<Modal
+				opened={formModalOpened}
+				onClose={() => setFormModalOpened(false)}
+				title="Создание"
+				size="lg"
+			>
+				<CalendarEventForm
+					defaultDate={new Date()}
+					onSuccess={() => { setFormModalOpened(false); reload(); }}
+					onCancel={() => setFormModalOpened(false)}
+				/>
+			</Modal>
 		</Grid.Col>
 	);
 });

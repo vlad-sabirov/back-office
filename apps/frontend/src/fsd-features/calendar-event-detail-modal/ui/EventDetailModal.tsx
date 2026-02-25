@@ -1,12 +1,13 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Modal, Stack, Group, Badge, Text, Paper, Button } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { CalendarEventService, ICalendarEventEntity, CalendarEventConst, EnCalendarEventType, EnCalendarEventStatus } from '@fsd/entities/calendar-event';
+import { CalendarEventService, CalendarParticipantService, ICalendarEventEntity, CalendarEventConst, EnCalendarEventType, EnCalendarEventStatus } from '@fsd/entities/calendar-event';
 import { CalendarEventForm } from '@fsd/widgets/calendar-event-form';
-import { useAccess, useUserDeprecated } from '@hooks';
+import { useAccess, useUserDeprecated, useRoles } from '@hooks';
+import { ROLE_HIERARCHY } from '@fsd/shared/lib/role-hierarchy';
 
 interface EventDetailModalProps {
 	event: ICalendarEventEntity | null;
@@ -14,21 +15,74 @@ interface EventDetailModalProps {
 	onClose: () => void;
 	onUpdated?: () => void;
 	onDeleted?: () => void;
+	defaultEditing?: boolean;
 }
 
-export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onClose, onUpdated, onDeleted }) => {
+export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onClose, onUpdated, onDeleted, defaultEditing }) => {
 	const router = useRouter();
 	const { userId } = useUserDeprecated();
 	const CheckAccess = useAccess();
+	const currentRoles = useRoles();
 	const isBoss = CheckAccess(['developer', 'boss', 'crmAdmin', 'admin']);
 	const [deleteEvent] = CalendarEventService.delete();
 	const [updateStatus] = CalendarEventService.updateStatus();
+	const [respondToInvitation, { isLoading: isResponding }] = CalendarParticipantService.respond();
+	const [fetchParticipants, { data: eventParticipants }] = CalendarParticipantService.getByEventId();
 	const [confirmDelete, setConfirmDelete] = useState(false);
 	const [editing, setEditing] = useState(false);
 
+	// Загружаем участников из API при каждом открытии модалки
+	useEffect(() => {
+		if (opened && event?.id) {
+			fetchParticipants(event.id);
+		}
+	}, [opened, event?.id]);
+
+	useEffect(() => {
+		if (opened && defaultEditing) setEditing(true);
+	}, [opened]);
+
 	const isAuthor = event?.author?.id === userId;
-	const canModify = isAuthor || isBoss;
+	const isAssignee = event?.assignee?.id === userId;
 	const isActive = !event?.status || event?.status === EnCalendarEventStatus.Active;
+
+	// Текущий пользователь как участник — берём из свежих данных API
+	const myParticipant = (eventParticipants ?? event?.participants)?.find(
+		(p: any) => Number(p.userId ?? p.user?.id) === Number(userId)
+	);
+	const isParticipant = !!myParticipant;
+	const myParticipantStatus: string | undefined = myParticipant?.status;
+
+	// Проверяем head → child role hierarchy
+	const isHeadForAssignee = (() => {
+		if (!event?.assignee?.roles) return false;
+		const assigneeRoles = (event.assignee.roles as any[]).map((r: any) => r.alias || r);
+		for (const role of currentRoles) {
+			const childRole = ROLE_HIERARCHY[role];
+			if (childRole && assigneeRoles.includes(childRole)) return true;
+		}
+		return false;
+	})();
+
+	// Событие создано главной ролью
+	const isCreatedByHead = (() => {
+		if (!event?.author?.roles) return false;
+		const authorRoles = (event.author.roles as any[]).map((r: any) => r.alias || r);
+		return authorRoles.some((r: string) => Object.keys(ROLE_HIERARCHY).includes(r));
+	})();
+
+	// Создал для себя — только автор может редактировать
+	const isSelfAssigned = event?.authorId === event?.assigneeId;
+
+	const canModify = isAuthor || isBoss || isHeadForAssignee;
+	// Исполнитель может менять статус (Готово/Отмена) даже на событиях от руководителя
+	const canChangeStatus = canModify || isAssignee;
+	// Дочерняя роль НЕ может редактировать/удалять событие от руководителя
+	// Самоназначенное событие — только автор
+	const canEditAndDelete = isSelfAssigned
+		? isAuthor
+		: canModify && !(isAssignee && !isAuthor && isCreatedByHead && !isBoss && !isHeadForAssignee);
+
 
 	const handleDelete = useCallback(async () => {
 		if (!event) return;
@@ -83,6 +137,22 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 		}
 	}, [event, updateStatus, onClose, onUpdated]);
 
+	const handleRespond = useCallback(async (status: 'accepted' | 'declined') => {
+		if (!event) return;
+		try {
+			await respondToInvitation({ eventId: event.id, status }).unwrap();
+			showNotification({
+				color: status === 'accepted' ? 'green' : 'orange',
+				message: status === 'accepted' ? 'Вы приняли приглашение' : 'Вы отклонили приглашение',
+			});
+			// Обновить список участников
+			fetchParticipants(event.id);
+			onUpdated?.();
+		} catch (e: any) {
+			showNotification({ color: 'red', message: e?.data?.message || 'Ошибка при ответе на приглашение' });
+		}
+	}, [event, respondToInvitation, fetchParticipants, onUpdated]);
+
 	const handleGoToOrganization = useCallback(() => {
 		if (!event?.organizationId) return;
 		handleClose();
@@ -104,6 +174,9 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 	if (!event) return null;
 
 	const statusConfig = CalendarEventConst.Status?.[event.status as EnCalendarEventStatus];
+
+	// Список участников: предпочитаем свежие данные API
+	const participantsList = eventParticipants ?? event?.participants ?? [];
 
 	return (
 		<Modal
@@ -144,18 +217,39 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 
 					<Paper p="sm" withBorder>
 						<Stack spacing="xs">
-							<Group spacing="xs">
-								<Text size="sm" color="dimmed">Начало:</Text>
-								<Text size="sm">
-									{format(new Date(event.dateStart), 'd MMMM yyyy, HH:mm', { locale: ru })}
-								</Text>
-							</Group>
-							<Group spacing="xs">
-								<Text size="sm" color="dimmed">Окончание:</Text>
-								<Text size="sm">
-									{format(new Date(event.dateEnd), 'd MMMM yyyy, HH:mm', { locale: ru })}
-								</Text>
-							</Group>
+							{event.type === 'note' && new Date(event.dateStart).getFullYear() === 2099 ? (
+								<>
+									<Group spacing="xs">
+										<Text size="sm" color="dimmed">Создано:</Text>
+										<Text size="sm">
+											{format(new Date(event.createdAt), 'd MMMM yyyy, HH:mm', { locale: ru })}
+										</Text>
+									</Group>
+									{event.updatedAt && event.updatedAt !== event.createdAt && (
+										<Group spacing="xs">
+											<Text size="sm" color="dimmed">Изменено:</Text>
+											<Text size="sm">
+												{format(new Date(event.updatedAt), 'd MMMM yyyy, HH:mm', { locale: ru })}
+											</Text>
+										</Group>
+									)}
+								</>
+							) : (
+								<>
+									<Group spacing="xs">
+										<Text size="sm" color="dimmed">Начало:</Text>
+										<Text size="sm">
+											{format(new Date(event.dateStart), 'd MMMM yyyy, HH:mm', { locale: ru })}
+										</Text>
+									</Group>
+									<Group spacing="xs">
+										<Text size="sm" color="dimmed">Окончание:</Text>
+										<Text size="sm">
+											{format(new Date(event.dateEnd), 'd MMMM yyyy, HH:mm', { locale: ru })}
+										</Text>
+									</Group>
+								</>
+							)}
 							{event.location && (
 								<Group spacing="xs">
 									<Text size="sm" color="dimmed">Место:</Text>
@@ -188,11 +282,11 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 									</Text>
 								</Group>
 							)}
-							{event.participants && event.participants.length > 0 && (
+							{participantsList.length > 0 && (
 								<Group spacing="xs" align="flex-start">
 									<Text size="sm" color="dimmed">Участники:</Text>
 									<Stack spacing={4}>
-										{event.participants.map((p: any) => (
+										{participantsList.map((p: any) => (
 											<Text key={p.id} size="sm">
 												{p.user?.lastName} {p.user?.firstName}
 												{p.status === 'accepted' && ' ✓'}
@@ -213,16 +307,46 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 									<Button variant="outline" size="xs" onClick={() => setConfirmDelete(false)}>
 										Назад
 									</Button>
-									<Button color="red" size="xs" onClick={handleDelete}>
-										Удалить
-									</Button>
+									<Button
+									size="xs"
+									onClick={handleDelete}
+									style={{ backgroundColor: '#e03131', color: '#fff', border: 'none' }}
+									onMouseEnter={(e: any) => { e.currentTarget.style.backgroundColor = '#c92a2a'; }}
+									onMouseLeave={(e: any) => { e.currentTarget.style.backgroundColor = '#e03131'; }}
+								>
+									Удалить
+								</Button>
 								</Group>
 							</Stack>
 						</Paper>
 					) : (
 						<Stack spacing="sm">
-							{/* Кнопки Готово / Отмена события — только для активных событий */}
-							{isActive && canModify && (
+							{/* Кнопки Принять / Отклонить — для любого участника встречи */}
+							{isActive && isParticipant && (
+								<Group position="center" grow>
+									<Button
+										color="green"
+										variant={myParticipantStatus === 'accepted' ? 'filled' : 'light'}
+										onClick={() => handleRespond('accepted')}
+										loading={isResponding}
+										disabled={myParticipantStatus === 'accepted'}
+									>
+										{myParticipantStatus === 'accepted' ? 'Принято ✓' : 'Принять'}
+									</Button>
+									<Button
+										color="red"
+										variant={myParticipantStatus === 'declined' ? 'filled' : 'light'}
+										onClick={() => handleRespond('declined')}
+										loading={isResponding}
+										disabled={myParticipantStatus === 'declined'}
+									>
+										{myParticipantStatus === 'declined' ? 'Отклонено ✗' : 'Отклонить'}
+									</Button>
+								</Group>
+							)}
+
+							{/* Кнопки Готово / Отмена — только для автора/исполнителя/руководителя, не для чистого участника */}
+							{isActive && canChangeStatus && !isParticipant && (
 								<Group position="center" grow>
 									<Button
 										color="green"
@@ -241,8 +365,8 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 								</Group>
 							)}
 
-							{/* Для завершённых/отменённых — кнопка возврата в активные */}
-							{!isActive && canModify && (
+							{/* Для завершённых/отменённых — кнопка возврата */}
+							{!isActive && canChangeStatus && !isParticipant && (
 								<Group position="center">
 									<Button
 										color="blue"
@@ -255,7 +379,7 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 							)}
 
 							<Group position="right">
-								{isAuthor && (
+								{canEditAndDelete && !isParticipant && (
 									<Button color="red" variant="subtle" onClick={() => setConfirmDelete(true)}>
 										Удалить
 									</Button>
@@ -268,7 +392,7 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 								<Button variant="outline" onClick={handleClose}>
 									Закрыть
 								</Button>
-								{canModify && isActive && (
+								{canEditAndDelete && isActive && !isParticipant && (
 									<Button
 										onClick={() => setEditing(true)}
 										style={{

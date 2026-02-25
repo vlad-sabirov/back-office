@@ -1,11 +1,11 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { CalendarEventService, EnCalendarEventType, CalendarEventConst } from '@fsd/entities/calendar-event';
+import { FC, useCallback, useMemo, useState } from 'react';
+import { CalendarEventService, CalendarParticipantService, EnCalendarEventType, CalendarEventConst } from '@fsd/entities/calendar-event';
 import { useCrmHistoryActions } from '@fsd/entities/crm-history';
-import { FetchStatusConvert, FetchStatusIsLoading } from '@fsd/shared/lib/fetch-status';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
 import { Button, Icon, Tabs, Textarea, Input, Select, DatePicker } from '@fsd/shared/ui-kit';
 import { useUserDeprecated } from '@hooks';
 import { useForm } from '@mantine/form';
+import { MultiSelect } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { ICalendarEventListProps, ICalendarEventPanelProps } from './calendar-event.props';
 import css from './calendar-event.module.scss';
@@ -21,6 +21,8 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 	const currentUserRoles = useStateSelector((state) => state.app.auth.roles) || [];
 	const { userId } = useUserDeprecated();
 	const historyActions = useCrmHistoryActions();
+	const staffAll = useStateSelector((state) => state.staff.data.worked);
+	const staffAllData = useStateSelector((state) => state.staff.data.all);
 
 	// ID организации
 	const organizationId = useMemo(() => {
@@ -41,6 +43,51 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 		return isManager || hasAdminRole;
 	}, [currentOrganization?.userId, userId, currentUserRoles]);
 
+	const currentUserData = useMemo(() => {
+		return (staffAllData || []).find((s: any) => s.id === Number(userId));
+	}, [staffAllData, userId]);
+
+	const staffOptions = useMemo(() => {
+		const EXCLUDED_POSITIONS = ['грузчик', 'водитель', 'техничка'];
+		const all = (staffAll || []).filter((s: any) =>
+			!EXCLUDED_POSITIONS.includes((s.workPosition || '').toLowerCase().trim())
+		);
+		const toOption = (s: any) => ({
+			value: String(s.id),
+			label: `${s.lastName || ''} ${s.firstName || ''}`.trim(),
+		});
+		const hasCrm = (s: any) =>
+			(s.roles || []).some((r: any) => (r.alias || '').toLowerCase().includes('crm'));
+		const hasBoss = (s: any) =>
+			(s.roles || []).some((r: any) => r.alias === 'boss');
+
+		// boss / admin / developer — все сотрудники
+		if (currentUserRoles.some((r: string) => ['boss', 'admin', 'developer'].includes(r))) {
+			return all.map(toOption);
+		}
+
+		// crmAdmin — все, кроме boss
+		if (currentUserRoles.includes('crmAdmin')) {
+			return all.filter((s: any) => !hasBoss(s)).map(toOption);
+		}
+
+		// crm — crm-пользователи + прямые подчинённые
+		if (currentUserRoles.includes('crm')) {
+			const childIds = new Set<number>(
+				((currentUserData as any)?.child || []).map((c: any) => c.id)
+			);
+			return all
+				.filter((s: any) => hasCrm(s) || childIds.has(s.id))
+				.map(toOption);
+		}
+
+		// остальные (подчинённые crm) — crm-пользователи + прямой руководитель
+		const parentId = (currentUserData as any)?.parentId;
+		return all
+			.filter((s: any) => hasCrm(s) || (parentId && s.id === parentId))
+			.map(toOption);
+	}, [staffAll, staffAllData, currentUserRoles, userId, currentUserData]);
+
 	const form = useForm({
 		initialValues: {
 			type: EnCalendarEventType.Meeting as string,
@@ -50,6 +97,7 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 			timeStart: '10:00',
 			dateEnd: null as Date | null,
 			timeEnd: '11:00',
+			participantIds: [] as string[],
 		},
 		validate: {
 			title: (value) => (value.trim().length < 3 ? 'Минимум 3 символа' : null),
@@ -69,7 +117,8 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 		return result;
 	}, []);
 
-	const [create, { ...createProps }] = CalendarEventService.create();
+	const [create] = CalendarEventService.create();
+	const [addParticipants] = CalendarParticipantService.addParticipants();
 
 	const onSubmit = useCallback(async () => {
 		if (form.validate().hasErrors) return;
@@ -92,40 +141,40 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 			return;
 		}
 
-		await create({
-			type: form.values.type,
-			title: form.values.title,
-			description: form.values.description || undefined,
-			dateStart: dateStart.toISOString(),
-			dateEnd: dateEnd.toISOString(),
-			isAllDay: false,
-			authorId: userId || 0,
-			assigneeId: assigneeId,
-			organizationId: organizationId || undefined,
-		});
-		historyActions.reloadTimestamp();
-	}, [create, form, userId, assigneeId, organizationId, historyActions, combineDateAndTime]);
+		setIsLoading(true);
+		try {
+			const created = await create({
+				type: form.values.type,
+				title: form.values.title,
+				description: form.values.description || undefined,
+				dateStart: dateStart.toISOString(),
+				dateEnd: dateEnd.toISOString(),
+				isAllDay: false,
+				authorId: userId || 0,
+				assigneeId: assigneeId,
+				organizationId: organizationId || undefined,
+			}).unwrap();
 
-	useEffect(() => {
-		if (createProps.status === 'uninitialized') return;
-		const status = FetchStatusConvert(createProps);
-		setIsLoading(FetchStatusIsLoading(status));
-	}, [createProps.status]);
+			if (
+				form.values.type === EnCalendarEventType.Meeting &&
+				form.values.participantIds.length > 0
+			) {
+				await addParticipants({
+					eventId: created.id,
+					userIds: form.values.participantIds.map(Number),
+				});
+			}
 
-	useEffect(() => {
-		if (createProps.error) {
-			const error = createProps.error as any;
-			const message = error?.data?.message || error?.message || 'Ошибка создания события';
-			showNotification({ color: 'red', message });
-		}
-	}, [createProps.error, createProps.startedTimeStamp]);
-
-	useEffect(() => {
-		if (createProps.isSuccess) {
 			showNotification({ color: 'green', message: 'Событие создано' });
 			form.reset();
+			historyActions.reloadTimestamp();
+		} catch (error: any) {
+			const message = error?.data?.message || error?.message || 'Ошибка создания события';
+			showNotification({ color: 'red', message });
+		} finally {
+			setIsLoading(false);
 		}
-	}, [createProps.fulfilledTimeStamp, createProps.isSuccess]);
+	}, [create, addParticipants, form, userId, assigneeId, organizationId, historyActions, combineDateAndTime]);
 
 	// Если нет прав на создание - показать сообщение
 	if (!canCreate) {
@@ -207,6 +256,19 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 						Создать
 					</Button>
 				</div>
+				{form.values.type === EnCalendarEventType.Meeting && (
+					<MultiSelect
+						label="Участники встречи (необязательно)"
+						placeholder="Выберите участников"
+						data={staffOptions}
+						value={form.values.participantIds}
+						onChange={(value) => form.setFieldValue('participantIds', value)}
+						searchable
+						clearable
+						disabled={disabled || isLoading}
+						dropdownPosition="top"
+					/>
+				)}
 			</div>
 		</Tabs.Panel>
 	);

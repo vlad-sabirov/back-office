@@ -5,6 +5,7 @@ import { StaffAvatar } from '@fsd/entities/staff';
 import { useCrmHistoryActions } from '@fsd/entities/crm-history';
 import { dateFnsLocaleRu } from '@fsd/shared/lib/date-fns.ru.locale';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
+import { ROLE_HIERARCHY } from '@fsd/shared/lib/role-hierarchy';
 import { TextField, Icon, Select } from '@fsd/shared/ui-kit';
 import { ActionIcon } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
@@ -25,6 +26,7 @@ interface IProps {
 
 export const Task: FC<IProps> = ({ task, className }) => {
 	const [detailModalOpened, setDetailModalOpened] = useState(false);
+	const [openInEditMode, setOpenInEditMode] = useState(false);
 
 	const currentUserId = useStateSelector((state) => state.app.auth.userId);
 	const currentUserRoles = useStateSelector((state) => state.app.auth.roles) || [];
@@ -35,18 +37,33 @@ export const Task: FC<IProps> = ({ task, className }) => {
 	const historyActions = useCrmHistoryActions();
 	const [updateTaskStatus] = CrmTaskService.updateStatus();
 
-	const canModify = useMemo(() => {
+	const canEditAndDelete = useMemo(() => {
 		const isAuthor = task.authorId === Number(currentUserId);
-		const hasAdminRole = currentUserRoles.some((role: string) =>
+		const isAssignee = task.assigneeId === Number(currentUserId);
+		// Создал для себя — только автор может редактировать
+		if (task.authorId === task.assigneeId) return isAuthor;
+		const isBoss = currentUserRoles.some((role: string) =>
 			['boss', 'admin', 'developer', 'crmAdmin'].includes(role)
 		);
-		return isAuthor || hasAdminRole;
-	}, [task.authorId, currentUserId, currentUserRoles]);
+		const assigneeRoles = (task.assignee?.roles as any[] || []).map((r: any) => r.alias || r);
+		const isHeadForAssignee = currentUserRoles.some((role: string) => {
+			const childRole = ROLE_HIERARCHY[role];
+			return childRole && assigneeRoles.includes(childRole);
+		});
+		const authorRoles = (task.author?.roles as any[] || []).map((r: any) => r.alias || r);
+		const isCreatedByHead = authorRoles.some((r: string) => Object.keys(ROLE_HIERARCHY).includes(r));
+		const canModify = isAuthor || isBoss || isHeadForAssignee;
+		return canModify && !(isAssignee && !isAuthor && isCreatedByHead && !isBoss && !isHeadForAssignee);
+	}, [task, currentUserId, currentUserRoles]);
 
 	const canChangeStatus = useMemo(() => {
+		const isAuthor = task.authorId === Number(currentUserId);
 		const isAssignee = task.assigneeId === Number(currentUserId);
-		return canModify || isAssignee;
-	}, [canModify, task.assigneeId, currentUserId]);
+		const isBoss = currentUserRoles.some((role: string) =>
+			['boss', 'admin', 'developer', 'crmAdmin'].includes(role)
+		);
+		return isAuthor || isAssignee || isBoss;
+	}, [task.authorId, task.assigneeId, currentUserId, currentUserRoles]);
 
 	const handleStatusChange = useCallback(async (newStatus: string) => {
 		try {
@@ -59,8 +76,18 @@ export const Task: FC<IProps> = ({ task, className }) => {
 		}
 	}, [task.id, updateTaskStatus, historyActions]);
 
-	const openDetailModal = useCallback(() => setDetailModalOpened(true), []);
-	const closeDetailModal = useCallback(() => setDetailModalOpened(false), []);
+	const openDetailModal = useCallback(() => {
+		setOpenInEditMode(false);
+		setDetailModalOpened(true);
+	}, []);
+	const openEditModal = useCallback(() => {
+		setOpenInEditMode(true);
+		setDetailModalOpened(true);
+	}, []);
+	const closeDetailModal = useCallback(() => {
+		setDetailModalOpened(false);
+		setOpenInEditMode(false);
+	}, []);
 
 	const handleUpdated = useCallback(() => {
 		historyActions.reloadTimestamp();
@@ -114,6 +141,11 @@ export const Task: FC<IProps> = ({ task, className }) => {
 					<ActionIcon size="sm" variant="subtle" onClick={openDetailModal} title="Подробнее">
 						<Icon name="eye" className={css.actionIcon} />
 					</ActionIcon>
+					{canEditAndDelete && (
+						<ActionIcon size="sm" variant="subtle" onClick={openEditModal} title="Редактировать">
+							<Icon name="edit" className={css.actionIcon} />
+						</ActionIcon>
+					)}
 				</div>
 			</div>
 
@@ -186,6 +218,7 @@ export const Task: FC<IProps> = ({ task, className }) => {
 				onClose={closeDetailModal}
 				onUpdated={handleUpdated}
 				onDeleted={handleDeleted}
+				defaultEditing={openInEditMode}
 			/>
 		</div>
 	);

@@ -14,6 +14,7 @@ interface IFindManyRequest {
 		taskId?: number;
 		status?: string | string[];
 		isAllDay?: boolean;
+		participantUserId?: number;
 	};
 	filter?: {
 		orderBy?: Record<string, 'asc' | 'desc'>;
@@ -199,6 +200,12 @@ export const CalendarParticipantApi = createApi({
 			query: (eventId) => ({ url: `/byEventId/${eventId}`, method: 'GET' }),
 		}),
 
+		// Получить все участия пользователя
+		getByUserId: builder.query<IParticipantEntity[], number>({
+			providesTags: ['participants'],
+			query: (userId) => ({ url: `/byUserId/${userId}`, method: 'GET' }),
+		}),
+
 		// Мои приглашения
 		getMyInvitations: builder.query<IParticipantEntity[], void>({
 			providesTags: ['invitations'],
@@ -212,13 +219,15 @@ export const CalendarParticipantService = {
 	removeParticipant: CalendarParticipantApi.useRemoveParticipantMutation,
 	respond: CalendarParticipantApi.useRespondMutation,
 	getByEventId: CalendarParticipantApi.useLazyGetByEventIdQuery,
+	getByUserId: CalendarParticipantApi.useLazyGetByUserIdQuery,
 	getMyInvitations: CalendarParticipantApi.useGetMyInvitationsQuery,
 };
 
 // ========== Reminders API ==========
 
 interface ICreateReminderRequest {
-	eventId: number;
+	eventId?: number;
+	taskId?: number;
 	remindAt: string;
 }
 

@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import cn from 'classnames';
 import {
 	differenceInDays,
@@ -43,6 +43,39 @@ const getDayCellStyle = (events?: CalendarPropsEvent[]): React.CSSProperties | u
 	});
 
 	return { background: `linear-gradient(135deg, ${stops.join(', ')})` };
+};
+
+const EventTitle: FC<{ title: string }> = ({ title }) => {
+	const ref = useRef<HTMLSpanElement>(null);
+	const [marquee, setMarquee] = useState(false);
+
+	const handleMouseEnter = useCallback(() => {
+		const el = ref.current;
+		if (!el) return;
+		let container: HTMLElement | null = el.parentElement;
+		while (container) {
+			const overflow = getComputedStyle(container).overflow;
+			const overflowX = getComputedStyle(container).overflowX;
+			if (overflow === 'hidden' || overflowX === 'hidden') break;
+			container = container.parentElement;
+		}
+		if (container) {
+			setMarquee(el.offsetWidth > container.clientWidth);
+		}
+	}, []);
+
+	const handleMouseLeave = useCallback(() => setMarquee(false), []);
+
+	return (
+		<span
+			ref={ref}
+			className={cn(css.event__title, { [css.event__titleMarquee]: marquee })}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+		>
+			{title}
+		</span>
+	);
 };
 
 export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...props }) => {
@@ -109,6 +142,7 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 										[css.item__disabled]: !isSameMonth || isLessMin || isMoreMax,
 										[css.item__hasEvents]: !!dayCellStyle,
 										[css.item__hasHidden]: hasHidden,
+										[css.item__today]: isSameDay && isSameMonth,
 									})}
 									style={dayCellStyle}
 									onClick={hasHidden ? () => CalendarStore.onDayOverflowClick?.(day.date, day.events || []) : undefined}
@@ -199,7 +233,7 @@ export const MonthGrid: FC<MonthGridProps> = observer(({ ctx, className, ...prop
 														{!!event.icon && (
 															<div className={css.event__icon}>{event.icon}</div>
 														)}
-														{event.title}
+														<EventTitle title={event.title} />
 													</TextField>
 												);
 											}

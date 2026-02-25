@@ -13,6 +13,7 @@ interface IProps {
 	userName?: string;
 	onReload?: () => void;
 	filterStatus?: 'completed' | 'cancelled';
+	filterType?: EnCalendarEventType;
 }
 
 const typeStyleMap: Record<string, { itemClass: string; labelClass: string }> = {
@@ -32,7 +33,7 @@ const emptyMap: Record<string, string> = {
 	cancelled: 'Нет отменённых событий',
 };
 
-export const StaffEventsModal: FC<IProps> = ({ events, opened, onClose, userName, onReload, filterStatus }) => {
+export const StaffEventsModal: FC<IProps> = ({ events, opened, onClose, userName, onReload, filterStatus, filterType }) => {
 	const [viewingEvent, setViewingEvent] = useState<ICalendarEventEntity | null>(null);
 
 	const sortedEvents = useMemo(() => {
@@ -46,11 +47,11 @@ export const StaffEventsModal: FC<IProps> = ({ events, opened, onClose, userName
 				});
 		}
 
-		// Активные — по дате начала (ближайшие первые)
+		// Активные — по дате начала (ближайшие первые), с опциональным фильтром по типу
 		return events
-			.filter((e) => !e.status || e.status === EnCalendarEventStatus.Active)
+			.filter((e) => (!e.status || e.status === EnCalendarEventStatus.Active) && (!filterType || e.type === filterType))
 			.sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime());
-	}, [events, filterStatus]);
+	}, [events, filterStatus, filterType]);
 
 	const handleEventClick = useCallback((event: ICalendarEventEntity) => {
 		setViewingEvent(event);
@@ -72,9 +73,15 @@ export const StaffEventsModal: FC<IProps> = ({ events, opened, onClose, userName
 
 	const modalTitle = filterStatus
 		? `${titleMap[filterStatus]}: ${userName || 'сотрудника'}`
-		: `События: ${userName || 'сотрудника'}`;
+		: filterType
+			? `${CalendarEventConst.Type[filterType]?.label || filterType}: ${userName || 'сотрудника'}`
+			: `События: ${userName || 'сотрудника'}`;
 
-	const emptyMessage = filterStatus ? emptyMap[filterStatus] : 'Нет событий';
+	const emptyMessage = filterStatus
+		? emptyMap[filterStatus]
+		: filterType
+			? `Нет событий типа «${CalendarEventConst.Type[filterType]?.label || filterType}»`
+			: 'Нет событий';
 
 	return (
 		<>

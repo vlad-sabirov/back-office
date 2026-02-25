@@ -5,7 +5,7 @@ import { HeaderContent } from '@components/HeaderContent/HeaderContent';
 import { useStateSelector, useUser } from '@fsd/shared/lib/hooks';
 import { StaffProfileWidget } from '@fsd/widgets/staff-profile';
 import { StaffRealizationWidget } from '@fsd/widgets/staff-realization';
-import { StaffWorkingBaseWidget, StaffTasksWidget } from '@fsd/widgets/staff-working-base';
+import { StaffWorkingBaseWidget, StaffTasksWidget, StaffNotesWidget, StaffMeetingsWidget, StaffOrganizedMeetingsWidget } from '@fsd/widgets/staff-working-base';
 import { MainContext } from '@globalStore';
 import { Grid } from '@mantine/core';
 import {
@@ -39,6 +39,9 @@ const StaffCabinet: FC = observer(() => {
 					<StaffRealizationWidget />
 					<StaffWorkingBaseWidget />
 					<StaffTasksWidget />
+					<StaffMeetingsWidget />
+					<StaffOrganizedMeetingsWidget />
+					<StaffNotesWidget />
 				</Grid>
 			</div>
 

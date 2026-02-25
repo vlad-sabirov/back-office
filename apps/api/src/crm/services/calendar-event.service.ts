@@ -3,6 +3,7 @@ import { PrismaService } from '../../common';
 import { MutationCalendarEventDto } from '../dto/mutation-calendar-event.dto';
 import { QueryCalendarEventDto, QueryCalendarEventRangeDto } from '../dto/query-calendar-event.dto';
 import { CalendarEventConstants, CalendarEventTypes, CalendarEventStatuses } from '../constants/calendar-event.constants';
+import { ROLE_HIERARCHY, CHILD_TO_HEAD, HEAD_ROLES, SUPER_ADMIN_ROLES, BOSS_ROLE, CRM_ADMIN_ROLE } from '../constants/role-hierarchy.constants';
 import { CalendarEventNotificationService } from './calendar-event-notification.service';
 
 interface CalendarEventFilter {
@@ -19,8 +20,8 @@ export interface RangeWithTasksResult {
 @Injectable()
 export class CalendarEventService extends PrismaService {
 	private readonly defaultInclude = {
-		author: true,
-		assignee: true,
+		author: { include: { roles: true } },
+		assignee: { include: { roles: true } },
 		organization: true,
 		contact: true,
 		task: true,
@@ -116,7 +117,7 @@ export class CalendarEventService extends PrismaService {
 	 * Получить события за период для конкретного пользователя
 	 * Включает события где пользователь: assignee ИЛИ участник (participant)
 	 */
-	getByDateRange = async (params: QueryCalendarEventRangeDto): Promise<any[]> => {
+	getByDateRange = async (params: QueryCalendarEventRangeDto, requestingUserId?: number): Promise<any[]> => {
 		const from = new Date(params.from);
 		const to = new Date(params.to);
 
@@ -135,18 +136,22 @@ export class CalendarEventService extends PrismaService {
 
 		if (params.userId) {
 			const userId = Number(params.userId);
-			// Пользователь — исполнитель ИЛИ участник события
-			where = {
-				AND: [
-					dateCondition,
-					{
-						OR: [
-							{ assigneeId: userId },
-							{ participants: { some: { userId: userId } } },
-						],
-					},
-				],
-			};
+			const isViewingOthersCalendar = requestingUserId !== undefined && requestingUserId !== userId;
+			const andConditions: any[] = [
+				dateCondition,
+				{
+					OR: [
+						{ assigneeId: userId },
+						{ participants: { some: { userId: userId } } },
+					],
+				},
+			];
+
+			if (isViewingOthersCalendar) {
+				andConditions.push({ type: { not: 'note' } });
+			}
+
+			where = { AND: andConditions };
 		}
 
 		return this.calendarEvent.findMany({
@@ -160,7 +165,7 @@ export class CalendarEventService extends PrismaService {
 	 * Получить события + задачи за период (для страницы календаря)
 	 * Включает события где пользователь: assignee ИЛИ участник
 	 */
-	getRangeWithTasks = async (params: QueryCalendarEventRangeDto): Promise<RangeWithTasksResult> => {
+	getRangeWithTasks = async (params: QueryCalendarEventRangeDto, requestingUserId?: number): Promise<RangeWithTasksResult> => {
 		const from = new Date(params.from);
 		const to = new Date(params.to);
 
@@ -181,18 +186,22 @@ export class CalendarEventService extends PrismaService {
 
 		if (params.userId) {
 			const userId = Number(params.userId);
-			// Пользователь — исполнитель ИЛИ участник события
-			eventsWhere = {
-				AND: [
-					dateCondition,
-					{
-						OR: [
-							{ assigneeId: userId },
-							{ participants: { some: { userId: userId } } },
-						],
-					},
-				],
-			};
+			const isViewingOthersCalendar = requestingUserId !== undefined && requestingUserId !== userId;
+			const andConditions: any[] = [
+				dateCondition,
+				{
+					OR: [
+						{ assigneeId: userId },
+						{ participants: { some: { userId: userId } } },
+					],
+				},
+			];
+
+			if (isViewingOthersCalendar) {
+				andConditions.push({ type: { not: 'note' } });
+			}
+
+			eventsWhere = { AND: andConditions };
 			tasksWhere.assigneeId = userId;
 		}
 
@@ -205,8 +214,8 @@ export class CalendarEventService extends PrismaService {
 			this.crmTask.findMany({
 				where: tasksWhere,
 				include: {
-					author: true,
-					assignee: true,
+					author: { include: { roles: true } },
+					assignee: { include: { roles: true } },
 					organization: true,
 				},
 				orderBy: { deadline: 'asc' },
@@ -230,7 +239,7 @@ export class CalendarEventService extends PrismaService {
 			from: today,
 			to: tomorrow,
 			userId,
-		});
+		}, userId);
 	};
 
 	getByOrganizationId = async (id: number | string): Promise<any[]> => {
@@ -359,9 +368,10 @@ export class CalendarEventService extends PrismaService {
 		const event = await this.findById(id);
 		if (!event) throw new HttpException(CalendarEventConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
 
+		// Используем canChangeEventStatus — позволяет исполнителю менять статус
 		if (currentUserId) {
-			const canModify = await this.canModifyEvent(currentUserId, event);
-			if (!canModify) {
+			const canChange = await this.canChangeEventStatus(currentUserId, event);
+			if (!canChange) {
 				throw new HttpException(CalendarEventConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
 			}
 		}
@@ -374,11 +384,19 @@ export class CalendarEventService extends PrismaService {
 			data.completedAt = null;
 		}
 
-		return this.calendarEvent.update({
+		const updatedEvent = await this.calendarEvent.update({
 			where: { id: Number(id) },
 			data,
 			include: this.defaultInclude,
 		});
+
+		// Уведомить автора (руководителя) если статус изменил исполнитель
+		if (currentUserId && event.authorId !== currentUserId) {
+			const statusLabel = status === 'completed' ? 'выполнено' : status === 'cancelled' ? 'отменено' : 'возвращено в активные';
+			this.notificationService.notifyEventStatusChanged(updatedEvent, statusLabel, currentUserId).catch(() => {});
+		}
+
+		return updatedEvent;
 	};
 
 	deleteById = async (id: number | string, currentUserId?: number): Promise<any> => {
@@ -430,31 +448,87 @@ export class CalendarEventService extends PrismaService {
 			}
 		}
 		if (where.isAllDay !== undefined) result.isAllDay = where.isAllDay;
+		if (where.participantUserId) result.participants = { some: { userId: Number(where.participantUserId) } };
 
 		return result;
 	};
 
 	/**
+	 * Получить роли пользователя (кэш на уровне запроса)
+	 */
+	private getUserWithRolesAndChildren = async (userId: number) => {
+		return this.user.findUnique({
+			where: { id: userId },
+			include: { roles: true, child: true },
+		});
+	};
+
+	/**
+	 * Проверить, является ли targetUser "Boss" (имеет роль boss)
+	 */
+	private isUserBoss = async (userId: number): Promise<boolean> => {
+		const user = await this.user.findUnique({
+			where: { id: userId },
+			include: { roles: true },
+		});
+		return user?.roles?.some((role) => role.alias === BOSS_ROLE) || false;
+	};
+
+	/**
 	 * Проверка: может ли пользователь создавать события для другого пользователя
-	 * Условие: себе всегда можно, подчинённым можно, boss/admin/developer — всем
+	 *
+	 * Правила:
+	 * 1. Себе — всегда можно
+	 * 2. admin/developer — всем
+	 * 3. boss — всем, кроме других boss
+	 * 4. crmAdmin — всем, кроме boss
+	 * 5. Главная роль (head) — дочерним ролям (child) своего отдела
+	 * 6. Дочерняя роль — своим подчинённым (через _user_child)
 	 */
 	private canCreateEventForUser = async (currentUserId: number, targetUserId: number): Promise<boolean> => {
 		// Себе всегда можно
 		if (currentUserId === targetUserId) return true;
 
-		// Проверить роли пользователя
-		const user = await this.user.findUnique({
-			where: { id: currentUserId },
-			include: { roles: true, child: true },
-		});
+		const user = await this.getUserWithRolesAndChildren(currentUserId);
+		if (!user?.roles) return false;
 
-		// boss/admin/developer/crmAdmin могут создавать для всех
-		if (user?.roles?.some((role) => ['boss', 'admin', 'developer', 'crmAdmin'].includes(role.alias))) {
+		const userRoleAliases = user.roles.map((r) => r.alias);
+
+		// admin/developer — полный доступ
+		if (userRoleAliases.some((alias) => SUPER_ADMIN_ROLES.includes(alias))) {
 			return true;
 		}
 
-		// Проверить, является ли targetUserId подчинённым
-		if (user?.child?.some((child) => child.id === targetUserId)) {
+		// boss — доступ ко всем, кроме других boss
+		if (userRoleAliases.includes(BOSS_ROLE)) {
+			const targetIsBoss = await this.isUserBoss(targetUserId);
+			return !targetIsBoss;
+		}
+
+		// crmAdmin — доступ ко всем, кроме boss
+		if (userRoleAliases.includes(CRM_ADMIN_ROLE)) {
+			const targetIsBoss = await this.isUserBoss(targetUserId);
+			return !targetIsBoss;
+		}
+
+		// Главная роль → может создавать для сотрудников с дочерней ролью
+		const targetUser = await this.user.findUnique({
+			where: { id: targetUserId },
+			include: { roles: true },
+		});
+		if (!targetUser?.roles) return false;
+
+		const targetRoleAliases = targetUser.roles.map((r) => r.alias);
+
+		for (const headRole of userRoleAliases) {
+			const childRole = ROLE_HIERARCHY[headRole];
+			if (childRole && targetRoleAliases.includes(childRole)) {
+				return true;
+			}
+		}
+
+		// Дочерняя роль → может создавать для своих подчинённых (через _user_child)
+		if (user.child?.some((child) => child.id === targetUserId)) {
 			return true;
 		}
 
@@ -463,22 +537,88 @@ export class CalendarEventService extends PrismaService {
 
 	/**
 	 * Проверка: может ли пользователь редактировать/удалять событие
-	 * Условие: автор события ИЛИ boss/admin/developer
+	 *
+	 * Правила:
+	 * 1. Автор — всегда может (это его событие)
+	 * 2. admin/developer — полный доступ
+	 * 3. boss — всё, кроме событий другого boss
+	 * 4. crmAdmin — всё, кроме событий boss
+	 * 5. Главная роль — события дочерних ролей в своём отделе
+	 * 6. Дочерняя роль — события своих подчинённых (через _user_child)
+	 *    НО: дочерняя роль НЕ может редактировать/удалять событие, созданное главной ролью
 	 */
 	private canModifyEvent = async (userId: number, event: any): Promise<boolean> => {
-		// Автор всегда может редактировать
+		// Автор всегда может
 		if (event.authorId === userId) return true;
 
-		// Проверить роли пользователя
-		const user = await this.user.findUnique({
-			where: { id: userId },
+		// Создал для себя — только автор может редактировать
+		if (event.authorId === event.assigneeId) return false;
+
+		const user = await this.getUserWithRolesAndChildren(userId);
+		if (!user?.roles) return false;
+
+		const userRoleAliases = user.roles.map((r) => r.alias);
+
+		// admin/developer — полный доступ
+		if (userRoleAliases.some((alias) => SUPER_ADMIN_ROLES.includes(alias))) {
+			return true;
+		}
+
+		// boss — всё, кроме событий другого boss
+		if (userRoleAliases.includes(BOSS_ROLE)) {
+			// Проверить, является ли автор события boss
+			const authorIsBoss = await this.isUserBoss(event.authorId);
+			if (authorIsBoss && event.authorId !== userId) return false;
+			// Проверить, является ли исполнитель boss (защита от редактирования событий для boss-ов)
+			const assigneeIsBoss = await this.isUserBoss(event.assigneeId);
+			if (assigneeIsBoss && event.assigneeId !== userId) return false;
+			return true;
+		}
+
+		// crmAdmin — всё, кроме событий boss
+		if (userRoleAliases.includes(CRM_ADMIN_ROLE)) {
+			const assigneeIsBoss = await this.isUserBoss(event.assigneeId);
+			if (assigneeIsBoss) return false;
+			return true;
+		}
+
+		// Главная роль → события сотрудников с дочерней ролью
+		const assignee = await this.user.findUnique({
+			where: { id: event.assigneeId },
 			include: { roles: true },
 		});
+		if (assignee?.roles) {
+			const assigneeRoleAliases = assignee.roles.map((r) => r.alias);
+			for (const headRole of userRoleAliases) {
+				const childRole = ROLE_HIERARCHY[headRole];
+				if (childRole && assigneeRoleAliases.includes(childRole)) {
+					return true;
+				}
+			}
+		}
 
-		if (user?.roles?.some((role) => ['boss', 'admin', 'developer', 'crmAdmin'].includes(role.alias))) {
+		// Дочерняя роль → события подчинённых (через _user_child)
+		// НО: нельзя модифицировать событие, созданное главной ролью
+		if (user.child?.some((child) => child.id === event.assigneeId)) {
 			return true;
 		}
 
 		return false;
+	};
+
+	/**
+	 * Проверка: может ли пользователь менять статус события (Готово/Отмена)
+	 * Расширенная версия canModifyEvent — позволяет дочерней роли менять статус
+	 * даже на событиях, созданных главной ролью
+	 */
+	private canChangeEventStatus = async (userId: number, event: any): Promise<boolean> => {
+		// Автор всегда может
+		if (event.authorId === userId) return true;
+
+		// Исполнитель может менять статус (даже если событие от руководителя)
+		if (event.assigneeId === userId) return true;
+
+		// В остальном — те же правила что и canModifyEvent
+		return this.canModifyEvent(userId, event);
 	};
 }

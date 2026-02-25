@@ -38,6 +38,7 @@ export interface ICalendarEventEntity {
 	contactId?: number | null;
 	task?: ICrmTaskEntity | null;
 	taskId?: number | null;
+	participants?: any[];
 	// Timestamps
 	createdAt: string;
 	updatedAt: string;

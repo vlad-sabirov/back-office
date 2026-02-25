@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { utcToZonedTime } from 'date-fns-tz';
 import { PrismaService } from '../../../common';
 import { TelegramService } from '../telegram.service';
 import { UserService } from '../../../user/user.service';
@@ -20,6 +21,8 @@ export class CronTaskReminderService extends PrismaService {
 	 */
 	sendReminder3Days = async (): Promise<{ sent: number }> => {
 		const now = new Date();
+		const lowerBound = new Date(now);
+		lowerBound.setDate(lowerBound.getDate() + 1); // > 1 дня
 		const targetDate = new Date(now);
 		targetDate.setDate(targetDate.getDate() + 3);
 
@@ -27,10 +30,12 @@ export class CronTaskReminderService extends PrismaService {
 			where: {
 				deadline: {
 					lte: targetDate,
-					gt: now,
+					gt: lowerBound, // только окно 1–3 дня
 				},
 				status: { notIn: ['completed', 'cancelled'] },
 				reminderSent3Days: false,
+				// Пропускаем задачи с пользовательским напоминанием
+				NOT: { reminders: { some: {} } },
 			},
 			include: { author: true, assignee: true, organization: true },
 		});
@@ -58,6 +63,8 @@ export class CronTaskReminderService extends PrismaService {
 	 */
 	sendReminder1Day = async (): Promise<{ sent: number }> => {
 		const now = new Date();
+		const lowerBound = new Date(now);
+		lowerBound.setHours(lowerBound.getHours() + 2); // > 2 часов
 		const targetDate = new Date(now);
 		targetDate.setDate(targetDate.getDate() + 1);
 
@@ -65,10 +72,12 @@ export class CronTaskReminderService extends PrismaService {
 			where: {
 				deadline: {
 					lte: targetDate,
-					gt: now,
+					gt: lowerBound, // только окно 2 часа–1 день
 				},
 				status: { notIn: ['completed', 'cancelled'] },
 				reminderSent1Day: false,
+				// Пропускаем задачи с пользовательским напоминанием
+				NOT: { reminders: { some: {} } },
 			},
 			include: { author: true, assignee: true, organization: true },
 		});
@@ -120,6 +129,8 @@ export class CronTaskReminderService extends PrismaService {
 				},
 				status: { notIn: ['completed', 'cancelled'] },
 				reminderSent2Hours: false,
+				// Пропускаем задачи с пользовательским напоминанием
+				NOT: { reminders: { some: {} } },
 			},
 			include: { author: true, assignee: true, organization: true },
 		});
@@ -205,7 +216,7 @@ export class CronTaskReminderService extends PrismaService {
 	 * Сводка по всем дедлайнам
 	 * Запускается автоматически каждые 5 минут с 7:00 до 22:00
 	 */
-	@Cron('*/5 7-22 * * *')
+	@Cron('*/5 7-22 * * *', { timeZone: 'Asia/Tashkent' })
 	async checkAllDeadlines(): Promise<{ reminder3Days: number; reminder1Day: number; reminder2Hours: number; overdue: number }> {
 		const r3 = await this.sendReminder3Days();
 		const r1 = await this.sendReminder1Day();
@@ -229,6 +240,13 @@ export class CronTaskReminderService extends PrismaService {
 		urgent: '🔴 Срочный',
 	};
 
+	private readonly timeZone = 'Asia/Tashkent';
+
+	private formatDeadline = (deadline: string | Date): string => {
+		const zonedDate = utcToZonedTime(new Date(deadline), this.timeZone);
+		return format(zonedDate, 'd MMMM yyyy, HH:mm', { locale: ru });
+	};
+
 	private buildReminderMessage = (task: any, header: string, recipientName?: string): string => {
 		const organization = task.organization as any;
 		const assignee = task.assignee as any;
@@ -242,7 +260,7 @@ export class CronTaskReminderService extends PrismaService {
 		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
 
 		if (task.deadline) {
-			message += `<b>Дедлайн:</b> ${format(new Date(task.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}\n`;
+			message += `<b>Дедлайн:</b> ${this.formatDeadline(task.deadline)}\n`;
 		}
 
 		if (organization) {
@@ -264,7 +282,7 @@ export class CronTaskReminderService extends PrismaService {
 		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
 
 		if (task.deadline) {
-			message += `<b>Дедлайн был:</b> ${format(new Date(task.deadline), 'd MMMM yyyy, HH:mm', { locale: ru })}\n`;
+			message += `<b>Дедлайн был:</b> ${this.formatDeadline(task.deadline)}\n`;
 		}
 
 		if (organization) {

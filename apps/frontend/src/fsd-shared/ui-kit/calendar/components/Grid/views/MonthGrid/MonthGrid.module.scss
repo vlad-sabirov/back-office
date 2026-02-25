@@ -59,10 +59,27 @@
 			box-shadow: inset 0 0 0 2px rgba(117, 93, 255, 0.35);
 		}
 	}
+
+	&__today {
+		background-color: rgba(117, 93, 255, 0.04);
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 3px;
+			background: linear-gradient(90deg, #755dff, #a78bfa);
+			border-radius: 0 0 2px 2px;
+			z-index: 1;
+		}
+	}
 }
 
 .itemDayOfMonth {
 	@apply m-8 mb-4 select-none font-weight-500 text-neutral-600;
+	margin-left: 12px;
 	line-height: 1;
 
 	&__weekend {
@@ -74,7 +91,19 @@
 	}
 
 	&__active {
-		@apply inline-block rounded-small font-weight-500 text-primary-main;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: linear-gradient(135deg, #755dff, #a78bfa);
+		color: #fff !important;
+		font-weight: 700;
+		font-size: 13px;
+		line-height: 1;
+		padding: 0 !important;
+		box-shadow: 0 2px 8px rgba(117, 93, 255, 0.4);
 	}
 
 	&__disabled {
@@ -104,13 +133,14 @@
 }
 
 .event {
-	@apply absolute z-1 mx-8 grid grid-flow-col items-center justify-start;
+	@apply absolute z-1 mx-8 flex items-center justify-start;
 	height: 26px;
 	padding-left: 4px;
 	white-space: nowrap;
 	overflow: hidden;
-	text-overflow: ellipsis;
+	width: calc(100% - 16px);
 	max-width: calc(100% - 16px);
+	min-width: 0;
 	font-size: 12px;
 
 	&__manyDay {
@@ -119,26 +149,36 @@
 
 	&__icon {
 		@apply mr-4;
+		flex-shrink: 0;
+	}
+
+	&__title {
+		white-space: nowrap;
+		display: inline-block;
+	}
+
+	&__titleMarquee {
+		animation: marqueeTitle 22s ease-in-out infinite;
 	}
 
 	&__itemOne {
-		top: 32px;
+		top: 40px;
 	}
 
 	&__itemTwo {
-		top: 62px;
+		top: 70px;
 	}
 
 	&__itemThree {
-		top: 92px;
+		top: 100px;
 	}
 
 	&__itemFour {
-		top: 122px;
+		top: 130px;
 	}
 
 	&__itemFive {
-		top: 152px;
+		top: 160px;
 	}
 
 	&__vacation {
@@ -162,4 +202,16 @@
 	font-weight: 500;
 	pointer-events: none;
 	line-height: 1;
+}
+
+@keyframes marqueeTitle {
+	0%, 10% {
+		transform: translateX(0);
+	}
+	75%, 85% {
+		transform: translateX(calc(-100% + 100px));
+	}
+	95%, 100% {
+		transform: translateX(0);
+	}
 }

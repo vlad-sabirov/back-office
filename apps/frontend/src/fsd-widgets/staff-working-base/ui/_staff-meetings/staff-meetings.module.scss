@@ -1,0 +1,291 @@
+.root {
+	@apply m-0;
+
+	& > div {
+		position: relative;
+		min-height: 200px;
+	}
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16px;
+}
+
+.openAllBtn {
+	@apply p-0;
+	min-width: 28px;
+	height: 28px;
+}
+
+.meetingsList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.meetingItem {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 10px 14px;
+	background-color: #f0f9ff;
+	border-radius: 8px;
+	border-left: 3px solid #1c7ed6;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.meetingItem:hover {
+	background-color: #dbeeff;
+}
+
+/* Используется в StaffArchivedMeetingsModal — выполнено */
+.meetingItemCompleted {
+	border-left-color: #66bb6a;
+	background-color: #f6faf6;
+}
+
+.meetingItemCompleted:hover {
+	background-color: #edf5ed;
+}
+
+/* Используется в StaffArchivedMeetingsModal — отменено */
+.meetingItemCancelled {
+	border-left-color: #bdbdbd;
+	background-color: #fafafa;
+}
+
+.meetingItemCancelled:hover {
+	background-color: #f5f5f5;
+}
+
+.statusCompleted {
+	flex-shrink: 0;
+	padding: 2px 8px;
+	background-color: #66bb6a;
+	color: #fff;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.statusCancelled {
+	flex-shrink: 0;
+	padding: 2px 8px;
+	background-color: #9e9e9e;
+	color: #fff;
+	border-radius: 4px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.completedDate {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #66bb6a;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.cancelledDate {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	color: #9e9e9e;
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.calendarIcon {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	color: #96a2b6;
+}
+
+.meetingContent {
+	flex: 1;
+	min-width: 0;
+}
+
+.meetingTitleRow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+/* Бейдж статуса приглашения */
+.inviteBadge {
+	flex-shrink: 0;
+	font-size: 11px;
+	font-weight: 500;
+	padding: 2px 7px;
+	border-radius: 10px;
+	white-space: nowrap;
+}
+
+.invitePending {
+	background-color: #fff3cd;
+	color: #856404;
+}
+
+.inviteAccepted {
+	background-color: #d3f9d8;
+	color: #2f9e44;
+}
+
+.inviteDeclined {
+	background-color: #f1f3f5;
+	color: #868e96;
+}
+
+.inviteAssigned {
+	background-color: #e7f5ff;
+	color: #1971c2;
+}
+
+.meetingTitle {
+	@apply m-0 text-neutral-700;
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.meetingMeta {
+	@apply m-0 text-neutral-400;
+	font-size: 12px;
+	margin-top: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.meetingDate {
+	font-size: 11px;
+	color: #1c7ed6;
+	margin-top: 4px;
+}
+
+.meetingItemArchived .meetingDate {
+	color: #868e96;
+}
+
+.arrowIcon {
+	width: 16px;
+	height: 16px;
+	color: #96a2b6;
+	flex-shrink: 0;
+	transform: rotate(-90deg);
+	margin-top: 2px;
+	transition: color 0.2s ease;
+}
+
+.meetingItem:hover .arrowIcon {
+	color: #1c7ed6;
+}
+
+.meetingItemArchived:hover .arrowIcon {
+	color: #868e96;
+}
+
+.empty {
+	@apply m-0 text-neutral-400 italic;
+	text-align: center;
+	padding: 24px 0;
+}
+
+/* "Всего встреч: N" — кнопка открыть всё */
+.activeFooter {
+	@apply mt-16;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+	border-radius: 6px;
+	padding: 4px 8px;
+	margin-left: -8px;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: #f0f2f5;
+	}
+
+	&:hover .activeFooterText {
+		color: #4f7ff0;
+	}
+
+	&:hover .activeFooterIcon {
+		color: #4f7ff0;
+	}
+}
+
+.activeFooterText {
+	@apply m-0 text-neutral-400 italic;
+	transition: color 0.2s ease;
+}
+
+.activeFooterIcon {
+	width: 14px;
+	height: 14px;
+	color: #96a2b6;
+	transition: color 0.2s ease;
+}
+
+/* Выполнено / Отменено — стиль как в виджете «События» */
+.footer {
+	@apply mt-20;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.footerSecond {
+	@apply mt-4;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.footerText {
+	@apply m-0 text-neutral-400 italic;
+}
+
+.footerTextGreen {
+	@apply m-0 italic;
+	color: #66bb6a;
+}
+
+.footerClickable {
+	cursor: pointer;
+	border-radius: 6px;
+	padding: 4px 8px;
+	margin-left: -8px;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: #f0f2f5;
+	}
+
+	&:hover .footerText,
+	&:hover .footerTextGreen {
+		color: #4f7ff0;
+	}
+
+	&:hover .footerIcon {
+		color: #4f7ff0;
+	}
+}
+
+.footerIcon {
+	width: 14px;
+	height: 14px;
+	color: #96a2b6;
+	transition: color 0.2s ease;
+}

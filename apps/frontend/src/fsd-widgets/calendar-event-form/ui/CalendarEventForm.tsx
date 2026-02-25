@@ -2,8 +2,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { Button, Group, Select, TextInput, Textarea, Switch, Stack, MultiSelect } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { TimeInput } from '@mantine/dates';
-import { setHours, setMinutes, addMinutes, subHours, subDays } from 'date-fns';
+import { format, setHours, setMinutes, addMinutes, subHours, subDays } from 'date-fns';
 import {
 	CalendarEventService,
 	CalendarParticipantService,
@@ -19,7 +18,8 @@ import { CrmHistoryService } from '@fsd/entities/crm-history';
 import { StaffSelect } from '@fsd/entities/staff';
 import { DatePicker } from '@fsd/shared/ui-kit';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
-import { useAccess, useUserDeprecated } from '@hooks';
+import { useAccess, useUserDeprecated, useRoles } from '@hooks';
+import { HEAD_ROLES, CHILD_ROLES, getChildRolesForUser } from '@fsd/shared/lib/role-hierarchy';
 import css from './CalendarEventForm.module.scss';
 
 interface CalendarEventFormProps {
@@ -39,10 +39,11 @@ interface FormValues {
 	description: string;
 	priority: string;
 	dateStart: Date | null;
-	timeStart: Date | null;
+	timeStart: string;
 	dateEnd: Date | null;
-	timeEnd: Date | null;
+	timeEnd: string;
 	isAllDay: boolean;
+	bindDate: boolean;
 	location: string;
 	authorId: number;
 	assigneeId: number;
@@ -77,11 +78,9 @@ const priorityOptions = Object.entries(EnCrmTaskPriority).map(([, value]) => ({
 	label: value === 'low' ? 'Низкий' : value === 'normal' ? 'Обычный' : value === 'high' ? 'Высокий' : 'Срочный',
 }));
 
-const getTimeFromDate = (date: Date | string | null, fallback?: Date): Date => {
-	if (!date) {
-		return fallback || new Date();
-	}
-	return typeof date === 'string' ? new Date(date) : new Date(date);
+const getTimeStringFromDate = (date: Date | string | null, fallback?: Date): string => {
+	const d = date ? (typeof date === 'string' ? new Date(date) : new Date(date)) : (fallback || new Date());
+	return format(d, 'HH:mm');
 };
 
 /** Время начала по умолчанию: сейчас + 30 минут (округлено до 5 мин) */
@@ -98,22 +97,19 @@ const getDefaultEndTime = (startTime: Date): Date => {
 	return addMinutes(startTime, 15);
 };
 
-const combineDateAndTime = (date: Date | null, time: string | Date | null): Date => {
+const combineDateAndTime = (date: Date | null, time: string): Date => {
 	if (!date) return new Date();
 
 	let hours = 9;
 	let minutes = 0;
 
-	if (time instanceof Date) {
-		hours = time.getHours();
-		minutes = time.getMinutes();
-	} else if (typeof time === 'string' && time.includes(':')) {
+	if (time && time.includes(':')) {
 		const parts = time.split(':').map(Number);
 		hours = parts[0] || 0;
 		minutes = parts[1] || 0;
 	}
 
-	return setMinutes(setHours(date, hours), minutes);
+	return setMinutes(setHours(new Date(date), hours), minutes);
 };
 
 export const CalendarEventForm: FC<CalendarEventFormProps> = ({
@@ -128,9 +124,19 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 }) => {
 	const { user } = useUserDeprecated();
 	const CheckAccess = useAccess();
-	const isBoss = CheckAccess(['boss', 'crmAdmin']);
-	const authRoles = useStateSelector((state) => state.app.auth.roles);
-	const staffAll = useStateSelector((state) => state.staff.data.all);
+	const currentRoles = useRoles();
+	const isHeadRole = currentRoles.some((r) => HEAD_ROLES.includes(r));
+	const isChildRole = currentRoles.some((r) => CHILD_ROLES.includes(r));
+	const staffAll = useStateSelector((state) => state.staff.data.worked);
+
+	// Прямые подчинённые через child массив текущего пользователя (из API include)
+	const directChildIds = useMemo(() => {
+		const currentUserData = staffAll.find((s: any) => s.id === user?.id);
+		const children = (currentUserData as any)?.child || [];
+		return new Set<number>(children.map((c: any) => c.id));
+	}, [staffAll, user?.id]);
+
+	const canSelectAssignee = CheckAccess(['boss', 'admin', 'developer']) || isHeadRole || isChildRole || directChildIds.size > 0;
 	const [createEvent, { isLoading: isCreating }] = CalendarEventService.create();
 	const [updateEvent, { isLoading: isUpdating }] = CalendarEventService.update();
 	const [addParticipants] = CalendarParticipantService.addParticipants();
@@ -147,34 +153,37 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 	);
 	const [customReminderTime, setCustomReminderTime] = useState<string>('');
 
-	// Список сотрудников для выбора исполнителя
-	// boss: все кроме других boss (себя видит)
-	// crmAdmin: все кроме boss и других crmAdmin (себя видит)
+	// Список сотрудников для выбора исполнителя по иерархии ролей
 	const assigneeStaffList = useMemo(() => {
-		if (!isBoss) return staffAll;
-
 		const currentUserId = user?.id;
-		const hasBossRole = authRoles?.includes('boss');
-		const hasCrmAdminRole = authRoles?.includes('crmAdmin');
 
-		return staffAll.filter((s) => {
-			// Себя всегда показываем
-			if (s.id === currentUserId) return true;
+		// admin/developer — все сотрудники
+		if (CheckAccess(['admin', 'developer'])) return staffAll;
 
-			if (hasBossRole) {
-				// Boss: скрываем других boss
+		// boss — все, кроме других boss
+		if (CheckAccess(['boss'])) {
+			return staffAll.filter((s) => {
+				if (s.id === currentUserId) return true;
 				return !s.roles?.some((r) => r.alias === 'boss');
-			}
+			});
+		}
 
-			if (hasCrmAdminRole) {
-				// crmAdmin: скрываем boss и других crmAdmin
-				return !s.roles?.some((r) => ['boss', 'crmAdmin'].includes(r.alias));
-			}
+		// Head роль — себя + сотрудники с дочерней ролью + прямые подчинённые
+		if (isHeadRole) {
+			const childRoles = getChildRolesForUser(currentRoles);
+			return staffAll.filter((s) => {
+				if (s.id === currentUserId) return true;
+				if (s.roles?.some((r) => childRoles.includes(r.alias))) return true;
+				return directChildIds.has(s.id);
+			});
+		}
 
-			// admin/developer без boss/crmAdmin — показываем всех
-			return true;
+		// Child роль / руководитель без роли — себя + прямые подчинённые через child
+		return staffAll.filter((s) => {
+			if (s.id === currentUserId) return true;
+			return directChildIds.has(s.id);
 		});
-	}, [staffAll, isBoss, authRoles, user?.id]);
+	}, [staffAll, currentRoles, CheckAccess, user?.id, isHeadRole, directChildIds]);
 
 	// Опции организаций для селекта
 	const orgOptions = useMemo(() => {
@@ -211,6 +220,11 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 	const defaultStart = useMemo(() => getDefaultStartTime(), []);
 	const defaultEnd = useMemo(() => getDefaultEndTime(defaultStart), [defaultStart]);
 
+	const noteHasNoDate = (e?: ICalendarEventEntity | null): boolean => {
+		if (!e || e.type !== 'note') return false;
+		return new Date(e.dateStart).getFullYear() === 2099;
+	};
+
 	const form = useForm<FormValues>({
 		initialValues: {
 			type: event?.type || EnCalendarEventType.Meeting,
@@ -218,10 +232,11 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 			description: event?.description || '',
 			priority: EnCrmTaskPriority.Normal,
 			dateStart: event?.dateStart ? new Date(event.dateStart) : defaultDate || new Date(),
-			timeStart: getTimeFromDate(event?.dateStart || null, defaultStart),
+			timeStart: getTimeStringFromDate(event?.dateStart || null, defaultStart),
 			dateEnd: event?.dateEnd ? new Date(event.dateEnd) : defaultDate || new Date(),
-			timeEnd: getTimeFromDate(event?.dateEnd || null, defaultEnd),
+			timeEnd: getTimeStringFromDate(event?.dateEnd || null, defaultEnd),
 			isAllDay: event?.isAllDay ?? false,
+			bindDate: !noteHasNoDate(event),
 			location: event?.location || '',
 			authorId: event?.authorId || user?.id || 0,
 			assigneeId: event?.assigneeId || assigneeId || user?.id || 0,
@@ -251,12 +266,14 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 				}
 				return null;
 			},
-			dateStart: (value) => {
+			dateStart: (value, values) => {
+				if (values.type === 'note' && !values.bindDate) return null;
 				if (!value) return CalendarEventConst.Form.DateStart.IsRequired;
 				return null;
 			},
 			dateEnd: (value, values) => {
 				if (values.type === 'task') return null;
+				if (values.type === 'note' && !values.bindDate) return null;
 				if (!value) return CalendarEventConst.Form.DateEnd.IsRequired;
 				const startDateTime = combineDateAndTime(values.dateStart, values.timeStart);
 				const endDateTime = combineDateAndTime(value, values.timeEnd);
@@ -276,7 +293,7 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 	const isAssigneeFilteredType = form.values.type === 'task' || form.values.type === EnCalendarEventType.Call;
 
 	useEffect(() => {
-		const isPrivileged = authRoles?.some((r) => ['boss', 'crmAdmin', 'admin', 'developer'].includes(r));
+		const isPrivileged = currentRoles?.some((r) => ['boss', 'crmAdmin', 'admin', 'developer'].includes(r));
 
 		const effectiveUserId = isAssigneeFilteredType
 			? currentAssigneeId
@@ -289,7 +306,7 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 			},
 			filter: { orderBy: { nameEn: 'asc' }, take: 1000 },
 		});
-	}, [user?.id, authRoles, currentAssigneeId, isAssigneeFilteredType]);
+	}, [user?.id, currentRoles, currentAssigneeId, isAssigneeFilteredType]);
 
 	// Сбрасываем организацию при переключении типа на задачу/звонок
 	useEffect(() => {
@@ -309,10 +326,11 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 				title: event.title,
 				description: event.description || '',
 				dateStart: new Date(event.dateStart),
-				timeStart: getTimeFromDate(event.dateStart),
+				timeStart: getTimeStringFromDate(event.dateStart),
 				dateEnd: new Date(event.dateEnd),
-				timeEnd: getTimeFromDate(event.dateEnd),
+				timeEnd: getTimeStringFromDate(event.dateEnd),
 				isAllDay: event.isAllDay,
+				bindDate: !(event.type === 'note' && new Date(event.dateStart).getFullYear() === 2099),
 				location: event.location || '',
 				authorId: event.authorId,
 				assigneeId: event.assigneeId,
@@ -404,12 +422,42 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 					}
 				}
 
+				// Добавить напоминание для задачи
+				if (result?.id && values.reminderTime) {
+					const deadline = combineDateAndTime(values.dateStart, values.timeStart);
+					let remindAt: Date | null = null;
+					if (values.reminderTime === 'custom' && values.customReminderDate) {
+						remindAt = new Date(values.customReminderDate);
+						if (customReminderTime) {
+							const [h, m] = customReminderTime.split(':').map(Number);
+							remindAt.setHours(h, m, 0, 0);
+						}
+					} else {
+						remindAt = calculateReminderTime(deadline, values.reminderTime);
+					}
+					if (remindAt && remindAt > new Date()) {
+						try {
+							await createReminder({
+								taskId: result.id,
+								remindAt: remindAt.toISOString(),
+							}).unwrap();
+						} catch (e) {
+							console.error('Ошибка создания напоминания:', e);
+						}
+					}
+				}
+
 				showNotification({ color: 'green', message: 'Задача создана' });
 				onSuccess?.();
 			} else {
 				// Существующая логика создания/редактирования события
-				const dateStart = combineDateAndTime(values.dateStart, values.timeStart);
-				const dateEnd = combineDateAndTime(values.dateEnd, values.timeEnd);
+				const SENTINEL_DATE = new Date(2099, 11, 31);
+				const dateStart = (values.type === 'note' && !values.bindDate)
+					? SENTINEL_DATE
+					: combineDateAndTime(values.dateStart, values.timeStart);
+				const dateEnd = (values.type === 'note' && !values.bindDate)
+					? SENTINEL_DATE
+					: combineDateAndTime(values.dateEnd, values.timeEnd);
 
 				const data: ICalendarEventFormEntity = {
 					type: values.type,
@@ -536,45 +584,59 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 					/>
 				)}
 
-				{form.values.type !== 'task' && (
+				{form.values.type === 'note' && (
+					<Switch
+						label="Привязать к дате"
+						checked={form.values.bindDate}
+						onChange={(e) => form.setFieldValue('bindDate', e.currentTarget.checked)}
+					/>
+				)}
+
+				{form.values.type !== 'task' && (form.values.type !== 'note' || form.values.bindDate) && (
 					<Switch
 						label="Весь день"
 						{...form.getInputProps('isAllDay', { type: 'checkbox' })}
 					/>
 				)}
 
-				<Group grow>
-					<DatePicker
-						label={form.values.type === 'task' ? 'Дедлайн' : 'Дата начала'}
-						placeholder="Выберите дату"
-						value={form.values.dateStart}
-						onChange={(value) => form.setFieldValue('dateStart', value)}
-						error={form.errors.dateStart}
-					/>
-					{(form.values.type === 'task' || !form.values.isAllDay) && (
-						<TimeInput
-							label={form.values.type === 'task' ? 'Время' : 'Время начала'}
-							{...form.getInputProps('timeStart')}
-						/>
-					)}
-				</Group>
-
-				{form.values.type !== 'task' && (
-					<Group grow>
-						<DatePicker
-							label="Дата окончания"
-							placeholder="Выберите дату"
-							value={form.values.dateEnd}
-							onChange={(value) => form.setFieldValue('dateEnd', value)}
-							error={form.errors.dateEnd}
-						/>
-						{!form.values.isAllDay && (
-							<TimeInput
-								label="Время окончания"
-								{...form.getInputProps('timeEnd')}
+				{!(form.values.type === 'note' && !form.values.bindDate) && (
+					<>
+						<Group grow>
+							<DatePicker
+								label={form.values.type === 'task' ? 'Дедлайн' : 'Дата начала'}
+								placeholder="Выберите дату"
+								value={form.values.dateStart}
+								onChange={(value) => form.setFieldValue('dateStart', value)}
+								error={form.errors.dateStart}
 							/>
+							{(form.values.type === 'task' || !form.values.isAllDay) && (
+								<TextInput
+									type="time"
+									label={form.values.type === 'task' ? 'Время' : 'Время начала'}
+									{...form.getInputProps('timeStart')}
+								/>
+							)}
+						</Group>
+
+						{form.values.type !== 'task' && (
+							<Group grow>
+								<DatePicker
+									label="Дата окончания"
+									placeholder="Выберите дату"
+									value={form.values.dateEnd}
+									onChange={(value) => form.setFieldValue('dateEnd', value)}
+									error={form.errors.dateEnd}
+								/>
+								{!form.values.isAllDay && (
+									<TextInput
+										type="time"
+										label="Время окончания"
+										{...form.getInputProps('timeEnd')}
+									/>
+								)}
+							</Group>
 						)}
-					</Group>
+					</>
 				)}
 
 				{form.values.type !== 'task' && (
@@ -585,7 +647,7 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 					/>
 				)}
 
-				{isBoss ? (
+				{canSelectAssignee ? (
 					<StaffSelect
 						label="Исполнитель"
 						placeholder="Выберите сотрудника"
@@ -615,7 +677,18 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 					placeholder="Выберите организацию (необязательно)"
 					data={orgOptions}
 					value={form.values.organizationId ? String(form.values.organizationId) : null}
-					onChange={(value) => form.setFieldValue('organizationId', value ? Number(value) : null)}
+					onChange={(value) => {
+						const newOrgId = value ? Number(value) : null;
+						form.setFieldValue('organizationId', newOrgId);
+						// Автозаполнение исполнителя если поле пустое
+						if (newOrgId && form.values.assigneeId === 0 && canSelectAssignee) {
+							const org = orgData?.data?.find((o) => o.id === newOrgId);
+							if (org?.userId) {
+								form.setFieldValue('assigneeId', org.userId);
+								setCurrentAssigneeId(org.userId);
+							}
+						}
+					}}
 					searchable
 					clearable
 				/>
@@ -632,34 +705,33 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 					/>
 				)}
 
-				{form.values.type !== 'task' && (
-					<>
-						<Select
-							label="Напоминание"
-							placeholder="Выберите время напоминания"
-							data={reminderOptions}
-							value={form.values.reminderTime}
-							onChange={(value) => form.setFieldValue('reminderTime', value)}
-							clearable
-						/>
-						{form.values.reminderTime === 'custom' && (
-							<Group grow>
-								<DatePicker
-									label="Дата напоминания"
-									placeholder="Выберите дату"
-									value={form.values.customReminderDate}
-									onChange={(value) => form.setFieldValue('customReminderDate', value)}
-									minDate={new Date()}
-								/>
-								<TimeInput
-									label="Время напоминания"
-									value={customReminderTime}
-									onChange={(e) => setCustomReminderTime(e.currentTarget.value)}
-								/>
-							</Group>
-						)}
-					</>
-				)}
+				<>
+					<Select
+						label="Напоминание"
+						placeholder="Выберите время напоминания"
+						data={reminderOptions}
+						value={form.values.reminderTime}
+						onChange={(value) => form.setFieldValue('reminderTime', value)}
+						clearable
+					/>
+					{form.values.reminderTime === 'custom' && (
+						<Group grow>
+							<DatePicker
+								label="Дата напоминания"
+								placeholder="Выберите дату"
+								value={form.values.customReminderDate}
+								onChange={(value) => form.setFieldValue('customReminderDate', value)}
+								minDate={new Date()}
+							/>
+							<TextInput
+								type="time"
+								label="Время напоминания"
+								value={customReminderTime}
+								onChange={(e) => setCustomReminderTime(e.currentTarget.value)}
+							/>
+						</Group>
+					)}
+				</>
 
 				<Group position="right" mt="md">
 					<Button className={css.btnOutline} onClick={onCancel} disabled={isLoading}>

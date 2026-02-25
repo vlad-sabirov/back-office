@@ -140,6 +140,30 @@ ${event.location ? `📍 ${event.location}` : ''}`;
 	}
 
 	/**
+	 * Уведомление автору (руководителю) об изменении статуса события исполнителем
+	 */
+	async notifyEventStatusChanged(event: any, statusLabel: string, changedByUserId: number): Promise<void> {
+		// Уведомляем автора события
+		if (event.authorId === changedByUserId) return;
+
+		const changedBy = await this.user.findUnique({
+			where: { id: changedByUserId },
+			select: { firstName: true, lastName: true },
+		});
+
+		const changedByName = changedBy ? `${changedBy.lastName || ''} ${changedBy.firstName || ''}`.trim() : 'Сотрудник';
+
+		const message = `📋 <b>Статус события изменён</b>
+"${event.title}"
+Статус: <b>${statusLabel}</b>
+Кем: ${changedByName}
+📅 ${this.formatDate(new Date(event.dateStart))}
+🕐 ${this.formatTime(new Date(event.dateStart))}${event.organization ? `\n🏢 ${(event.organization as any).nameRu || (event.organization as any).nameEn}` : ''}`;
+
+		await this.sendToUser(event.authorId, message);
+	}
+
+	/**
 	 * Крон: обработка напоминаний о событиях
 	 */
 	async processEventReminders(): Promise<{ processed: number; sent: number }> {

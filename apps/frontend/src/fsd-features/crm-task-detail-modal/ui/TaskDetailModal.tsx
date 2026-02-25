@@ -1,12 +1,13 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Modal, Stack, Group, Badge, Text, Paper, Button, Select, TextInput, Textarea } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { showNotification } from '@mantine/notifications';
-import { ICrmTaskEntity, CrmTaskConst, CrmTaskService } from '@fsd/entities/crm-task';
-import { useAccess, useUserDeprecated } from '@hooks';
+import { ICrmTaskEntity, CrmTaskConst, CrmTaskService, EnCrmTaskPriority } from '@fsd/entities/crm-task';
+import { useAccess, useUserDeprecated, useRoles } from '@hooks';
+import { ROLE_HIERARCHY, CHILD_TO_HEAD, SUPER_ADMIN_ROLES } from '@fsd/shared/lib/role-hierarchy';
 
 const taskStatusOptions = Object.entries(CrmTaskConst.Status).map(([value, config]) => ({
 	value,
@@ -24,6 +25,7 @@ interface TaskDetailModalProps {
 	onClose: () => void;
 	onUpdated?: () => void;
 	onDeleted?: () => void;
+	defaultEditing?: boolean;
 }
 
 const btnPrimary = {
@@ -43,10 +45,11 @@ const handleBtnLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
 	e.currentTarget.style.boxShadow = 'none';
 };
 
-export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClose, onUpdated, onDeleted }) => {
+export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClose, onUpdated, onDeleted, defaultEditing }) => {
 	const router = useRouter();
 	const { userId } = useUserDeprecated();
 	const CheckAccess = useAccess();
+	const currentRoles = useRoles();
 	const isBoss = CheckAccess(['developer', 'boss', 'crmAdmin', 'admin']);
 	const [updateTaskStatus] = CrmTaskService.updateStatus();
 	const [updateTask] = CrmTaskService.update();
@@ -57,9 +60,52 @@ export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClos
 	const [localTask, setLocalTask] = useState<ICrmTaskEntity | null>(null);
 	const [editForm, setEditForm] = useState({ title: '', description: '', priority: '', status: '', deadlineDate: null as Date | null, deadlineTime: '18:00' });
 
+	useEffect(() => {
+		if (opened && defaultEditing && task) {
+			const deadline = task.deadline ? new Date(task.deadline) : null;
+			setEditForm({
+				title: task.title,
+				description: task.description || '',
+				priority: task.priority,
+				status: task.status,
+				deadlineDate: deadline,
+				deadlineTime: deadline ? format(deadline, 'HH:mm') : '18:00',
+			});
+			setEditing(true);
+		}
+	}, [opened, defaultEditing, task?.id]);
+
 	const currentTask = localTask ?? task;
 	const isAuthor = currentTask?.author?.id === userId || currentTask?.authorId === userId;
-	const canModify = isAuthor || isBoss;
+	const isAssignee = currentTask?.assigneeId === userId || currentTask?.assignee?.id === userId;
+
+	// Проверяем, является ли текущий пользователь руководителем (head role) для исполнителя
+	const isHeadForAssignee = (() => {
+		if (!currentTask?.assignee?.roles) return false;
+		const assigneeRoles = (currentTask.assignee.roles as any[]).map((r: any) => r.alias || r);
+		for (const role of currentRoles) {
+			const childRole = ROLE_HIERARCHY[role];
+			if (childRole && assigneeRoles.includes(childRole)) return true;
+		}
+		return false;
+	})();
+
+	// Задача, созданная главной ролью для дочерней — дочерняя не может редактировать/удалять
+	const isCreatedByHead = (() => {
+		if (!currentTask?.author?.roles) return false;
+		const authorRoles = (currentTask.author.roles as any[]).map((r: any) => r.alias || r);
+		return authorRoles.some((r: string) => Object.keys(ROLE_HIERARCHY).includes(r));
+	})();
+
+	// Создал для себя — только автор может редактировать
+	const isSelfAssigned = currentTask?.authorId === currentTask?.assigneeId;
+
+	const canModify = isAuthor || isBoss || isHeadForAssignee;
+	// Дочерняя роль НЕ может редактировать/удалять задачу от руководителя
+	// Самоназначенная задача — только автор
+	const canEditAndDelete = isSelfAssigned
+		? isAuthor
+		: canModify && !(isAssignee && !isAuthor && isCreatedByHead && !isBoss && !isHeadForAssignee);
 
 	const handleStatusChange = useCallback(async (status: string) => {
 		if (!currentTask) return;
@@ -222,7 +268,12 @@ export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClos
 				</Stack>
 			) : (
 				<Stack spacing="md">
-					<Badge color="violet">Задача CRM</Badge>
+					<Group spacing="xs">
+						<Badge color="violet">Задача CRM</Badge>
+						<Badge color={CrmTaskConst.Priority[currentTask.priority as EnCrmTaskPriority]?.color || 'gray'}>
+							{CrmTaskConst.Priority[currentTask.priority as EnCrmTaskPriority]?.label || currentTask.priority}
+						</Badge>
+					</Group>
 
 					<Text size="xl" weight={600}>{currentTask.title}</Text>
 
@@ -285,15 +336,21 @@ export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClos
 									<Button variant="outline" size="xs" onClick={() => setConfirmDelete(false)}>
 										Отмена
 									</Button>
-									<Button color="red" size="xs" onClick={handleDelete}>
-										Удалить
-									</Button>
+									<Button
+									size="xs"
+									onClick={handleDelete}
+									style={{ backgroundColor: '#e03131', color: '#fff', border: 'none' }}
+									onMouseEnter={(e: any) => { e.currentTarget.style.backgroundColor = '#c92a2a'; }}
+									onMouseLeave={(e: any) => { e.currentTarget.style.backgroundColor = '#e03131'; }}
+								>
+									Удалить
+								</Button>
 								</Group>
 							</Stack>
 						</Paper>
 					) : (
 						<Group position="right">
-							{isAuthor && (
+							{canEditAndDelete && (
 								<Button color="red" variant="subtle" onClick={() => setConfirmDelete(true)}>
 									Удалить
 								</Button>
@@ -306,7 +363,7 @@ export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClos
 							<Button variant="outline" onClick={handleClose}>
 								Закрыть
 							</Button>
-							{canModify && (
+							{canEditAndDelete && (
 								<Button
 									onClick={handleStartEdit}
 									style={btnPrimary}

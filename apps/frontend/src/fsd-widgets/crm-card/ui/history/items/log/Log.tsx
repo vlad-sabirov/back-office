@@ -44,6 +44,15 @@ export const Log: FC<IProps> = ({ history, className }) => {
 	if (!user || history.type != EnCrmHistoryTypes.Log) {
 		return null;
 	}
+
+	// Задачи и события уже показываются отдельными блоками — лог-дубли не нужны
+	try {
+		const data = JSON.parse(history.payload as string);
+		if (data.action === 'task_created' || data.action === 'event_created') {
+			return null;
+		}
+	} catch {}
+
 	return (
 		<div className={className}>
 			<StaffAvatar user={user} size={'small'} className={css.avatar} />
