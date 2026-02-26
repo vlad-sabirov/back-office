@@ -71,9 +71,7 @@ export class AuthController {
 			`\n\n${pinCode}` +
 			`\n\n<i>Если это не Вы пытаетесь войти в систему, то обязательно напишите в IT отдел о попытке взлома Вашего аккаунта.</i>` +
 			``;
-		console.log("send telegram request")
 		if (!authUser.isFirstLogin) await this.telegramService.sendMessage(Number(authUser.telegramId), message);
-		console.log("got answer")
 
 		return { ...authUser, pinCode };
 	}

@@ -162,11 +162,9 @@ export const useCreate = () => {
 
 	const createRequisites = useCallback(async () => {
 		if (!cleanData.organization) {
-			console.log('Создание реквизитов для организации', cleanData.organization);
 			return error(undefined);
 		}
 		for (const requisite of requisites) {
-			console.log('Создание реквизита:', requisite);
 			const response = await createRequisiteFetch({
 				name: requisite.name,
 				inn: requisite.inn,
@@ -177,10 +175,8 @@ export const useCreate = () => {
 				console.error('Ошибка при создании реквизита:', response.error);
 				return error(response.error as IError);
 			}
-			console.log('Реквизит успешно создан с id:', response.data.id);
 			cleanData.requisites.push(response.data.id);
 		}
-		console.log('Все реквизиты успешно созданы');
 	}, [createRequisiteFetch, requisites]);
 
 	const connectContacts = useCallback(async () => {

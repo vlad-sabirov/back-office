@@ -19,7 +19,7 @@ import { StaffSelect } from '@fsd/entities/staff';
 import { DatePicker } from '@fsd/shared/ui-kit';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
 import { useAccess, useUserDeprecated, useRoles } from '@hooks';
-import { HEAD_ROLES, CHILD_ROLES, getChildRolesForUser } from '@fsd/shared/lib/role-hierarchy';
+import { HEAD_ROLES, CHILD_ROLES, ROLE_HIERARCHY, CHILD_TO_HEAD, getChildRolesForUser } from '@fsd/shared/lib/role-hierarchy';
 import css from './CalendarEventForm.module.scss';
 
 interface CalendarEventFormProps {
@@ -207,15 +207,41 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 		return [];
 	}, [event]);
 
-	// Опции для выбора участников (исключаем исполнителя)
+	// Определяем отдел текущего пользователя (пара head + child роли)
+	const departmentRoles = useMemo(() => {
+		const roles: string[] = [];
+		for (const role of currentRoles) {
+			// Если текущий пользователь — head роль, берём его роль + дочернюю
+			if (ROLE_HIERARCHY[role]) {
+				roles.push(role, ROLE_HIERARCHY[role]);
+			}
+			// Если текущий пользователь — child роль, берём его роль + родительскую
+			if (CHILD_TO_HEAD[role]) {
+				roles.push(role, CHILD_TO_HEAD[role]);
+			}
+		}
+		return [...new Set(roles)];
+	}, [currentRoles]);
+
+	// Опции для выбора участников (только из своего отдела, исключаем исполнителя)
 	const participantOptions = useMemo(() => {
+		const isSuperAdmin = CheckAccess(['admin', 'developer', 'boss']);
+
 		return staffAll
-			.filter((s) => s.id !== currentAssigneeId)
+			.filter((s) => {
+				if (s.id === currentAssigneeId) return false;
+				// admin/developer/boss — видят всех
+				if (isSuperAdmin) return true;
+				// Остальные — только из своего отдела
+				if (departmentRoles.length === 0) return false;
+				const staffRoles = (s.roles || []).map((r: any) => r.alias || r);
+				return staffRoles.some((r: string) => departmentRoles.includes(r));
+			})
 			.map((s) => ({
 				value: String(s.id),
 				label: `${s.lastName || ''} ${s.firstName || ''}`.trim(),
 			}));
-	}, [staffAll, currentAssigneeId]);
+	}, [staffAll, currentAssigneeId, departmentRoles, CheckAccess]);
 
 	const defaultStart = useMemo(() => getDefaultStartTime(), []);
 	const defaultEnd = useMemo(() => getDefaultEndTime(defaultStart), [defaultStart]);
@@ -694,15 +720,31 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 				/>
 
 				{form.values.type === EnCalendarEventType.Meeting && (
-					<MultiSelect
-						label="Участники"
-						placeholder="Выберите участников"
-						data={participantOptions}
-						value={form.values.participantIds}
-						onChange={(value) => form.setFieldValue('participantIds', value)}
-						searchable
-						clearable
-					/>
+					<div>
+						<Group position="apart" mb={4}>
+							<span style={{ fontSize: 14, fontWeight: 500 }}>Участники</span>
+							<Button
+								variant="subtle"
+								size="xs"
+								compact
+								disabled={isLoading || participantOptions.length === 0}
+								onClick={() => {
+									const allIds = participantOptions.map((o) => o.value);
+									form.setFieldValue('participantIds', allIds);
+								}}
+							>
+								Добавить всех
+							</Button>
+						</Group>
+						<MultiSelect
+							placeholder="Выберите участников"
+							data={participantOptions}
+							value={form.values.participantIds}
+							onChange={(value) => form.setFieldValue('participantIds', value)}
+							searchable
+							clearable
+						/>
+					</div>
 				)}
 
 				<>

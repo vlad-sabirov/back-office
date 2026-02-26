@@ -63,9 +63,8 @@ export const ContactInfo = () => {
 					type: 'log',
 					isSystem: true,
 				});
-			} catch (err) {
-				// eslint-disable-next-line no-console
-				console.log(err);
+			} catch {
+				// ошибка обработана — уведомление показывается ниже
 			}
 			setChangeUserIdLoading(false);
 

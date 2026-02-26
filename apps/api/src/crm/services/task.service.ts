@@ -9,7 +9,7 @@ import { MutationTaskDto } from '../dto/mutation-task.dto';
 import { QueryTaskDto } from '../dto/query-task.dto';
 import { TaskEntity } from '../entity/task.entity';
 import { TaskConstants } from '../constants/task.constants';
-import { ROLE_HIERARCHY, CHILD_TO_HEAD, HEAD_ROLES, SUPER_ADMIN_ROLES, BOSS_ROLE, CRM_ADMIN_ROLE } from '../constants/role-hierarchy.constants';
+import { ROLE_HIERARCHY, SUPER_ADMIN_ROLES, BOSS_ROLE, CRM_ADMIN_ROLE } from '../constants/role-hierarchy.constants';
 
 interface TaskFilter {
 	orderBy?: { [key: string]: 'asc' | 'desc' };
@@ -219,6 +219,12 @@ export class TaskService extends PrismaService {
 
 		// Проверка прав
 		if (currentUserId) {
+			// Если задача отменена или выполнена — редактирование полей закрыто для всех
+			// Статус можно менять только через отдельный endpoint updateStatus
+			if (task.status === 'cancelled' || task.status === 'completed') {
+				throw new HttpException('Редактирование закрыто для отменённых и выполненных задач. Сначала измените статус.', HttpStatus.FORBIDDEN);
+			}
+
 			const canModify = await this.canModifyTask(currentUserId, task);
 			const isAssignee = task.assigneeId === currentUserId;
 
@@ -229,6 +235,18 @@ export class TaskService extends PrismaService {
 				const hasDisallowedFields = requestedFields.some((field) => !allowedFields.includes(field));
 				if (hasDisallowedFields) {
 					throw new HttpException(TaskConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
+				}
+
+				// Исполнитель может ставить только "в работе" и "выполнена",
+				// если он НЕ автор, НЕ super admin, НЕ boss и НЕ руководитель (head role)
+				if (updateDto.status && task.authorId !== currentUserId) {
+					const hasFullStatusAccess = await this.hasFullStatusAccess(currentUserId, task);
+					if (!hasFullStatusAccess) {
+						const allowedStatuses = ['in_progress', 'completed'];
+						if (!allowedStatuses.includes(updateDto.status)) {
+							throw new HttpException('Исполнитель может устанавливать только статусы "В работе" и "Выполнена"', HttpStatus.FORBIDDEN);
+						}
+					}
 				}
 			}
 
@@ -327,6 +345,22 @@ export class TaskService extends PrismaService {
 			const isAssignee = task.assigneeId === currentUserId;
 			if (!canModify && !isAssignee) {
 				throw new HttpException(TaskConstants.FORBIDDEN_NOT_AUTHOR, HttpStatus.FORBIDDEN);
+			}
+
+			// Исполнитель (не автор, не руководитель) — ограничения по статусам
+			if (isAssignee && task.authorId !== currentUserId) {
+				const hasFullStatusAccess = await this.hasFullStatusAccess(currentUserId, task);
+				if (!hasFullStatusAccess) {
+					// Если задача отменена или выполнена — подчинённый не может менять статус вообще
+					if (task.status === 'cancelled' || task.status === 'completed') {
+						throw new HttpException('Изменить статус отменённой или выполненной задачи может только руководитель', HttpStatus.FORBIDDEN);
+					}
+					// Иначе подчинённый может ставить только "в работе" и "выполнена"
+					const allowedStatuses = ['in_progress', 'completed'];
+					if (!allowedStatuses.includes(status)) {
+						throw new HttpException('Исполнитель может устанавливать только статусы "В работе" и "Выполнена"', HttpStatus.FORBIDDEN);
+					}
+				}
 			}
 		}
 
@@ -480,9 +514,37 @@ export class TaskService extends PrismaService {
 		return result;
 	};
 
-	private throwNotFoundError = async (id: number | string): Promise<void> => {
-		const findItem = await this.findById(id);
-		if (!findItem) throw new HttpException(TaskConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
+	/**
+	 * Проверка: имеет ли пользователь полный доступ ко всем статусам задачи
+	 * (ожидание, в работе, выполнена, отменена)
+	 *
+	 * Полный доступ: admin/developer, boss, родительские роли (head roles)
+	 * НЕ включает crmAdmin — они подчиняются тем же ограничениям, что и обычные исполнители
+	 */
+	private hasFullStatusAccess = async (userId: number, task: TaskEntity): Promise<boolean> => {
+		const user = await this.getUserWithRolesAndChildren(userId);
+		if (!user?.roles) return false;
+
+		const userRoleAliases = user.roles.map((r) => r.alias);
+
+		// admin/developer — полный доступ
+		if (userRoleAliases.some((alias) => SUPER_ADMIN_ROLES.includes(alias))) return true;
+
+		// boss — полный доступ
+		if (userRoleAliases.includes(BOSS_ROLE)) return true;
+
+		// Руководитель (head role) для исполнителя задачи
+		const assignee = task.assignee as any;
+		const assigneeRoleAliases = (assignee?.roles || []).map((r: any) => r.alias || r);
+		for (const headRole of userRoleAliases) {
+			const childRole = ROLE_HIERARCHY[headRole];
+			if (childRole && assigneeRoleAliases.includes(childRole)) return true;
+		}
+
+		// Родитель исполнителя (через _user_child)
+		if (user.child?.some((child) => child.id === task.assigneeId)) return true;
+
+		return false;
 	};
 
 	/**

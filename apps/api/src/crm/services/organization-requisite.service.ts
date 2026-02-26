@@ -94,8 +94,6 @@ export class OrganizationRequisiteService extends PrismaService {
 
 		if (!item) throw new Error('Not found');
 
-		console.log(JSON.stringify(data, null, 2));
-
 		return await this.crmOrganizationRequisite.update({
 			where: { id: item.id },
 			data,

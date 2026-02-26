@@ -2,10 +2,11 @@ import { FC, useCallback, useMemo, useState } from 'react';
 import { CalendarEventService, CalendarParticipantService, EnCalendarEventType, CalendarEventConst } from '@fsd/entities/calendar-event';
 import { useCrmHistoryActions } from '@fsd/entities/crm-history';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
+import { ROLE_HIERARCHY, CHILD_TO_HEAD } from '@fsd/shared/lib/role-hierarchy';
 import { Button, Icon, Tabs, Textarea, Input, Select, DatePicker } from '@fsd/shared/ui-kit';
 import { useUserDeprecated } from '@hooks';
 import { useForm } from '@mantine/form';
-import { MultiSelect } from '@mantine/core';
+import { MultiSelect, Group, Button as MantineButton } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { ICalendarEventListProps, ICalendarEventPanelProps } from './calendar-event.props';
 import css from './calendar-event.module.scss';
@@ -22,7 +23,6 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 	const { userId } = useUserDeprecated();
 	const historyActions = useCrmHistoryActions();
 	const staffAll = useStateSelector((state) => state.staff.data.worked);
-	const staffAllData = useStateSelector((state) => state.staff.data.all);
 
 	// ID организации
 	const organizationId = useMemo(() => {
@@ -43,9 +43,19 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 		return isManager || hasAdminRole;
 	}, [currentOrganization?.userId, userId, currentUserRoles]);
 
-	const currentUserData = useMemo(() => {
-		return (staffAllData || []).find((s: any) => s.id === Number(userId));
-	}, [staffAllData, userId]);
+	// Определяем отдел текущего пользователя (пара head + child роли)
+	const departmentRoles = useMemo(() => {
+		const roles: string[] = [];
+		for (const role of currentUserRoles) {
+			if (ROLE_HIERARCHY[role]) {
+				roles.push(role, ROLE_HIERARCHY[role]);
+			}
+			if (CHILD_TO_HEAD[role]) {
+				roles.push(role, CHILD_TO_HEAD[role]);
+			}
+		}
+		return [...new Set(roles)];
+	}, [currentUserRoles]);
 
 	const staffOptions = useMemo(() => {
 		const EXCLUDED_POSITIONS = ['грузчик', 'водитель', 'техничка'];
@@ -56,37 +66,25 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 			value: String(s.id),
 			label: `${s.lastName || ''} ${s.firstName || ''}`.trim(),
 		});
-		const hasCrm = (s: any) =>
-			(s.roles || []).some((r: any) => (r.alias || '').toLowerCase().includes('crm'));
-		const hasBoss = (s: any) =>
-			(s.roles || []).some((r: any) => r.alias === 'boss');
 
 		// boss / admin / developer — все сотрудники
 		if (currentUserRoles.some((r: string) => ['boss', 'admin', 'developer'].includes(r))) {
 			return all.map(toOption);
 		}
 
-		// crmAdmin — все, кроме boss
-		if (currentUserRoles.includes('crmAdmin')) {
-			return all.filter((s: any) => !hasBoss(s)).map(toOption);
-		}
-
-		// crm — crm-пользователи + прямые подчинённые
-		if (currentUserRoles.includes('crm')) {
-			const childIds = new Set<number>(
-				((currentUserData as any)?.child || []).map((c: any) => c.id)
-			);
+		// Остальные — только сотрудники из своего отдела
+		if (departmentRoles.length > 0) {
 			return all
-				.filter((s: any) => hasCrm(s) || childIds.has(s.id))
+				.filter((s: any) => {
+					if (s.id === Number(userId)) return false; // Исключаем себя
+					const staffRoles = (s.roles || []).map((r: any) => r.alias || r);
+					return staffRoles.some((r: string) => departmentRoles.includes(r));
+				})
 				.map(toOption);
 		}
 
-		// остальные (подчинённые crm) — crm-пользователи + прямой руководитель
-		const parentId = (currentUserData as any)?.parentId;
-		return all
-			.filter((s: any) => hasCrm(s) || (parentId && s.id === parentId))
-			.map(toOption);
-	}, [staffAll, staffAllData, currentUserRoles, userId, currentUserData]);
+		return [];
+	}, [staffAll, currentUserRoles, userId, departmentRoles]);
 
 	const form = useForm({
 		initialValues: {
@@ -257,17 +255,30 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 					</Button>
 				</div>
 				{form.values.type === EnCalendarEventType.Meeting && (
-					<MultiSelect
-						label="Участники встречи (необязательно)"
-						placeholder="Выберите участников"
-						data={staffOptions}
-						value={form.values.participantIds}
-						onChange={(value) => form.setFieldValue('participantIds', value)}
-						searchable
-						clearable
-						disabled={disabled || isLoading}
-						dropdownPosition="top"
-					/>
+					<div>
+						<Group position="apart" mb={4}>
+							<span style={{ fontSize: 14, fontWeight: 500 }}>Участники встречи (необязательно)</span>
+							<MantineButton
+								variant="light"
+								size="xs"
+								compact
+								disabled={disabled || isLoading || staffOptions.length === 0}
+								onClick={() => form.setFieldValue('participantIds', staffOptions.map((o) => o.value))}
+							>
+								Добавить всех
+							</MantineButton>
+						</Group>
+						<MultiSelect
+							placeholder="Выберите участников"
+							data={staffOptions}
+							value={form.values.participantIds}
+							onChange={(value) => form.setFieldValue('participantIds', value)}
+							searchable
+							clearable
+							disabled={disabled || isLoading}
+							dropdownPosition="top"
+						/>
+					</div>
 				)}
 			</div>
 		</Tabs.Panel>

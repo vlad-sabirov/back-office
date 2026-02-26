@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -7,12 +7,29 @@ import { DatePicker } from '@mantine/dates';
 import { showNotification } from '@mantine/notifications';
 import { ICrmTaskEntity, CrmTaskConst, CrmTaskService, EnCrmTaskPriority } from '@fsd/entities/crm-task';
 import { useAccess, useUserDeprecated, useRoles } from '@hooks';
-import { ROLE_HIERARCHY, CHILD_TO_HEAD, SUPER_ADMIN_ROLES } from '@fsd/shared/lib/role-hierarchy';
+import { ROLE_HIERARCHY } from '@fsd/shared/lib/role-hierarchy';
 
-const taskStatusOptions = Object.entries(CrmTaskConst.Status).map(([value, config]) => ({
+const allTaskStatusOptions = Object.entries(CrmTaskConst.Status).map(([value, config]) => ({
 	value,
 	label: config.label,
 }));
+
+const assigneeAllowedStatuses = [
+	{ value: 'in_progress', label: CrmTaskConst.Status['in_progress' as keyof typeof CrmTaskConst.Status]?.label || 'В работе' },
+	{ value: 'completed', label: CrmTaskConst.Status['completed' as keyof typeof CrmTaskConst.Status]?.label || 'Выполнена' },
+];
+
+// Текущий статус всегда виден + доступные для смены
+const getAssigneeTaskStatusOptions = (currentStatus: string) => {
+	const allowed = [...assigneeAllowedStatuses];
+	if (currentStatus === 'pending' || currentStatus === 'cancelled') {
+		const currentOption = allTaskStatusOptions.find((o) => o.value === currentStatus);
+		if (currentOption) {
+			allowed.unshift({ ...currentOption, disabled: true } as any);
+		}
+	}
+	return allowed;
+};
 
 const taskPriorityOptions = Object.entries(CrmTaskConst.Priority).map(([value, config]) => ({
 	value,
@@ -61,7 +78,8 @@ export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClos
 	const [editForm, setEditForm] = useState({ title: '', description: '', priority: '', status: '', deadlineDate: null as Date | null, deadlineTime: '18:00' });
 
 	useEffect(() => {
-		if (opened && defaultEditing && task) {
+		// Не открывать редактирование для отменённых/выполненных задач
+		if (opened && defaultEditing && task && task.status !== 'cancelled' && task.status !== 'completed') {
 			const deadline = task.deadline ? new Date(task.deadline) : null;
 			setEditForm({
 				title: task.title,
@@ -103,9 +121,29 @@ export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClos
 	const canModify = isAuthor || isBoss || isHeadForAssignee;
 	// Дочерняя роль НЕ может редактировать/удалять задачу от руководителя
 	// Самоназначенная задача — только автор
-	const canEditAndDelete = isSelfAssigned
-		? isAuthor
-		: canModify && !(isAssignee && !isAuthor && isCreatedByHead && !isBoss && !isHeadForAssignee);
+	// Если задача отменена или выполнена — редактирование закрыто для всех
+	const isClosedStatus = currentTask?.status === 'cancelled' || currentTask?.status === 'completed';
+	const canEditAndDelete = isClosedStatus
+		? false
+		: isSelfAssigned
+			? isAuthor
+			: canModify && !(isAssignee && !isAuthor && isCreatedByHead && !isBoss && !isHeadForAssignee);
+
+	// Подчинённый (исполнитель, но не автор, не boss/admin и не руководитель) видит только "В работе" и "Выполнена"
+	// Но текущий статус задачи всегда отображается (даже если это "ожидает" или "отменена")
+	const isSuperAdmin = currentRoles.some((role: string) => ['boss', 'admin', 'developer'].includes(role));
+	const taskStatusOptions = useMemo(() => {
+		if (isAuthor || isSuperAdmin || isHeadForAssignee) return allTaskStatusOptions;
+		return getAssigneeTaskStatusOptions(currentTask?.status || '');
+	}, [isAuthor, isSuperAdmin, isHeadForAssignee, currentTask?.status]);
+
+	// Если задача отменена или выполнена — менять статус может только руководитель
+	const canChangeStatus = useMemo(() => {
+		if (isClosedStatus) {
+			return isAuthor || isSuperAdmin || isHeadForAssignee;
+		}
+		return isAuthor || isAssignee || isBoss;
+	}, [isClosedStatus, isAuthor, isAssignee, isBoss, isSuperAdmin, isHeadForAssignee]);
 
 	const handleStatusChange = useCallback(async (status: string) => {
 		if (!currentTask) return;
@@ -293,13 +331,19 @@ export const TaskDetailModal: FC<TaskDetailModalProps> = ({ task, opened, onClos
 							)}
 							<Group spacing="xs">
 								<Text size="sm" color="dimmed">Статус:</Text>
-								<Select
-									size="xs"
-									data={taskStatusOptions}
-									value={currentTask.status}
-									onChange={(value) => value && handleStatusChange(value)}
-									style={{ width: 160 }}
-								/>
+								{canChangeStatus ? (
+									<Select
+										size="xs"
+										data={taskStatusOptions}
+										value={currentTask.status}
+										onChange={(value) => value && handleStatusChange(value)}
+										style={{ width: 160 }}
+									/>
+								) : (
+									<Badge color={CrmTaskConst.Status[currentTask.status as keyof typeof CrmTaskConst.Status]?.color || 'gray'}>
+										{CrmTaskConst.Status[currentTask.status as keyof typeof CrmTaskConst.Status]?.label || currentTask.status}
+									</Badge>
+								)}
 							</Group>
 							{currentTask.author && (
 								<Group spacing="xs">
