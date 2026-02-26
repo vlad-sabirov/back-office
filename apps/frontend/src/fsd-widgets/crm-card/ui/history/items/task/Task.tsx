@@ -12,12 +12,30 @@ import { showNotification } from '@mantine/notifications';
 import { TaskDetailModal } from '@fsd/features/crm-task-detail-modal';
 import css from './task.module.scss';
 
-const statusOptions = [
+const allStatusOptions = [
 	{ value: EnCrmTaskStatus.Pending, label: 'Ожидает' },
 	{ value: EnCrmTaskStatus.InProgress, label: 'В работе' },
 	{ value: EnCrmTaskStatus.Completed, label: 'Выполнена' },
 	{ value: EnCrmTaskStatus.Cancelled, label: 'Отменена' },
 ];
+
+const assigneeAllowedStatuses = [
+	{ value: EnCrmTaskStatus.InProgress, label: 'В работе' },
+	{ value: EnCrmTaskStatus.Completed, label: 'Выполнена' },
+];
+
+// Текущий статус всегда должен быть виден + доступные для смены
+const getAssigneeStatusOptions = (currentStatus: string) => {
+	const allowed = [...assigneeAllowedStatuses];
+	// Если текущий статус — ожидает/отменена, добавить его в список (disabled) чтобы было видно
+	if (currentStatus === EnCrmTaskStatus.Pending || currentStatus === EnCrmTaskStatus.Cancelled) {
+		const currentOption = allStatusOptions.find((o) => o.value === currentStatus);
+		if (currentOption) {
+			allowed.unshift({ ...currentOption, disabled: true } as any);
+		}
+	}
+	return allowed;
+};
 
 interface IProps {
 	task: ICrmTaskEntity;
@@ -38,6 +56,10 @@ export const Task: FC<IProps> = ({ task, className }) => {
 	const [updateTaskStatus] = CrmTaskService.updateStatus();
 
 	const canEditAndDelete = useMemo(() => {
+		// Если задача отменена или выполнена — редактирование закрыто для всех
+		if (task.status === EnCrmTaskStatus.Cancelled || task.status === EnCrmTaskStatus.Completed) {
+			return false;
+		}
 		const isAuthor = task.authorId === Number(currentUserId);
 		const isAssignee = task.assigneeId === Number(currentUserId);
 		// Создал для себя — только автор может редактировать
@@ -62,8 +84,38 @@ export const Task: FC<IProps> = ({ task, className }) => {
 		const isBoss = currentUserRoles.some((role: string) =>
 			['boss', 'admin', 'developer', 'crmAdmin'].includes(role)
 		);
+
+		// Если задача отменена или выполнена — менять статус может только руководитель
+		if (task.status === EnCrmTaskStatus.Cancelled || task.status === EnCrmTaskStatus.Completed) {
+			const isSuperAdmin = currentUserRoles.some((role: string) =>
+				['boss', 'admin', 'developer'].includes(role)
+			);
+			const assigneeRoles = (task.assignee?.roles as any[] || []).map((r: any) => r.alias || r);
+			const isHeadForAssignee = currentUserRoles.some((role: string) => {
+				const childRole = ROLE_HIERARCHY[role];
+				return childRole && assigneeRoles.includes(childRole);
+			});
+			return isAuthor || isSuperAdmin || isHeadForAssignee;
+		}
+
 		return isAuthor || isAssignee || isBoss;
-	}, [task.authorId, task.assigneeId, currentUserId, currentUserRoles]);
+	}, [task.authorId, task.assigneeId, task.status, task.assignee, currentUserId, currentUserRoles]);
+
+	// Подчинённый (исполнитель, но не автор, не boss/admin и не руководитель) видит только "В работе" и "Выполнена"
+	// Но текущий статус задачи всегда отображается (даже если это "ожидает" или "отменена")
+	const statusOptions = useMemo(() => {
+		const isAuthor = task.authorId === Number(currentUserId);
+		const isSuperAdmin = currentUserRoles.some((role: string) =>
+			['boss', 'admin', 'developer'].includes(role)
+		);
+		const assigneeRoles = (task.assignee?.roles as any[] || []).map((r: any) => r.alias || r);
+		const isHeadForAssignee = currentUserRoles.some((role: string) => {
+			const childRole = ROLE_HIERARCHY[role];
+			return childRole && assigneeRoles.includes(childRole);
+		});
+		if (isAuthor || isSuperAdmin || isHeadForAssignee) return allStatusOptions;
+		return getAssigneeStatusOptions(task.status);
+	}, [task.authorId, task.assignee, task.status, currentUserId, currentUserRoles]);
 
 	const handleStatusChange = useCallback(async (newStatus: string) => {
 		try {
