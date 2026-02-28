@@ -97,13 +97,13 @@ export const data: INavigationData[] = [
 		title: 'Телефония',
 		icon: 'call-phone',
 		route: '/voip',
-		access: ['developer', 'crmAdmin', 'boss'],
+		access: ['developer', 'crmAdmin', 'boss', 'crm'],
 		children: [
 			{
 				title: 'Входящие',
 				alias: 'incoming',
 				route: '/voip/incoming',
-				access: ['developer', 'crmAdmin', 'boss'],
+				access: ['developer', 'crmAdmin', 'boss', 'crm'],
 			},
 		],
 	},
