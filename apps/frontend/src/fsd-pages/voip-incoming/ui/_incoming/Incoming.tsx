@@ -32,6 +32,7 @@ const Incoming: FC = () => {
 	const { user, getRoles } = useUser();
 	const roles = getRoles();
 	const isFullAccess = roles?.some((role) => FULL_ACCESS_ROLES.includes(role)) ?? false;
+	const childPhonesKey = user?.child?.map((c) => c.phoneVoip).join(',') ?? '';
 	const phones = useMemo(() => {
 		if (isFullAccess) return ALL_COMPANY_PHONES;
 		const myPhones: string[] = [];
@@ -41,7 +42,8 @@ const Incoming: FC = () => {
 			if (child.phoneVoip) myPhones.push(child.phoneVoip);
 		});
 		return myPhones;
-	}, [isFullAccess, user]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isFullAccess, user?.phoneVoip, childPhonesKey]);
 
 	const voipActions = useVoipActions();
 
