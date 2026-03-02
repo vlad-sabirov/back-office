@@ -34,8 +34,14 @@ const Incoming: FC = () => {
 	const isFullAccess = roles?.some((role) => FULL_ACCESS_ROLES.includes(role)) ?? false;
 	const phones = useMemo(() => {
 		if (isFullAccess) return ALL_COMPANY_PHONES;
-		return user?.phoneVoip ? [user.phoneVoip] : [];
-	}, [isFullAccess, user?.phoneVoip]);
+		const myPhones: string[] = [];
+		if (user?.phoneVoip) myPhones.push(user.phoneVoip);
+		// Добавить телефоны прямых подчинённых
+		user?.child?.forEach((child) => {
+			if (child.phoneVoip) myPhones.push(child.phoneVoip);
+		});
+		return myPhones;
+	}, [isFullAccess, user]);
 
 	const voipActions = useVoipActions();
 
@@ -60,7 +66,7 @@ const Incoming: FC = () => {
 
 	return (
 		<div>
-			<Header title={isFullAccess ? 'Входящие звонки' : 'Мои звонки'} contentRight={<HeaderRight />} loading={isLoading || isFetching} />
+			<Header title={isFullAccess ? 'Входящие звонки' : user?.child?.length ? 'Звонки моей команды' : 'Мои звонки'} contentRight={<HeaderRight />} loading={isLoading || isFetching} />
 
 			<VoipIncomingBoardsFeature
 				answeredCount={data?.count_answered || null}
