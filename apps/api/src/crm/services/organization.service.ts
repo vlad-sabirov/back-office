@@ -72,6 +72,7 @@ export class OrganizationService extends PrismaService implements OnModuleInit {
 		include,
 		search,
 		power,
+		withoutContacts,
 	}: {
 		where: QueryOrganizationDto;
 		filter?: PrismaFilter<
@@ -83,6 +84,7 @@ export class OrganizationService extends PrismaService implements OnModuleInit {
 		include?: Record<string, boolean>;
 		search?: string;
 		power?: { medium: number; low: number; empty: number };
+		withoutContacts?: boolean;
 	}): Promise<{
 		data: OrganizationEntity[];
 		total: number;
@@ -95,6 +97,15 @@ export class OrganizationService extends PrismaService implements OnModuleInit {
 		const { tags, ...whereWithoutSpecial } = where;
 		let parsedWhere: any = await OrganizationParser.query(whereWithoutSpecial);
 		if (tags && tags.length > 0) parsedWhere.tags = { some: { id: { in: tags.map((tag) => Number(tag)) } } };
+
+		if (withoutContacts) {
+			parsedWhere.OR = [
+				{ contacts: { none: {} } },
+				{ contacts: { some: { name: '' } } },
+				{ contacts: { some: { workPosition: '' } } },
+				{ contacts: { some: { phones: { none: {} } } } },
+			];
+		}
 
 		if (search?.trim()) {
 			const elasticResult = await this.searchElastic({ request: search, deep: true });
@@ -479,7 +490,7 @@ export class OrganizationService extends PrismaService implements OnModuleInit {
 						nameEn: organization.nameEn ? organization.nameEn.toLowerCase() : '',
 						phones: organization.phones.map(({ value }) => value.toLowerCase()),
 						emails: organization.emails.map(({ value }) => value.toLowerCase()),
-						website: organization.website.toLowerCase(),
+						website: organization.website ? organization.website.toLowerCase() : '',
 						requisiteName: organization.requisites.map(({ name }) => name.toLowerCase()),
 						requisiteInn: organization.requisites.map(({ inn }) => String(inn)),
 						contactsName: organization.contacts.map(({ name }) => name.toLowerCase()),

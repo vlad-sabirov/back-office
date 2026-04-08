@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { VoipIncomingListFeature } from 'fsd-features/voip-incoming-list';
 import { VoipService, useVoipActions } from '@fsd/entities/voip';
 import { IAnalyticsResponse } from '@fsd/entities/voip/api/res/analytics.res';
@@ -32,46 +32,33 @@ const Incoming: FC = () => {
 	const { user, getRoles } = useUser();
 	const roles = getRoles();
 	const isFullAccess = roles?.some((role) => FULL_ACCESS_ROLES.includes(role)) ?? false;
-	const childPhonesKey = user?.child?.map((c) => c.phoneVoip).join(',') ?? '';
-	const phones = useMemo(() => {
-		if (isFullAccess) return ALL_COMPANY_PHONES;
-		const myPhones: string[] = [];
-		if (user?.phoneVoip) myPhones.push(user.phoneVoip);
-		// Добавить телефоны прямых подчинённых
-		user?.child?.forEach((child) => {
-			if (child.phoneVoip) myPhones.push(child.phoneVoip);
-		});
-		return myPhones;
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isFullAccess, user?.phoneVoip, childPhonesKey]);
 
 	const voipActions = useVoipActions();
 
 	useEffect(() => {
-		if (!phones.length) return;
-
 		(async () => {
 			voipActions.setIsFetching(true);
 			const response = await fetchGetAnalytics({
 				date_start: date.start,
 				date_end: date.end,
-				phones,
+				phones: ALL_COMPANY_PHONES,
 				input: true,
 				output: true,
 			});
-
 			setData(response?.data || null);
 			voipActions.setConfig({ incoming: { page: 1 } });
 			voipActions.setIsFetching(false);
 		})();
-	}, [date, phones, fetchGetAnalytics, voipActions]);
+	}, [date, fetchGetAnalytics, voipActions]);
+
+	const incomingAnsweredCount = data?.answered?.filter((c) => c.caller.length > 6).length ?? null;
 
 	return (
 		<div>
-			<Header title={isFullAccess ? 'Входящие звонки' : user?.child?.length ? 'Звонки моей команды' : 'Мои звонки'} contentRight={<HeaderRight />} loading={isLoading || isFetching} />
+			<Header title={isFullAccess ? 'Телефония' : user?.child?.length ? 'Звонки моей команды' : 'Мои звонки'} contentRight={<HeaderRight />} loading={isLoading || isFetching} />
 
 			<VoipIncomingBoardsFeature
-				answeredCount={data?.count_answered || null}
+				answeredCount={incomingAnsweredCount}
 				missedCount={data?.count_missed || null}
 				duration={data?.duration || null}
 			/>

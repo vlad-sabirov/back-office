@@ -43,6 +43,7 @@ export interface ICrmOrganizationReducerFilterList {
 	last1CUpdate?: { start: string | null; end: string | null };
 	tags?: string[];
 	search?: string;
+	withoutContacts?: boolean;
 }
 
 export interface ICrmOrganizationReducerModals {

@@ -49,6 +49,14 @@ export class CronTaskReminderService extends PrismaService {
 				sentCount++;
 			}
 
+			// Уведомить автора (если задача создана для другого)
+			const author = task.author as any;
+			if (author?.telegramId && author.id !== assignee?.id) {
+				const message = this.buildAuthorReminderMessage(task, '📋 Приближается дедлайн (3 дня)');
+				await this.telegramService.sendMessage(Number(author.telegramId), message);
+				sentCount++;
+			}
+
 			await this.crmTask.update({
 				where: { id: task.id },
 				data: { reminderSent3Days: true },
@@ -104,6 +112,14 @@ export class CronTaskReminderService extends PrismaService {
 				}
 			}
 
+			// Уведомить автора (если задача создана для другого)
+			const author = task.author as any;
+			if (author?.telegramId && author.id !== assignee?.id) {
+				const message = this.buildAuthorReminderMessage(task, '🔔 Напоминание (1 день до дедлайна)');
+				await this.telegramService.sendMessage(Number(author.telegramId), message);
+				sentCount++;
+			}
+
 			await this.crmTask.update({
 				where: { id: task.id },
 				data: { reminderSent1Day: true },
@@ -157,6 +173,14 @@ export class CronTaskReminderService extends PrismaService {
 				}
 			}
 
+			// Уведомить автора (если задача создана для другого)
+			const author = task.author as any;
+			if (author?.telegramId && author.id !== assignee?.id) {
+				const message = this.buildAuthorReminderMessage(task, '⚠️ СРОЧНО! До дедлайна 2 часа');
+				await this.telegramService.sendMessage(Number(author.telegramId), message);
+				sentCount++;
+			}
+
 			await this.crmTask.update({
 				where: { id: task.id },
 				data: { reminderSent2Hours: true },
@@ -203,6 +227,14 @@ export class CronTaskReminderService extends PrismaService {
 				}
 			}
 
+			// Уведомить автора (если задача создана для другого)
+			const author = task.author as any;
+			if (author?.telegramId && author.id !== assignee?.id) {
+				const message = this.buildAuthorOverdueMessage(task);
+				await this.telegramService.sendMessage(Number(author.telegramId), message);
+				sentCount++;
+			}
+
 			await this.crmTask.update({
 				where: { id: task.id },
 				data: { overdueNotified: true },
@@ -216,7 +248,7 @@ export class CronTaskReminderService extends PrismaService {
 	 * Сводка по всем дедлайнам
 	 * Запускается автоматически каждые 5 минут с 7:00 до 22:00
 	 */
-	@Cron('*/5 7-22 * * *', { timeZone: 'Asia/Tashkent' })
+	@Cron('*/5 7-22 * * 1-6', { timeZone: 'Asia/Tashkent' })
 	async checkAllDeadlines(): Promise<{ reminder3Days: number; reminder1Day: number; reminder2Hours: number; overdue: number }> {
 		const r3 = await this.sendReminder3Days();
 		const r1 = await this.sendReminder1Day();
@@ -266,6 +298,51 @@ export class CronTaskReminderService extends PrismaService {
 		if (organization) {
 			message += `<b>Организация:</b> ${organization.nameRu || organization.nameEn || ''}\n`;
 		}
+
+		return message;
+	};
+
+	private buildAuthorReminderMessage = (task: any, header: string): string => {
+		const organization = task.organization as any;
+		const assignee = task.assignee as any;
+		const author = task.author as any;
+		const assigneeName = `${assignee?.firstName || ''} ${assignee?.lastName || ''}`.trim();
+
+		let message = `${header}\n\n`;
+		message += `<b>${author?.firstName || ''}</b>, напоминаем о задаче для <b>${assigneeName}</b>:\n\n`;
+		message += `<b>Задача:</b> ${task.title}\n`;
+		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
+
+		if (task.deadline) {
+			message += `<b>Дедлайн:</b> ${this.formatDeadline(task.deadline)}\n`;
+		}
+
+		if (organization) {
+			message += `<b>Организация:</b> ${organization.nameRu || organization.nameEn || ''}\n`;
+		}
+
+		return message;
+	};
+
+	private buildAuthorOverdueMessage = (task: any): string => {
+		const organization = task.organization as any;
+		const assignee = task.assignee as any;
+		const author = task.author as any;
+		const assigneeName = `${assignee?.firstName || ''} ${assignee?.lastName || ''}`.trim();
+
+		let message = `🚨 <b>${author?.firstName || ''}</b>, задача для <b>${assigneeName}</b> просрочена!\n\n`;
+		message += `<b>Задача:</b> ${task.title}\n`;
+		message += `<b>Приоритет:</b> ${this.priorityLabels[task.priority] || task.priority}\n`;
+
+		if (task.deadline) {
+			message += `<b>Дедлайн был:</b> ${this.formatDeadline(task.deadline)}\n`;
+		}
+
+		if (organization) {
+			message += `<b>Организация:</b> ${organization.nameRu || organization.nameEn || ''}\n`;
+		}
+
+		message += `\n⚠️ <i>Требуется срочное выполнение!</i>`;
 
 		return message;
 	};

@@ -68,8 +68,9 @@ export const useStateConfigure = () => {
 	}, [getMissedCalls, missedRefreshTimestamp]);
 
 	useEffect(() => {
-		setInterval(() => {
+		const interval = setInterval(() => {
 			voipActions.refresh('missed');
 		}, 15000);
+		return () => clearInterval(interval);
 	}, [voipActions]);
 };

@@ -28,6 +28,7 @@ model User {
   instagram                 String?
   isFixLate                 Boolean                @default(false)
   isFired                   Boolean?               @default(false)
+  name1c                    String?
   position                  Int?                   @default(0)
   lastLogin                 DateTime               @default(now())
   isFirstLogin              Boolean?               @default(true)
@@ -60,6 +61,8 @@ model User {
   calendarEventsAssigned    CalendarEvent[]              @relation("calendar_event_assignee")
   calendarEventParticipations CalendarEventParticipant[] @relation("calendar_event_participant_user")
   calendarReminders         CalendarReminder[]           @relation("calendar_reminder_user")
+  telegramDailyMessages     TelegramDailyMessage[]
+  crmNotes                  CrmNote[]                    @relation("crm_note_user")
   // -------
   createdAt                 DateTime                     @default(now())
   updatedAt                 DateTime                     @updatedAt
@@ -295,6 +298,7 @@ model CrmOrganization {
   tasks          CrmTask[]                  @relation("crm_task_organization")
   calendarEvents CalendarEvent[]            @relation("calendar_event_organization")
   powerLogs      CrmOrganizationPowerLog[]  @relation("crm_organization_power_log")
+  notes          CrmNote[]                  @relation("crm_note_organization")
   // -------
   isVerified     Boolean                    @default(false)
   isReserve     Boolean                    @default(false)
@@ -475,7 +479,7 @@ model CrmTask {
   priority           String                @default("normal") // low, normal, high, urgent
   deadline           DateTime?
   // Notification fields
-  notifyBoss         Boolean               @default(false)
+  notifyBoss         Boolean               @default(true)
   notifyBossManual   Boolean               @default(false)
   reminderSent3Days  Boolean               @default(false)
   reminderSent1Day   Boolean               @default(false)
@@ -607,4 +611,33 @@ model CalendarReminder {
   @@index([taskId])
   @@index([userId])
   @@map("calendar_reminder")
+}
+
+model CrmNote {
+  id             Int             @id @default(autoincrement())
+  text           String
+  // -------
+  organization   CrmOrganization @relation("crm_note_organization", fields: [organizationId], references: [id])
+  organizationId Int
+  user           User            @relation("crm_note_user", fields: [userId], references: [id])
+  userId         Int
+  // -------
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([organizationId])
+  @@map("crm_note")
+}
+
+model TelegramDailyMessage {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  chatId    BigInt
+  messageId Int
+  date      String   // "2026-04-02"
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("telegram_daily_message")
 }

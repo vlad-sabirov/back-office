@@ -43,7 +43,11 @@ export class ReportRealizationService extends PrismaService {
 		include?: Record<string, boolean>;
 	}): Promise<ReportRealizationEntity[]> => {
 		const parsedWhere = await ReportRealizationParser.query(where);
-		return await this.crmReportRealization.findMany({ where: parsedWhere, include, ...filter });
+		return await this.crmReportRealization.findMany({
+			where: { ...parsedWhere, user: { isFired: false } },
+			include,
+			...filter,
+		});
 	};
 
 	updateById = async ({

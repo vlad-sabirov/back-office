@@ -54,7 +54,7 @@ export const CalendarEventPanel: FC<ICalendarEventPanelProps> = ({ index, disabl
 				roles.push(role, CHILD_TO_HEAD[role]);
 			}
 		}
-		return [...new Set(roles)];
+		return Array.from(new Set(roles));
 	}, [currentUserRoles]);
 
 	const staffOptions = useMemo(() => {

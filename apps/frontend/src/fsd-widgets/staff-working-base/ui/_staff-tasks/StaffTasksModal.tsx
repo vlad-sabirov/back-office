@@ -16,9 +16,10 @@ interface IProps {
 	cancelledOnly?: boolean;
 	filterPriority?: EnCrmTaskPriority;
 	filterOverdue?: boolean;
+	showAssignee?: boolean;
 }
 
-export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, onReload, completedOnly, cancelledOnly, filterPriority, filterOverdue }) => {
+export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, onReload, completedOnly, cancelledOnly, filterPriority, filterOverdue, showAssignee }) => {
 	const [viewingTask, setViewingTask] = useState<ICrmTaskEntity | null>(null);
 
 	const sortedTasks = useMemo(() => {
@@ -105,7 +106,7 @@ export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, 
 						</TextField>
 					) : (
 						sortedTasks.map((task) => (
-							<TaskItem key={task.id} task={task} onClick={handleTaskClick} />
+							<TaskItem key={task.id} task={task} onClick={handleTaskClick} showAssignee={showAssignee} />
 						))
 					)}
 				</div>
@@ -125,9 +126,10 @@ export const StaffTasksModal: FC<IProps> = ({ tasks, opened, onClose, userName, 
 interface ITaskItemProps {
 	task: ICrmTaskEntity;
 	onClick: (task: ICrmTaskEntity) => void;
+	showAssignee?: boolean;
 }
 
-const TaskItem: FC<ITaskItemProps> = ({ task, onClick }) => {
+const TaskItem: FC<ITaskItemProps> = ({ task, onClick, showAssignee }) => {
 	const isCompleted = task.status === EnCrmTaskStatus.Completed;
 	const isCancelled = task.status === EnCrmTaskStatus.Cancelled;
 
@@ -153,8 +155,9 @@ const TaskItem: FC<ITaskItemProps> = ({ task, onClick }) => {
 	const org = task.organization as any;
 	const organizationName = org?.nameRu || org?.nameEn || 'Без организации';
 
-	const author = task.author;
-	const authorName = author ? `${author.lastName || ''} ${author.firstName || ''}`.trim() : 'Неизвестно';
+	const personToShow = showAssignee ? task.assignee : task.author;
+	const personLabel = showAssignee ? 'Исполнитель' : 'Автор';
+	const personName = personToShow ? `${personToShow.lastName || ''} ${personToShow.firstName || ''}`.trim() : 'Неизвестно';
 
 	const itemClass = `${css.taskItem} ${isOverdue ? css.taskItemOverdue : ''} ${isCompleted ? css.taskItemCompleted : ''} ${isCancelled ? css.taskItemCancelled : ''}`;
 
@@ -187,7 +190,7 @@ const TaskItem: FC<ITaskItemProps> = ({ task, onClick }) => {
 					)}
 					<div className={css.author}>
 						<Icon name="user" className={css.authorIcon} />
-						<span>{authorName}</span>
+						<span title={personLabel}>{personName}</span>
 					</div>
 				</div>
 			</div>

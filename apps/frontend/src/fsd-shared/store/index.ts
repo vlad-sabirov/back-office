@@ -23,6 +23,7 @@ import { VoipApi, VoipSliceReducer } from '@fsd/entities/voip';
 import { CrmOrganizationCardInfoReducer } from '@fsd/features/crm-organization-card-info';
 import { CrmReportRealizationPageReducer } from '@fsd/pages/crm-report-realization';
 import { CrmOrganizationAddDrawerReducer } from '@fsd/widgets/crm-organization-add-drawer';
+import { CrmNoteApi } from '@fsd/entities/crm-note/api/service';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 export const rootReducer = combineReducers({
@@ -65,6 +66,7 @@ export const rootReducer = combineReducers({
 	[CalendarEventApi.reducerPath]: CalendarEventApi.reducer,
 	[CalendarParticipantApi.reducerPath]: CalendarParticipantApi.reducer,
 	[CalendarReminderApi.reducerPath]: CalendarReminderApi.reducer,
+	[CrmNoteApi.reducerPath]: CrmNoteApi.reducer,
 });
 
 export const ReduxStore = () =>
@@ -91,7 +93,8 @@ export const ReduxStore = () =>
 				.concat(CrmTaskApi.middleware)
 				.concat(CalendarEventApi.middleware)
 				.concat(CalendarParticipantApi.middleware)
-				.concat(CalendarReminderApi.middleware);
+				.concat(CalendarReminderApi.middleware)
+					.concat(CrmNoteApi.middleware);
 		},
 	});
 

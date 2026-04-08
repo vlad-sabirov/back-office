@@ -40,6 +40,7 @@ export const CrmOrganizationApi = createApi({
 				ignoreUserIds,
 				createdAt,
 				tags,
+				withoutContacts,
 			}) => {
 				const skip = (Number(page) - 1) * Number(limit);
 				const userIdsResult =
@@ -67,12 +68,14 @@ export const CrmOrganizationApi = createApi({
 							type: true,
 							tags: true,
 							requisites: true,
-							contacts: true,
+							contacts: { include: { phones: true } },
 							phones: true,
 							emails: true,
+							notes: { orderBy: { createdAt: 'desc' }, take: 1 },
 						},
 						filter: { take: limit, skip, orderBy: { nameEn: 'asc' } },
 						search,
+						withoutContacts,
 						power: {
 							medium: Const.Settings.Power.Medium,
 							low: Const.Settings.Power.Low,
@@ -130,7 +133,7 @@ export const CrmOrganizationApi = createApi({
 							user: true,
 							type: true,
 							tags: true,
-							contacts: true,
+							contacts: { include: { phones: true } },
 							phones: true,
 							emails: true,
 							requisites: true,

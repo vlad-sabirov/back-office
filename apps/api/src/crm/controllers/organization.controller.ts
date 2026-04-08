@@ -77,10 +77,11 @@ export class OrganizationController {
 		@Body('filter') filter?: PrismaFilter<Omit<OrganizationEntity, 'user'>>,
 		@Body('include') include?: Record<string, boolean>,
 		@Body('search') search?: string,
-		@Body('power') power?: { medium: number; low: number; empty: number }
+		@Body('power') power?: { medium: number; low: number; empty: number },
+		@Body('withoutContacts') withoutContacts?: boolean
 	): Promise<{ data: OrganizationEntity[]; total: number }> {
 		await delay(process.env.DELAY);
-		return await this.organizationService.findMany({ where, filter, include, search, power });
+		return await this.organizationService.findMany({ where, filter, include, search, power, withoutContacts });
 	}
 
 	@Get('/findInnWithUser')

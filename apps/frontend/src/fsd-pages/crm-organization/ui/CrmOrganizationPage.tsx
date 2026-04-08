@@ -2,8 +2,9 @@ import { FC, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useShowOrganization } from '@fsd/entities/crm-card/lib/useShowDrawer/useShowOrganization';
 import { CrmOrganizationService } from '@fsd/entities/crm-organization';
+import { CrmContactCardInfoActions } from '@fsd/features/crm-contacts-card-info__new';
 import { FetchStatusIsLoading } from '@fsd/shared/lib/fetch-status';
-import { useStateSelector } from '@fsd/shared/lib/hooks';
+import { useStateActions, useStateSelector } from '@fsd/shared/lib/hooks';
 import { Header } from '@fsd/shared/ui-kit';
 import { CrmOrganizationAddDrawer } from '@fsd/widgets/crm-organization-add-drawer';
 import { CrmOrganizationFilter } from '@fsd/widgets/crm-organization-filter';
@@ -20,8 +21,10 @@ const CrmOrganizationPage: FC = () => {
 		[status, statusType, statusTag]
 	);
 	const [fetchFindOrg] = CrmOrganizationService.getCurrentById();
-	const { query } = useRouter();
+	const { query, pathname, push } = useRouter();
 	const showOrganization = useShowOrganization();
+	const isCardShow = useStateSelector((state) => state.crm_card.isShow);
+	const contactCardActions = useStateActions(CrmContactCardInfoActions);
 
 	useEffect(() => {
 		if (!query.id) return;
@@ -31,6 +34,13 @@ const CrmOrganizationPage: FC = () => {
 			showOrganization({ id: query.id as string });
 		})();
 	}, [fetchFindOrg, query.id, showOrganization]);
+
+	useEffect(() => {
+		if (query.action === 'addContact' && isCardShow) {
+			contactCardActions.setModal(['search', true]);
+			push({ pathname, query: { id: query.id } }, undefined, { shallow: true });
+		}
+	}, [query.action, isCardShow, contactCardActions, pathname, push, query.id]);
 
 	return (
 		<>

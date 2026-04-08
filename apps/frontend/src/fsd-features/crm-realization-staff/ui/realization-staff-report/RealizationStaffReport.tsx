@@ -12,7 +12,6 @@ import css from './realization-staff-report.module.scss';
 export const RealizationStaffReport: FC<IRealizationStaffReportProps> = memo((args) => {
 	const { data, withDiff, isFullAccess } = args;
 	const staffAll = useStateSelector((state) => state.staff.data.all);
-	const currentData = data?.downToTeams?.toArray().sort((a, b) => (b.realization ?? 0) - (a.realization ?? 0)) ?? [];
 	const staffHashMap = useMemo(() => {
 		const hash: Map<number, IStaffEntity> = new Map();
 		staffAll.forEach((user) => {
@@ -20,6 +19,12 @@ export const RealizationStaffReport: FC<IRealizationStaffReportProps> = memo((ar
 		});
 		return hash;
 	}, [staffAll]);
+	const currentData = data?.downToTeams?.toArray()
+		.filter((team) => {
+			const user = staffHashMap.get(team.userId);
+			return !user?.isFired;
+		})
+		.sort((a, b) => (b.realization ?? 0) - (a.realization ?? 0)) ?? [];
 
 	const [currentReport, setCurrentReport] = useState<
 		ICrmRealizationMonthResTeam | ICrmRealizationMonthResEmployee | null

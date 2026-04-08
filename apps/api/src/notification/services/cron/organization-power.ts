@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { Markup } from 'telegraf';
 import { format, subDays, differenceInDays } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { PrismaService } from '../../../common';
@@ -15,6 +16,15 @@ interface PowerConfig {
 @Injectable()
 export class CronOrganizationPowerService extends PrismaService {
 	private readonly logger = new Logger(CronOrganizationPowerService.name);
+
+	/** Дата-заглушка из Account_1C: означает, что у организации нет реквизитов в 1С */
+	private readonly NO_1C_DATA_DATE = new Date('1990-08-19');
+
+	/** Стандартный include для запросов организаций */
+	private readonly orgInclude = {
+		user: true,
+		contacts: { include: { phones: true }, take: 3 },
+	};
 
 	private readonly defaultPowerConfig: PowerConfig = {
 		medium: 30,
@@ -52,9 +62,10 @@ export class CronOrganizationPowerService extends PrismaService {
 					last1CUpdate: {
 						gt: windowStart,
 						lte: windowEnd,
+						not: this.NO_1C_DATA_DATE,
 					},
 				},
-				include: { user: true },
+				include: this.orgInclude,
 			});
 
 			for (const org of orgs) {
@@ -70,7 +81,14 @@ export class CronOrganizationPowerService extends PrismaService {
 					const manager = org.user as any;
 					if (manager?.telegramId) {
 						const message = this.buildPreWarningMessage(org, transition.from, transition.to, 3);
-						await this.telegramService.sendMessage(Number(manager.telegramId), message);
+						const contactButtons = this.buildContactButtons(org);
+						if (contactButtons.length > 0) {
+							await this.telegramService.sendMessageWithKeyboard(Number(manager.telegramId), message, Markup.inlineKeyboard(contactButtons));
+						} else {
+							const noContacts = this.buildNoContactsWarning(org.id);
+							const keyboard = Markup.inlineKeyboard([[noContacts.button]]);
+							await this.telegramService.sendMessageWithKeyboard(Number(manager.telegramId), message + noContacts.text, keyboard);
+						}
 						sentCount++;
 					}
 					await this.crmOrganizationPowerLog.create({
@@ -112,9 +130,10 @@ export class CronOrganizationPowerService extends PrismaService {
 					last1CUpdate: {
 						gt: windowStart,
 						lte: windowEnd,
+						not: this.NO_1C_DATA_DATE,
 					},
 				},
-				include: { user: true },
+				include: this.orgInclude,
 			});
 
 			for (const org of orgs) {
@@ -130,7 +149,14 @@ export class CronOrganizationPowerService extends PrismaService {
 					const manager = org.user as any;
 					if (manager?.telegramId) {
 						const message = this.buildPreWarningMessage(org, transition.from, transition.to, 1);
-						await this.telegramService.sendMessage(Number(manager.telegramId), message);
+						const contactButtons = this.buildContactButtons(org);
+						if (contactButtons.length > 0) {
+							await this.telegramService.sendMessageWithKeyboard(Number(manager.telegramId), message, Markup.inlineKeyboard(contactButtons));
+						} else {
+							const noContacts = this.buildNoContactsWarning(org.id);
+							const keyboard = Markup.inlineKeyboard([[noContacts.button]]);
+							await this.telegramService.sendMessageWithKeyboard(Number(manager.telegramId), message + noContacts.text, keyboard);
+						}
 						sentCount++;
 					}
 					// Обновить существующую запись или создать новую
@@ -168,7 +194,7 @@ export class CronOrganizationPowerService extends PrismaService {
 	 * Проверка изменений Power статусов организаций + предупреждения
 	 * Запускается ежедневно в 9:00
 	 */
-	@Cron('0 9 * * *')
+	@Cron('30 4 * * 1-6')
 	async checkPowerStatusChanges(config?: PowerConfig): Promise<{ notifications: number; preWarning3Days: number; preWarning1Day: number }> {
 		this.logger.log('Running scheduled power status check...');
 		const pw3 = await this.sendPreWarning3Days(config);
@@ -190,10 +216,10 @@ export class CronOrganizationPowerService extends PrismaService {
 				last1CUpdate: {
 					lte: mediumThreshold,
 					gt: lowThreshold,
+					not: this.NO_1C_DATA_DATE,
 				},
-				// Исключаем уже уведомленные (проверяем по логу)
 			},
-			include: { user: true },
+			include: this.orgInclude,
 		});
 
 		for (const org of newMediumOrgs) {
@@ -216,9 +242,10 @@ export class CronOrganizationPowerService extends PrismaService {
 				last1CUpdate: {
 					lte: lowThreshold,
 					gt: emptyThreshold,
+					not: this.NO_1C_DATA_DATE,
 				},
 			},
-			include: { user: true },
+			include: this.orgInclude,
 		});
 
 		for (const org of newLowOrgs) {
@@ -240,9 +267,10 @@ export class CronOrganizationPowerService extends PrismaService {
 			where: {
 				last1CUpdate: {
 					lte: emptyThreshold,
+					not: this.NO_1C_DATA_DATE,
 				},
 			},
-			include: { user: true },
+			include: this.orgInclude,
 		});
 
 		for (const org of newEmptyOrgs) {
@@ -323,10 +351,18 @@ export class CronOrganizationPowerService extends PrismaService {
 		});
 
 		const message = this.buildPowerChangeMessage(org, previousStatus, newStatus, manager);
+		const contactButtons = this.buildContactButtons(org);
 
 		// Уведомить менеджера
 		if (manager?.telegramId) {
-			await this.telegramService.sendMessage(Number(manager.telegramId), message);
+			if (contactButtons.length > 0) {
+				const keyboard = Markup.inlineKeyboard(contactButtons);
+				await this.telegramService.sendMessageWithKeyboard(Number(manager.telegramId), message, keyboard);
+			} else {
+				const noContacts = this.buildNoContactsWarning(org.id);
+				const keyboard = Markup.inlineKeyboard([[noContacts.button]]);
+				await this.telegramService.sendMessageWithKeyboard(Number(manager.telegramId), message + noContacts.text, keyboard);
+			}
 		}
 
 		// Если статус empty - уведомить также руководителя
@@ -337,6 +373,37 @@ export class CronOrganizationPowerService extends PrismaService {
 				await this.telegramService.sendMessage(Number(fullManager.parent.telegramId), leaderMessage);
 			}
 		}
+	};
+
+	private buildNoContactsWarning = (orgId: number): {
+		text: string;
+		button: ReturnType<typeof Markup.button.url>;
+	} => {
+		const baseUrl = process.env.DOMAIN_FRONTEND || 'http://back-office.uz/';
+		const url = `${baseUrl}crm/organization/${orgId}?action=addContact`;
+		return {
+			text: '\n👤 <b>Добавьте пожалуйста контакт для организации</b>',
+			button: Markup.button.url('➕ Добавить контакт', url),
+		};
+	};
+
+	/**
+	 * Формирует inline-кнопки "📞 Связаться (имя)" для контактов организации.
+	 * При нажатии бот отправит номер телефона (обработка в telegram.service).
+	 */
+	private buildContactButtons = (org: any): ReturnType<typeof Markup.button.callback>[][] => {
+		const contacts = (org.contacts || []) as any[];
+		const buttons: ReturnType<typeof Markup.button.callback>[][] = [];
+
+		for (const contact of contacts) {
+			const phone = (contact.phones || [])[0];
+			if (!phone?.value) continue;
+			const name = contact.name || 'контакт';
+			// Формат callback: pw:<contactId>:call
+			buttons.push([Markup.button.callback(`📞 Связаться (${name})`, `pw:${contact.id}:call`)]);
+		}
+
+		return buttons;
 	};
 
 	private buildPowerChangeMessage = (org: any, previousStatus: string, newStatus: string, manager: any): string => {

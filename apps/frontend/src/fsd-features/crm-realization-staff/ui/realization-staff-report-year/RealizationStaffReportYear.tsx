@@ -30,7 +30,10 @@ export const RealizationStaffReportYear: FC<IRealizationStaffReportProps> = memo
 				<TextField className={classNames(css.item, css.center)}>% отгрузок</TextField>
 				<TextField className={css.item}>Выполнение плана</TextField>
 			</div>
-			{teams.map((teamReport) => (
+			{teams.filter((teamReport) => {
+				const user = staffHashMap.get(teamReport.userId);
+				return !user?.isFired;
+			}).map((teamReport) => (
 				<Team
 					key={`team_${teamReport.userId}`}
 					teamReport={teamReport}

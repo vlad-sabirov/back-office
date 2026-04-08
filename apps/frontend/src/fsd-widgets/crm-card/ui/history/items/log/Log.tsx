@@ -51,7 +51,7 @@ export const Log: FC<IProps> = ({ history, className }) => {
 		if (data.action === 'task_created' || data.action === 'event_created') {
 			return null;
 		}
-	} catch {}
+	} catch { /* ignore parse errors */ }
 
 	return (
 		<div className={className}>

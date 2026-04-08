@@ -55,10 +55,11 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 								ignoreUserIds: [],
 								createdAt: undefined,
 								tags: undefined,
+								withoutContacts: undefined,
 							});
 						}
 						if (tab === 'my' && team) {
-							actions.setFilterList({ ...filter, userIds: team, search: undefined, isVerified: true });
+							actions.setFilterList({ ...filter, userIds: team, search: undefined, isVerified: true, withoutContacts: undefined });
 						}
 						if (tab === 'freedom') {
 							actions.setFilterList({
@@ -70,6 +71,7 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 								isArchive: false,
 								createdAt: undefined,
 								tags: undefined,
+								withoutContacts: undefined,
 							});
 						}
 						if (tab === 'priority') {
@@ -82,6 +84,7 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 								isArchive: false,
 								createdAt: undefined,
 								tags: undefined,
+								withoutContacts: undefined,
 							});
 						}
 						if (tab === 'unverified') {
@@ -94,6 +97,7 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 								ignoreUserIds: [],
 								createdAt: undefined,
 								tags: undefined,
+								withoutContacts: undefined,
 							});
 						}
 						if (tab === 'new') {
@@ -110,6 +114,7 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 									end: formatISO(endOfMonth(new Date())),
 								},
 								tags: undefined,
+								withoutContacts: undefined,
 							});
 						}
 						if (tab === 'archive') {
@@ -122,6 +127,20 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 								ignoreUserIds: [],
 								createdAt: undefined,
 								tags: undefined,
+								withoutContacts: undefined,
+							});
+						}
+						if (tab === 'no-contacts') {
+							actions.setFilterList({
+								...filter,
+								userIds: undefined,
+								search: undefined,
+								isVerified: true,
+								isArchive: false,
+								ignoreUserIds: [],
+								createdAt: undefined,
+								tags: undefined,
+								withoutContacts: true,
 							});
 						}
 					}}
@@ -134,6 +153,7 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 						<Tab.Priority.Tab />
 						<Tab.Freedom.Tab />
 						{hasAccessTab && <Tab.Archive.Tab />}
+						<Tab.NoContacts.Tab />
 					</Tabs.List>
 
 					{activeTab === 'my' && <Tab.My.Content />}
@@ -143,6 +163,7 @@ export const OrganizationFilter: FC<IOrganizationFilterProps> = ({ loading }) =>
 					{activeTab === 'priority' && <Tab.Priority.Content />}
 					{activeTab === 'freedom' && <Tab.Freedom.Content />}
 					{activeTab === 'archive' && hasAccessTab && <Tab.Archive.Content />}
+					{activeTab === 'no-contacts' && <Tab.NoContacts.Content />}
 				</Tabs>
 			</Popover.Dropdown>
 		</Popover>

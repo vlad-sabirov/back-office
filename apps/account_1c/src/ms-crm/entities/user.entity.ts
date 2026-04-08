@@ -8,6 +8,8 @@ export interface IUserEntity {
 	color: string;
 	phoneVoip: string;
 	phoneMobile: string;
+	isFired?: boolean;
+	name1c?: string;
 	roles: IRoles[];
 	child?: IUserEntity[];
 }

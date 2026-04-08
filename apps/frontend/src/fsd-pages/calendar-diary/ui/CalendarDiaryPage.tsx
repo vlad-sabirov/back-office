@@ -150,6 +150,8 @@ const CalendarDiaryPage: FC = observer(() => {
 			from: range.from,
 			to: range.to,
 			userId: effectiveUserId,
+			// Показывать задачи/события созданные автором для подчинённых (только в своём ежедневнике)
+			includeAuthored: !selectedUserId,
 		});
 	}, [currentDate, effectiveUserId, fetchRangeWithTasks]);
 
@@ -211,36 +213,52 @@ const CalendarDiaryPage: FC = observer(() => {
 	const calendarEvents = useMemo<CalendarPropsEvent[]>(() => {
 		if (!rangeData) return [];
 
-		const events = rangeData.events.map((event): CalendarPropsEvent => ({
-			id: event.id,
-			type: 'default',
-			title: event.title,
-			description: event.description || undefined,
-			dateStart: new Date(event.dateStart),
-			dateEnd: new Date(event.dateEnd),
-			isAllDay: event.isAllDay,
-			ctx: 'event',
-			color: getEventTypeConfig(event.type)?.bg || '#e0e7ff',
-			onClick: () => handleEventClick(event),
-		}));
+		const currentUserId = user?.id ? Number(user.id) : null;
+
+		const events = rangeData.events.map((event): CalendarPropsEvent => {
+			// Событие создано мной для другого сотрудника
+			const isAuthored = currentUserId && event.authorId === currentUserId && event.assigneeId !== currentUserId;
+			const assignee = isAuthored && (event as any).assignee;
+			const assigneeLabel = assignee ? ` → ${assignee.lastName || ''} ${assignee.firstName || ''}`.trim() : '';
+
+			return {
+				id: event.id,
+				type: 'default',
+				title: `${event.title}${assigneeLabel}`,
+				description: event.description || undefined,
+				dateStart: new Date(event.dateStart),
+				dateEnd: new Date(event.dateEnd),
+				isAllDay: event.isAllDay,
+				ctx: 'event',
+				color: getEventTypeConfig(event.type)?.bg || '#e0e7ff',
+				onClick: () => handleEventClick(event),
+			};
+		});
 
 		const tasks = rangeData.tasks
 			.filter((task) => task.deadline)
-			.map((task): CalendarPropsEvent => ({
-				id: `task-${task.id}`,
-				type: 'default',
-				title: `📋 ${task.title}`,
-				description: task.description || undefined,
-				dateStart: new Date(task.deadline!),
-				dateEnd: new Date(task.deadline!),
-				isAllDay: true,
-				ctx: 'task',
-				color: taskPriorityColors[task.priority] || '#bfdbfe',
-				onClick: () => handleTaskClick(task),
-			}));
+			.map((task): CalendarPropsEvent => {
+				// Задача создана мной для другого сотрудника
+				const isAuthored = currentUserId && task.authorId === currentUserId && task.assigneeId !== currentUserId;
+				const assignee = isAuthored && (task as any).assignee;
+				const assigneeLabel = assignee ? ` → ${assignee.lastName || ''} ${assignee.firstName || ''}`.trim() : '';
+
+				return {
+					id: `task-${task.id}`,
+					type: 'default',
+					title: `📋 ${task.title}${assigneeLabel}`,
+					description: task.description || undefined,
+					dateStart: new Date(task.deadline!),
+					dateEnd: new Date(task.deadline!),
+					isAllDay: true,
+					ctx: 'task',
+					color: taskPriorityColors[task.priority] || '#bfdbfe',
+					onClick: () => handleTaskClick(task),
+				};
+			});
 
 		return [...events, ...tasks];
-	}, [rangeData, handleEventClick, handleTaskClick]);
+	}, [rangeData, handleEventClick, handleTaskClick, user?.id]);
 
 	// Обработчики модалки формы
 	const handleCreateEvent = useCallback(() => {

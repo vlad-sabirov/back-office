@@ -42,7 +42,7 @@ const Component: FC<CalendarProps & { ctx: Context<CalendarStore> }> = observer(
 );
 
 const withHOC = <T extends CalendarProps>(Component: FC<T & { ctx: Context<CalendarStore> }>) => {
-	return function withHOCComponent(props: T) {
+	return function WithHOCComponent(props: T) {
 		const store = useMemo(() => new CalendarStore(), []);
 		const newProps: T & { ctx: Context<CalendarStore> } = { ...props, ctx: CalendarContext };
 

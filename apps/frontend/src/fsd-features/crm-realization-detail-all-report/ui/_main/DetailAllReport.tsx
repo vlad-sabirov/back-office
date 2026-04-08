@@ -1,10 +1,9 @@
-import { FC, memo, useEffect, useMemo } from 'react';
+import { FC, memo } from 'react';
 import { IDetailAllReportProps } from './detail-all-report.types';
-import { CRM_REALIZATION_COLORS, ICrmRealizationMonthResEmployee } from '@fsd/entities/crm-realization';
-import { StaffAvatar, StaffMenu } from '@fsd/entities/staff';
+import { CRM_REALIZATION_COLORS } from '@fsd/entities/crm-realization';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
-import { Progress, TextField } from '@fsd/shared/ui-kit';
-import { NumberFormat, NumberFormatAbbreviations } from '@helpers';
+import { AvatarGroup, AvatarProps, Progress, TextField } from '@fsd/shared/ui-kit';
+import { NumberFormat } from '@helpers';
 import { ScrollArea, Tooltip } from '@mantine/core';
 import css from './detail-all-report.module.scss';
 
@@ -30,180 +29,69 @@ export const DetailAllReport: FC<IDetailAllReportProps> = memo((props) => {
 						.map((teamReport) => {
 							const foundUser = staffAll.find((user) => user.id === teamReport.userId);
 							if (!foundUser) {
-								return;
+								return null;
 							}
 
-							const employeeReports: ICrmRealizationMonthResEmployee[] =
-								JSON.parse(JSON.stringify(teamReport.employees)) ?? [];
-							if (employeeReports && employeeReports.length > 1) {
-								employeeReports.sort((a, b) => (b.realization ?? 0) - (a.realization ?? 0));
-							}
+							const childUsers = foundUser.child?.filter((c) => !c.isFired) || [];
+							const avatars: Omit<AvatarProps, 'size' | 'className'>[] = [
+								{ color: foundUser.color, text: `${foundUser.lastName[0]}${foundUser.firstName[0]}`, src: foundUser.photo },
+								...childUsers.map((c) => ({
+									color: c.color, text: `${c.lastName[0]}${c.firstName[0]}`, src: c.photo,
+								})),
+							];
 
-							let workingBasePlan = 0;
-							if (teamReport.planWorkingBasePercent && teamReport.workingBasePercent) {
-								workingBasePlan =
-									(teamReport.workingBasePercent / teamReport.planWorkingBasePercent) * 100;
-							}
+							const customerCountPercent = teamReport.customerCount && teamReport.planCustomerCount
+								? (teamReport.customerCount / teamReport.planCustomerCount) * 100
+								: 0;
 
-							let customerCountPlan = 0;
-							if (teamReport.customerCount && teamReport.planCustomerCount) {
-								customerCountPlan = (teamReport.customerCount / teamReport.planCustomerCount) * 100;
-							}
+							const workingBasePercent = teamReport.workingBasePercent && teamReport.planWorkingBasePercent
+								? (teamReport.workingBasePercent / teamReport.planWorkingBasePercent) * 100
+								: 0;
+
+							const getColor = (v: number) =>
+								v < CRM_REALIZATION_COLORS.RED ? 'red'
+								: v < CRM_REALIZATION_COLORS.YELLOW ? 'yellow'
+								: 'green';
 
 							return (
-								<>
-									<div key={`team_${teamReport.userId}`} className={css.team}>
-										<StaffAvatar user={foundUser} size={'small'} className={css.team__avatar} />
-										<StaffMenu user={foundUser} className={css.team__staff}>
-											<TextField className={css.team__name} size={'small'}>
+								<div key={`team_${teamReport.userId}`} className={css.row}>
+									<div className={css.row__staff}>
+										<AvatarGroup data={avatars} limit={avatars.length} size={'small'} topPosition={'left'} />
+										<div className={css.row__info}>
+											<TextField className={css.row__name} size={'small'}>
 												{foundUser.lastName} {foundUser.firstName}
 											</TextField>
-
-											<TextField className={css.team__realization} size={'small'}>
-												<span>{NumberFormat(teamReport.realization, { round: true })}</span>
-												{' / '}
-												{NumberFormatAbbreviations(teamReport.plan ?? 0)}
+											<TextField className={css.row__value} size={'small'}>
+												{NumberFormat(teamReport.realization, { round: true })}
+												<span> / {NumberFormat(teamReport.plan ?? 0, { round: true })}</span>
 											</TextField>
-										</StaffMenu>
-
-										<div>
-											<Tooltip
-												label={`План реализации выполнен на ${teamReport.percent ?? 0}%`}
-												withArrow
-												multiline
-												w={160}
-												position="right"
-												offset={-10}
-											>
-												<div>
-													<Progress
-														value={teamReport.percent ?? 0}
-														size={'extraSmall'}
-														color={
-															teamReport.percent &&
-															teamReport.percent < CRM_REALIZATION_COLORS.RED
-																? 'red'
-																: teamReport.percent &&
-																	  teamReport.percent >=
-																			CRM_REALIZATION_COLORS.RED &&
-																	  teamReport.percent < CRM_REALIZATION_COLORS.YELLOW
-																	? 'yellow'
-																	: 'green'
-														}
-													/>
-												</div>
-											</Tooltip>
-
-											{teamReport.planCustomerCount ? (
-												<Tooltip
-													label={`План базы: ${teamReport.planCustomerCount ?? 0}. Сейчас: ${
-														teamReport.customerCount ?? 0
-													}`}
-													withArrow
-													multiline
-													w={220}
-													position="right"
-													offset={-10}
-												>
-													<div>
-														<Progress
-															value={customerCountPlan ?? 0}
-															size={'extraSmall'}
-															color={
-																customerCountPlan &&
-																customerCountPlan < CRM_REALIZATION_COLORS.RED
-																	? 'red'
-																	: customerCountPlan &&
-																		  customerCountPlan >=
-																				CRM_REALIZATION_COLORS.RED &&
-																		  customerCountPlan <
-																				CRM_REALIZATION_COLORS.YELLOW
-																		? 'yellow'
-																		: 'green'
-															}
-														/>
-													</div>
-												</Tooltip>
-											) : (
-												''
-											)}
-
-											{teamReport.planWorkingBasePercent ? (
-												<Tooltip
-													label={`План активной базы: ${
-														teamReport.planWorkingBasePercent ?? 0
-													}%. Сейчас: ${teamReport.workingBasePercent ?? 0}%`}
-													withArrow
-													multiline
-													w={200}
-													position="right"
-													offset={-10}
-												>
-													<div>
-														<Progress
-															value={workingBasePlan ?? 0}
-															size={'extraSmall'}
-															color={
-																workingBasePlan &&
-																workingBasePlan < CRM_REALIZATION_COLORS.RED
-																	? 'red'
-																	: workingBasePlan &&
-																		  workingBasePlan >=
-																				CRM_REALIZATION_COLORS.RED &&
-																		  workingBasePlan <
-																				CRM_REALIZATION_COLORS.YELLOW
-																		? 'yellow'
-																		: 'green'
-															}
-														/>
-													</div>
-												</Tooltip>
-											) : (
-												''
-											)}
 										</div>
 									</div>
 
-									{!!employeeReports?.length &&
-										employeeReports.map((employeeReport) => {
-											const foundUser = staffAll.find(
-												(user) => user.id === employeeReport.userId
-											);
-											if (!foundUser) {
-												return;
-											}
-											return (
-												<div className={css.employee} key={`employee_${employeeReport.userId}`}>
-													<TextField className={css.employee__arrow} size={'small'}>
-														∟
-													</TextField>
-
-													<StaffAvatar
-														user={foundUser}
-														size={'extraSmall'}
-														className={css.team__avatar}
-													/>
-
-													<TextField size={'small'} className={css.employee__name}>
-														{foundUser.lastName} {foundUser.firstName}
-														{!!employeeReport.percent && (
-															<span>{employeeReport.percent}%</span>
-														)}
-													</TextField>
-
-													<TextField className={css.team__realization} size={'small'}>
-														<span>
-															{NumberFormat(employeeReport.realization, {
-																round: true,
-															})}
-														</span>
-														{' / '}
-														{NumberFormat(employeeReport.plan)}
-													</TextField>
+									<div className={css.row__bars}>
+											<Tooltip label={`План реализации выполнен на ${teamReport.percent ?? 0}%`} withArrow position="right" offset={-10}>
+												<div>
+													<Progress value={teamReport.percent ?? 0} size={'extraSmall'} color={getColor(teamReport.percent ?? 0)} />
 												</div>
-											);
-										})}
-								</>
+											</Tooltip>
+
+											{!!teamReport.planCustomerCount && (
+												<Tooltip label={`План базы: ${teamReport.planCustomerCount}. Сейчас: ${teamReport.customerCount ?? 0}`} withArrow position="right" offset={-10}>
+													<div>
+														<Progress value={customerCountPercent} size={'extraSmall'} color={getColor(customerCountPercent)} />
+													</div>
+												</Tooltip>
+											)}
+
+											{!!teamReport.planWorkingBasePercent && (
+												<Tooltip label={`План активной базы: ${teamReport.planWorkingBasePercent}%. Сейчас: ${teamReport.workingBasePercent ?? 0}%`} withArrow position="right" offset={-10}>
+													<div>
+														<Progress value={workingBasePercent} size={'extraSmall'} color={getColor(workingBasePercent)} />
+													</div>
+												</Tooltip>
+											)}
+										</div>
+								</div>
 							);
 						})}
 				</div>

@@ -19,6 +19,7 @@ import { TaskController } from './controllers/task.controller';
 import { CalendarEventController } from './controllers/calendar-event.controller';
 import { CalendarParticipantController } from './controllers/calendar-participant.controller';
 import { CalendarReminderController } from './controllers/calendar-reminder.controller';
+import { NoteController } from './controllers/note.controller';
 
 import {
 	ContactService,
@@ -37,6 +38,7 @@ import { TaskNotificationService } from './services/task-notification.service';
 import { CalendarEventNotificationService } from './services/calendar-event-notification.service';
 import { CalendarParticipantService } from './services/calendar-participant.service';
 import { CalendarReminderService } from './services/calendar-reminder.service';
+import { NoteService } from './services/note.service';
 
 @Module({
 	imports: [SearchModule, AuthModule, HttpModule, forwardRef(() => NotificationModule)],
@@ -54,6 +56,7 @@ import { CalendarReminderService } from './services/calendar-reminder.service';
 		CalendarEventController,
 		CalendarParticipantController,
 		CalendarReminderController,
+		NoteController,
 	],
 	providers: [
 		ContactService,
@@ -71,6 +74,7 @@ import { CalendarReminderService } from './services/calendar-reminder.service';
 		CalendarEventNotificationService,
 		CalendarParticipantService,
 		CalendarReminderService,
+		NoteService,
 	],
 	exports: [TaskService, CalendarEventService, OrganizationService],
 })

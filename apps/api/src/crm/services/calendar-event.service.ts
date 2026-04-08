@@ -188,15 +188,20 @@ export class CalendarEventService extends PrismaService {
 		if (params.userId) {
 			const userId = Number(params.userId);
 			const isViewingOthersCalendar = requestingUserId !== undefined && requestingUserId !== userId;
+			const userEventConditions: any[] = [
+				{ assigneeId: userId },
+				{ participants: { some: { userId: userId } } },
+			];
+
+			if (params.includeAuthored) {
+				// Также показывать события, которые автор создал для других сотрудников
+				userEventConditions.push({ AND: [{ authorId: userId }, { assigneeId: { not: userId } }] });
+			}
+
 			const andConditions: any[] = [
 				dateCondition,
 				{ status: { notIn: ['completed', 'cancelled'] } },
-				{
-					OR: [
-						{ assigneeId: userId },
-						{ participants: { some: { userId: userId } } },
-					],
-				},
+				{ OR: userEventConditions },
 			];
 
 			if (isViewingOthersCalendar) {
@@ -204,7 +209,16 @@ export class CalendarEventService extends PrismaService {
 			}
 
 			eventsWhere = { AND: andConditions };
-			tasksWhere.assigneeId = userId;
+
+			if (params.includeAuthored) {
+				// Показывать задачи где пользователь исполнитель ИЛИ автор (для других)
+				tasksWhere.OR = [
+					{ assigneeId: userId },
+					{ AND: [{ authorId: userId }, { assigneeId: { not: userId } }] },
+				];
+			} else {
+				tasksWhere.assigneeId = userId;
+			}
 		}
 
 		const [events, tasks] = await Promise.all([

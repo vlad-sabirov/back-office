@@ -33,9 +33,13 @@ export const DetailTeamReport: FC<IDetailTeamReportProps> = memo((props) => {
 					if (!foundUser) {
 						return;
 					}
+					const childUsers = foundUser.child?.filter((c) => !c.isFired) || [];
 					return (
 						<div key={`employee_${employeeReport.userId}`} className={css.employee}>
 							<StaffAvatar user={foundUser} size={'extraSmall'} />
+							{childUsers.map((child) => (
+								<StaffAvatar key={child.id} user={child} size={'extraSmall'} style={{ marginLeft: -6, opacity: 0.7 }} />
+							))}
 							<TextField size={'small'} className={css.employee__name}>
 								{foundUser.lastName} {foundUser.firstName}
 								{employeeReport.percent && <span>{employeeReport.percent}%</span>}

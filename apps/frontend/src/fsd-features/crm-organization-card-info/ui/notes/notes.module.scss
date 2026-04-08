@@ -1,0 +1,75 @@
+.root {
+	border-bottom: 1px solid var(--color-neutral-100);
+	padding: 8px 12px;
+}
+
+.grid {
+	display: grid;
+	gap: 8px;
+
+	&[data-count="1"] {
+		grid-template-columns: 1fr;
+	}
+	&[data-count="2"] {
+		grid-template-columns: 1fr 1fr;
+	}
+	&[data-count="3"] {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+}
+
+.toolbar {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	padding-top: 4px;
+}
+
+.note {
+	background: #fef9e7;
+	border-left: 3px solid #f0c929;
+	border-radius: 4px;
+	padding: 6px 10px;
+	min-width: 0;
+}
+
+.noteContent {
+}
+
+.noteText {
+	white-space: pre-wrap;
+	word-break: break-word;
+	font-size: 13px;
+}
+
+.noteMeta {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 4px;
+}
+
+.noteActions {
+	display: flex;
+	gap: 2px;
+	opacity: 0;
+	transition: opacity 0.15s;
+}
+
+.note:hover .noteActions {
+	opacity: 1;
+}
+
+.editForm {
+	padding: 2px 0;
+}
+
+.addForm {
+	padding: 4px 0;
+}
+
+.allNotes {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}

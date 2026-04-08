@@ -86,6 +86,7 @@ export class CalendarEventController {
 		@Query('from') from: string,
 		@Query('to') to: string,
 		@Query('userId') userId?: string,
+		@Query('includeAuthored') includeAuthored?: string,
 		@Headers('authorization') authorization?: string
 	): Promise<RangeWithTasksResult> {
 		await delay(process.env.DELAY);
@@ -95,6 +96,7 @@ export class CalendarEventController {
 				from,
 				to,
 				userId: userId ? Number(userId) : undefined,
+				includeAuthored: includeAuthored === 'true',
 			},
 			requestingUserId
 		);

@@ -36,7 +36,7 @@ export const Dashboard: FC = observer(() => {
 					<BirthdayToday />
 
 					{rolesAlias?.includes('crm') && <CrmWorkingBaseDashboardWidget />}
-					{rolesAlias?.includes('crm') && <CrmUpcomingTransitionsWidget />}
+					{/* Убран — организации теперь в виджете "Мой день" */}
 					{/* TODO: вернуть позже — виджет "Организации сотрудников" для crmAdmin */}
 					{/* {CheckAccess(['crmAdmin', 'boss', 'developer']) && <CrmStaffPowerOverviewWidget />} */}
 					{isBoss ? (

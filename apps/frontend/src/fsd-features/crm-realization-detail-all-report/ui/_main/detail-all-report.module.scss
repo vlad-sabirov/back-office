@@ -1,43 +1,48 @@
-.wrapper {
-  @apply grid gap-12;
+.heading {
+  @apply grid px-12 pb-8;
+  grid-template-columns: 1fr auto;
+
+  &__item {
+    @apply font-weight-500 text-neutral-600 m-0;
+  }
 }
 
-.team {
-  @apply grid grid-flow-col justify-start items-center gap-6;
-  grid-template-columns: auto 175px 1fr;
+.wrapper {
+  @apply grid gap-0;
+}
 
-	&__staff {
-		@apply cursor-pointer;
-	}
+.row {
+  @apply grid items-center bg-neutral-white py-4 pr-12 rounded-medium;
+  padding-left: 4px;
+  grid-template-columns: 1fr 120px;
+
+  &:hover {
+    @apply bg-neutral-50;
+  }
+
+  &__staff {
+    @apply grid grid-flow-col justify-start items-center gap-8;
+  }
+
+  &__info {
+    @apply grid gap-1;
+  }
 
   &__name {
     @apply m-0 text-neutral-black;
+    font-size: 13px;
   }
 
-  &__realization {
-    @apply m-0 text-neutral-400;
-    & span { @apply font-weight-500 text-primary-main; }
-  }
-}
-
-.employee {
-  @apply grid grid-flow-col justify-start items-center gap-6;
-  grid-template-columns: auto auto 1fr auto;
-
-  &__arrow {
-    @apply text-neutral-300 m-0;
-  }
-
-  &__name {
-    @apply m-0 text-neutral-700;
+  &__value {
+    @apply m-0 font-weight-500 text-primary-main;
+    font-size: 12px;
     & span {
-      @apply ml-4 bg-primary-50 font-weight-500 px-6 py-2 rounded-small;
-      font-size: 12px;
+      @apply text-neutral-400 font-weight-400;
     }
   }
 
-  &__realization {
-    @apply m-0 text-neutral-400;
-    & span { @apply font-weight-500 text-primary-main; }
+  &__bars {
+    @apply grid gap-3;
+    width: 120px;
   }
 }

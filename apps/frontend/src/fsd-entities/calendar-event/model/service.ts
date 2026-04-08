@@ -27,6 +27,7 @@ interface IRangeRequest {
 	from: string;
 	to: string;
 	userId?: number | string;
+	includeAuthored?: boolean;
 }
 
 export const CalendarEventApi = createApi({
@@ -62,9 +63,10 @@ export const CalendarEventApi = createApi({
 		// События + задачи за период (для страницы календаря)
 		getRangeWithTasks: builder.query<IRangeWithTasksResponse, IRangeRequest>({
 			providesTags: ['range'],
-			query: ({ from, to, userId }) => {
+			query: ({ from, to, userId, includeAuthored }) => {
 				let url = `/range-with-tasks?from=${from}&to=${to}`;
 				if (userId) url += `&userId=${userId}`;
+				if (includeAuthored) url += `&includeAuthored=true`;
 				return { url, method: 'GET' };
 			},
 		}),

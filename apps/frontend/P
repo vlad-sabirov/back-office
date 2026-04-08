@@ -1,0 +1,842 @@
+<!DOCTYPE html><html class="firsttypeofselector"><head><title>FreePBX Administration</title><meta http-equiv="Content-Type" content="text/html;charset=utf-8"><meta name="robots" content="noindex" /><link rel="shortcut icon" href="images/favicon.ico"><meta name="referrer" content="always"><link href="assets/css/bootstrap-3.3.7.min.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/css/font-awesome.min-4.7.0.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/css/bootstrap-table-dev.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/css/bootstrap-table-reorder-rows.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/css/jquery-ui-1.10.3.custom.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/css/typehead.js-bootstrap3-0.2.3.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/css/notie.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/css/text-editor-1.2.1.css?load_version=16.0.40.7" rel="stylesheet" type="text/css"><link href="assets/less/cache/lessphp_e476515529f058bb572da519ecd5b21826feb0b6.css" rel="stylesheet" type="text/css"><link rel="stylesheet" href="assets/css/outdatedbrowser.min.css?load_version=16.0.40.7"><script type="text/javascript" src="assets/js/outdatedbrowser-1.1.3.min.js?load_version=16.0.40.7"></script><script type="text/javascript" src="assets/js/jquery-3.1.1.min.js?load_version=16.0.40.7"></script><script type="text/javascript" src="assets/js/selector-set-1.1.0.js?load_version=16.0.40.7"></script><script type="text/javascript" src="assets/js/jquery.selector-set-0.2.2.js?load_version=16.0.40.7"></script><script type="text/javascript" src="assets/js/class.js?load_version=16.0.40.7"></script><script type="text/javascript" src="assets/js/jed-1.1.1.js?load_version=16.0.40.7"></script><script type="text/javascript" src="assets/js/modgettext.js?load_version=16.0.40.7"></script><script>textdomain("firewall")</script><script type="text/javascript" src="assets/js/FreePBX.js?load_version=16.0.40.7"></script><meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon" href="assets/images/badge.png" />
+<link rel="apple-touch-icon-precomposed" href="assets/images/badge.png" /></head><body><div id="page"><noscript><div class="attention">WARNING: Javascript is disabled in your browser. The FreePBX administration interface requires Javascript to run properly. Please enable javascript or switch to another  browser that supports it.</div></noscript><link href="assets/firewall/css/firewall.css" rel="stylesheet" type="text/css" /><link href="assets/firewall/less/cache/lessphp_06329483382d0de0631218a837ea08767dce1504.css" rel="stylesheet" type="text/css" /><div class="freepbx-navbar">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle navbar-left collapsed" data-toggle="collapse" data-target="#fpbx-menu-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">
+					<img src="images/tango.png" alt="FreePBX" title="FreePBX" id="MENU_BRAND_IMAGE_TANGO_LEFT" data-BRAND_IMAGE_FREEPBX_LINK_LEFT="http://www.freepbx.org" />
+				</a>
+			</div>
+			<div class="collapse navbar-collapse" id="fpbx-menu-collapse">
+				<ul class="nav navbar-nav navbar-left">
+					<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Администратор</a>
+			<ul class="dropdown-menu" role="menu"><li><a href="config.php?display=ampusers" class=" ">Администраторы</a></li><li><a href="config.php?display=allowlist" class=" ">Allowlist</a></li><li><a href="config.php?display=cli" class=" ">Командная строка Астериск</a></li><li><a href="config.php?display=astmodules" class=" ">Модули Asterisk</a></li><li><a href="config.php?display=phonebook" class=" ">Телефонная книга Астериск</a></li><li><a href="config.php?display=backup" class=" ">Резервное копирование и восстановление</a></li><li><a href="config.php?display=blacklist" class=" ">Черный список</a></li><li><a href="config.php?display=bulkhandler" class=" ">Массовый обработчик</a></li><li><a href="config.php?display=superfecta" class=" ">CID Superfecta</a></li><li><a href="config.php?display=cidlookup" class=" ">Источники поиска Caller ID</a></li><li><a href="config.php?display=certman" class=" ">Управление сертификатами</a></li><li><a href="config.php?display=cos" class=" ">Class of Service</a></li><li><a href="config.php?display=configedit" class=" ">Config Edit</a></li><li><a href="config.php?display=contactmanager" class=" ">Управление контактами</a></li><li><a href="config.php?display=customdests" class=" ">Дополнительные назначения</a></li><li><a href="config.php?display=customextens" class=" ">Особые внутренние номера</a></li><li><a href="config.php?display=featurecodeadmin" class=" ">Сервисные коды</a></li><li><a href="http://www.freepbx.org/support-and-professional-services" target="_blank"  class=" ">Поддержка FreePBX</a></li><li><a href="config.php?display=modules" class=" ">Управление модулями</a></li><li><a href="config.php?display=irc" class=" ">Онлайн поддержка</a></li><li><a href="config.php?display=restapps" class=" ">Phone Apps</a></li><li><a href="config.php?display=presencestate" class=" ">Состояние присутствия</a></li><li><a href="config.php?display=queuepausecodes" class=" ">Queue Pause Codes</a></li><li><a href="config.php?display=qrules" class=" ">Queue Penalty Rules</a></li><li><a href="config.php?display=soundlang" class=" ">Языки подсказок</a></li><li><a href="config.php?display=sysadmin" class=" ">System Admin</a></li><li><a href="config.php?display=recordings" class=" ">Записи в системе</a></li><li><a href="config.php?display=updates" class=" ">Updates</a></li><li><a href="config.php?display=userman" class=" ">Управление пользователями</a></li><li><a href="config.php?display=xmpp" class=" ">XMPP</a></li><li><a href="config.php?display=cxpanel" class=" ">iSymphonyV3</a></li></ul><li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Приложения</a>
+			<ul class="dropdown-menu" role="menu"><li><a href="config.php?display=amd" class=" ">AMD Settings</a></li><li><a href="config.php?display=announcement" class=" ">Приветствия</a></li><li><a href="config.php?display=calendar" class=" ">Calendar</a></li><li><a href="config.php?display=calendargroups" class=" ">Calendar Event Groups</a></li><li><a href="config.php?display=daynight" class=" ">Общее управление прохождения вызовов</a></li><li><a href="config.php?display=callrecording" class=" ">Запись вызова</a></li><li><a href="config.php?display=callback" class=" ">Обратный звонок</a></li><li><a href="config.php?display=conferences" class=" ">Конференции</a></li><li><a href="config.php?display=disa" class=" ">Доступ в Asterisk извне (DISA)</a></li><li><a href="config.php?display=directory" class=" ">Директории</a></li><li><a href="config.php?display=dynroute" class=" ">Dynamic Routes</a></li><li><a href="config.php?display=extensions" class=" ">Внутренние номера</a></li><li><a href="config.php?display=findmefollow" class=" ">Следуйте сюда</a></li><li><a href="config.php?display=ivr" class=" ">Интерактивное меню (IVR)</a></li><li><a href="config.php?display=languages" class=" ">Языки</a></li><li><a href="config.php?display=miscapps" class=" ">Дополнительные приложения</a></li><li><a href="config.php?display=miscdests" class=" ">Дополнительные назначения</a></li><li><a href="config.php?display=missedcall" class=" ">Missed Call Notification</a></li><li><a href="config.php?display=paging" class=" ">Пейджинг и интерком</a></li><li><a href="config.php?display=pannounce" class=" ">Park and Announce</a></li><li><a href="config.php?display=parking" class=" ">Parking</a></li><li><a href="config.php?display=pms" class=" ">Property Management</a></li><li><a href="config.php?display=queuecallback" class=" ">Queue Callback</a></li><li><a href="config.php?display=queueprio" class=" ">Приоритеты в очередях</a></li><li><a href="config.php?display=queues" class=" ">Очереди</a></li><li><a href="config.php?display=ringgroups" class=" ">Группы вызова</a></li><li><a href="config.php?display=setcid" class=" ">Установить CallerID</a></li><li><a href="config.php?display=tts" class=" ">Text To Speech</a></li><li><a href="config.php?display=timeconditions" class=" ">Правила по времени</a></li><li><a href="config.php?display=timegroups" class=" ">Временная группа</a></li><li><a href="config.php?display=vqueue" class=" ">Virtual Queues</a></li><li><a href="config.php?display=vmblast" class=" ">Групповая голосовая почта</a></li><li><a href="config.php?display=vmnotify" class=" ">Voicemail Notifications</a></li><li><a href="config.php?display=hotelwakeup" class=" ">Звонок будильника</a></li><li><a href="config.php?display=webcallback" class=" ">Web Callback</a></li></ul><li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Подключения</a>
+			<ul class="dropdown-menu" role="menu"><li><a href="config.php?display=api" class=" ">API</a></li><li><a href="config.php?display=customcontexts" class=" ">Custom Contexts</a></li><li><a href="config.php?display=customcontextsadmin" class=" ">Custom Contexts Admin</a></li><li><a href="config.php?display=dahdichandids" class=" ">DID-ы канала DAHDI</a></li><li><a href="config.php?display=dahdi" class=" ">Конфигурация DAHDi</a></li><li><a href="config.php?display=firewall" class=" active">Firewall</a></li><li><a href="config.php?display=did" class=" ">Входящая маршрутизация</a></li><li><a href="config.php?display=voipinnovations" class=" ">Metered SIP Trunking</a></li><li><a href="config.php?display=calllimit" class=" ">Outbound Call Limit</a></li><li><a href="config.php?display=routing" class=" ">Исходящая маршрутизация</a></li><li><a href="config.php?display=sipstation" class=" ">SIPSTATION</a></li><li><a href="config.php?display=sms" class=" ">SMS Webhook</a></li><li><a href="config.php?display=trunks" class=" ">Транки</a></li></ul><li><a href="config.php?display=index" >Dashboard</a></li><li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Отчеты</a>
+			<ul class="dropdown-menu" role="menu"><li><a href="config.php?display=asteriskinfo" class=" ">Информация об Asterisk</a></li><li><a href="config.php?display=logfiles" class=" ">Логфайлы Asterisk</a></li><li><a href="config.php?display=cdr" class=" ">Отчёты CDR</a></li><li><a href="config.php?display=cel" class=" ">Call Event Logging</a></li><li><a href="config.php?display=recording_report" class=" ">Call Recordings</a></li><li><a href="config.php?display=phpinfo" class=" ">Информация о PHP</a></li><li><a href="config.php?display=pinset_report" class=" ">Pinsets Code Reports</a></li><li><a href="config.php?display=printextensions" class=" ">Распечатать список внутренних номеров</a></li><li><a href="config.php?display=queuecallbackreport" class=" ">Queue Callback Report</a></li><li><a href="config.php?display=queuestats" class=" ">Queue Wallboard</a></li><li><a href="config.php?display=sms_reports" class=" ">Sms Reports</a></li><li><a href="config.php?display=voicemail_report" class=" ">Voicemail Reports</a></li><li><a href="config.php?display=weakpasswords" class=" ">Обнаружение слабых паролей</a></li><li><a href="config.php?display=cxpanel_menu" target="_blank"  class=" ">iSymphonyV3 Panel</a></li></ul><li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Настройки</a>
+			<ul class="dropdown-menu" role="menu"><li><a href="config.php?display=advancedsettings" class=" ">Дополнительные настройки</a></li><li><a href="config.php?display=iaxsettings" class=" ">Установки Asterisk для IAX</a></li><li><a href="config.php?display=logfiles_settings" class=" ">Asterisk Logfile Settings</a></li><li><a href="config.php?display=manager" class=" ">Управление пользователями Астериск</a></li><li><a href="config.php?display=arimanager" class=" ">Asterisk REST Interface Users</a></li><li><a href="config.php?display=sipsettings" class=" ">Установки Asterisk для SIP</a></li><li><a href="config.php?display=sangomacrmrest" class=" ">CRM API Settings</a></li><li><a href="config.php?display=sangomacrm" class=" ">CRM Settings</a></li><li><a href="config.php?display=endpoint" class=" ">EndPoint Manager</a></li><li><a href="config.php?display=extensionsettings" class=" ">Настройки внутренних номеров</a></li><li><a href="config.php?display=fax" class=" ">Конфигурация факса</a></li><li><a href="config.php?display=filestore" class=" ">Filestore</a></li><li><a href="config.php?display=music" class=" ">Музыка в ожидании</a></li><li><a href="config.php?display=pinsets" class=" ">Листы PIN-кодов</a></li><li><a href="config.php?display=outroutemsg" class=" ">Сообщения о проблемах на маршруте</a></li><li><a href="config.php?display=ttsengines" class=" ">Text To Speech Engines</a></li><li><a href="config.php?display=voicemail" class=" ">Администратор голосовой почты</a></li><li><a href="config.php?display=hotelwakeup_settings" class=" ">Wake Up Calls Settings</a></li></ul><li><a href="/ucp"  target="ucp">UCP</a></li>				</ul>
+			</div>
+			<ul class="stuck-right">
+									<li><a id="button_reload" class="btn btn-danger nav-button reload-btn">Apply Config</a></li>
+																			<li class="dropdown admin-btn">
+							<button class="btn dropdown-toggle nav-button" data-toggle="dropdown"><i class="fa fa-language"></i></button>
+							<ul id="fpbx_lang" class="dropdown-menu" role="menu">
+																	<li  data-lang="en_US"><a href="#">English (US)</a></li>
+																	<li  data-lang="bg_BG"><a href="#">болгарский (Болгария)</a></li>
+																	<li  data-lang="cs"><a href="#">чешский</a></li>
+																	<li  data-lang="de_DE"><a href="#">немецкий (Германия)</a></li>
+																	<li  data-lang="en_GB"><a href="#">английский (Великобритания)</a></li>
+																	<li  data-lang="es_ES"><a href="#">испанский (Испания)</a></li>
+																	<li  data-lang="fa_IR"><a href="#">персидский (Иран)</a></li>
+																	<li  data-lang="fr_FR"><a href="#">французский (Франция)</a></li>
+																	<li  data-lang="he_IL"><a href="#">иврит (Израиль)</a></li>
+																	<li  data-lang="hu_HU"><a href="#">венгерский (Венгрия)</a></li>
+																	<li  data-lang="it_IT"><a href="#">итальянский (Италия)</a></li>
+																	<li  data-lang="ja_JP"><a href="#">японский (Япония)</a></li>
+																	<li  data-lang="nl_NL"><a href="#">нидерландский (Нидерланды)</a></li>
+																	<li  data-lang="pt_BR"><a href="#">португальский (Бразилия)</a></li>
+																	<li  data-lang="pt_PT"><a href="#">португальский (Португалия)</a></li>
+																	<li  data-lang="ro_RO"><a href="#">румынский (Румыния)</a></li>
+																	<li class="disabled" data-lang="ru_RU"><a href="#">русский (Россия)</a></li>
+																	<li  data-lang="sv_SE"><a href="#">шведский (Швеция)</a></li>
+																	<li  data-lang="uk_UA"><a href="#">украинский (Украина)</a></li>
+																	<li  data-lang="vi"><a href="#">вьетнамский</a></li>
+																	<li  data-lang="zh_CN"><a href="#">китайский (Китай)</a></li>
+															</ul>
+						</li>
+										<button id="search-btn" class="btn nav-button"><i class="fa fa-search"></i></button>
+											<li class="dropdown admin-btn">
+							<button class="btn dropdown-toggle nav-button" data-toggle="dropdown"><i id="settings-cog" class="fa fa-cog"></i></button>
+							<ul class="dropdown-menu" role="menu">
+								<li role="presentation" ><a>Hello, Vlad</a></li>
+								<li role="presentation" class="divider"></li>
+								<li role="presentation" class="nav-bar-show"><a title="Nav. Bar is always shown by default or not.">Keep Nav Bar Expanded</a></li>
+								<li><a id="user_logout" href="#">Logout</a></li>
+							</ul>
+						</li>
+												</ul>
+		</div>
+	</nav>
+</div>
+	<div class="in" id='fpbxsearch'>
+		<i class="fa fa-search"></i>
+		<input type="text" class="form-control typeahead" placeholder="Search" title="Quick Search '/'">
+	</div>
+<div id="page_body">
+
+<div class='fpbx-container container-fluid'>
+	<h1>Firewall</h1>
+	<div class='row'>
+		<div class='col-sm-12'>
+			<div class='alert alert-warning' id='lockoutwarning'><p>The client machine you are using to manage this server (<tt>192.168.24.74/32</tt>) is <strong>not</strong> a member of the Trusted zone. It is highly recommended to add this client to your Trusted Zone to avoid accidental lockouts.</p><p><a href='?display=firewall&page=advanced&tab=shortcuts'>You can add the host automatically here.</a></p></div>
+<script type='text/javascript' src='modules/firewall/assets/js/views/main.js'></script>
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-dismissable alert-warning">				 
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
+          <h4> Warning! </h4> 
+          Note: The Intrusion Detection handling method has been updated recently. Please clear your browser cache and refresh if you are having issues seeing the Intrusion Detection Start/Restart/Stop button.        </div>
+      </div>
+    </div>
+</div> 
+<form method='post'>
+<div class="display no-border">
+  <div class="nav-container">
+    <ul class="nav nav-tabs list" role="tablist">
+      <li role="presentation" data-name="about" class="active">
+        <a href="#about" aria-controls="about" role="tab" data-toggle="tab">Настройки </a>
+      </li>
+      <li role="presentation" data-name="smart" class="">
+        <a href="#smart" aria-controls="smart" role="tab" data-toggle="tab">Responsive Firewall </a>
+      </li>
+      <li role="presentation" data-name="interfaces" class="">
+        <a href="#interfaces" aria-controls="interfaces" role="tab" data-toggle="tab">Interfaces </a>
+      </li>
+      <li role="presentation" data-name="networks" class="">
+        <a href="#networks" aria-controls="networks" role="tab" data-toggle="tab">Networks </a>
+      </li>
+            <li role="presentation" data-name="intrusion_detection" class="">
+        <a href="#intrusion_detection" aria-controls="intrusion_detection" role="tab" data-toggle="tab">Intrusion Detection </a>
+      </li>
+          </ul>
+    <div class="tab-content display">
+
+      <div role="tabpanel" id="about" class="tab-pane active">
+        <div class='container-fluid'>
+<h3>System Firewall</h3>
+<p>System Firewall is a fully integrated and tightly coupled firewall that constantly monitors the remote clients allowed to connect to this machine, and automatically allows access from valid hosts.</p>
+<p>This is done by a small process that runs on your PBX server that automatically updates firewall rules based on the current trunk and extension configuration of your PBX.</p>
+<div class='alert alert-warning'><p><strong>Responsive Firewall is not enabled.</strong></p>
+<p>Responsive Firewall allows your machine to automatically block attacks to your machine, while learning and automatically granting permission to authorized devices, without the need to manually configure them.</p>
+<p>You can enable Responsive Firewall in the 'Responsive Firewall' tab.</p>
+</div>
+<div class='row'>
+  <div class='form-horizontal clearfix'>
+    <div class='col-sm-4'>
+      <label class='control-label' for='ssf'>System Firewall</label>
+    </div>
+    <div class='col-sm-8'>
+      <button type='submit' name='action' value='disablefw' class='btn btn-default'>Disable Firewall</button>
+    </div>
+  </div>
+</div>
+
+<div class='row'>
+  <div class='form-horizontal clearfix'>
+    <div class='col-sm-4'>
+      <label class='control-label' for='ssfwiz'>Firewall Wizard</label>
+    </div>
+    <div class='col-sm-8'>
+      <button type='button' class='btn btn-default' id='rerunwiz'>Re-Run Wizard</button>
+    </div>
+  </div>
+</div>
+
+<script type='text/javascript'>
+$(document).ready(function() {
+	$("#rerunwiz").click(function() {
+		// Restart oobe
+		$.ajax({
+			url: window.FreePBX.ajaxurl,
+			data: { command: 'restartoobe', module: 'firewall' },
+			success: function(data) { window.location.reload(); },
+		});
+	});
+});
+</script>
+
+</div>
+      </div>
+      <div role="tabpanel" id="interfaces" class="tab-pane ">
+        
+<div class='container-fluid'>
+  <h3>Default Traffic Zones</h3>
+  <p>All interfaces must be assigned to a default zone. Any traffic received by this interface, unless overridden in Networks, will have access to the services available to this zone.</p>
+  <p>Most interfaces should be set to <strong>Internet</strong>.</p>
+  <p>A 'Trusted' interface means that <strong>no filtering</strong> will be applied to any traffic arriving at that interface. Newly discovered interfaces are set to this zone so they can be configured correctly without interfering with existing traffic.</p>
+
+<table class="table" id='interfacestable'>
+  <thead>
+    <tr>
+      <th>Interface Name</th>
+      <th>Default Zone</th>
+    </tr>
+  </thead>
+<tr id='intcount-1' class='intzone int-1' zone='trusted' data-counter='1'><td style='width: 11em '><tt class='intname'>eth1</tt></td><td><select   class='form-control intselect' name='zone-1' data-rowid='1' data-type='int' data-intname='eth1'><option value='external' >Internet (Default Firewall)</option><option value='internal' >Local (Local trusted traffic)</option><option value='other' >Другое (Other Traffic)</option><option value='reject' >Отклонить (Reject incoming traffic)</option><option value='trusted' selected>Trusted (Excluded from Firewall)</option></select></tr></td><tr data-counter='1' class='int-1 descrow' zone='trusted'><td><strong>IP Address: </td><td>172.31.3.62/24</td></tr><tr id='intdescription-1' zone='trusted' class='int-1 descrow'><td colspan=2><input counter='1'  class='description form-control' type='text' name='intdescr-1' placeholder='You can enter a short description for this interface here.' value=''></td></tr><tr id='intcount-2' class='intzone int-2' zone='trusted' data-counter='2'><td style='width: 11em '><tt class='intname'>eth2</tt></td><td><select   class='form-control intselect' name='zone-2' data-rowid='2' data-type='int' data-intname='eth2'><option value='external' >Internet (Default Firewall)</option><option value='internal' >Local (Local trusted traffic)</option><option value='other' >Другое (Other Traffic)</option><option value='reject' >Отклонить (Reject incoming traffic)</option><option value='trusted' selected>Trusted (Excluded from Firewall)</option></select></tr></td><tr data-counter='2' class='int-2 descrow' zone='trusted'><td><strong>IP Address: </td><td>192.168.25.252/23</td></tr><tr id='intdescription-2' zone='trusted' class='int-2 descrow'><td colspan=2><input counter='2'  class='description form-control' type='text' name='intdescr-2' placeholder='You can enter a short description for this interface here.' value=''></td></tr></table>
+
+</div>
+      </div>
+      <div role="tabpanel" id="smart" class="tab-pane ">
+        <div class='container-fluid'>
+<h3>Sangoma Responsive Firewall</h3>
+
+<p>When this is enabled, any incoming VoIP connection attempts that would be otherwise rejected are <strong>not blocked</strong>, and instead allowed a <strong>very limited</strong> amount of registration attempts.</p>
+<p>If the registration attempt is successful, the remote host is then added to a 'Known Good' zone, that has permission to use that protocol, and is additionally granted access to UCP, if UCP is enabled.</p>
+<p>If the incoming connection attempts are invalid, traffic from that machine will be dropped for a short period of time. If attempts to authenticate continue without success, the attacking host will be blocked for 24 hours.</p>
+<p>If fail2ban is enabled and configured on this machine, fail2ban will send you email alerts when this happens.</p>
+<p>Note that if you have explicitly granted 'External' connections access to a protocol, this filtering and rate limiting will not be used.  This is only used when an incoming connection <strong>would normally be blocked</strong>.</p>
+<div class='row'>
+  <div class='form-horizontal clearfix'>
+    <div class='col-sm-4'>
+      <label class='control-label' for='rfwstat'>Responsive Firewall</label>
+    </div>
+    <div class='col-sm-8'>
+<button type='submit' class='btn btn-default' name='action' id='rfwstate' value='enablerfw'>Включить</button>      </span>
+    </div>
+  </div>
+</div>
+
+<div class='row'>
+  <div class='form-horizontal clearfix'>
+    <div class='col-sm-4'>
+      <label class='control-label' for='chansip'>Legacy SIP (chan_sip)</label>
+    </div>
+    <div class='col-sm-8'>
+      <span class='radioset'>
+	<input type='radio' class='rfw' name='chansip' id='chansip1' value='true' checked disabled><label for='chansip1'>Включено</label>
+	<input type='radio' class='rfw' name='chansip' id='chansip2' value='false'  disabled><label for='chansip2'>Выключено</label>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+<div class="element-container">
+<div class='row'>
+  <div class="section-title" data-for="Reponsive"><h3><i class="fa fa-plus"></i> Responsive firewall threshold parameters</h3>
+  <div class="row">
+	<div class="col-md-12">
+		<div class="alert alert-warning" role="alert">
+			Exercise extreme caution when editing Responsive Threshold Parameters. Improper config can block legitimate registrations or expand access from untrusted sources</span>
+		</div>
+	</div>
+</div>
+  </div>
+  
+    <div class="section" data-id="Reponsive" style="display: none;">  
+		<div class="section-title" data-for="Ratelimit"><h3><i class="fa fa-minus"></i> Ratelimit threshold</h3></div>
+			<div class="section" data-id="Ratelimit">
+				<form  id="formreponsiveset" name="formreponsiveset">
+								<div class="element-container">
+					<div class='row'>
+						<div class='form-horizontal '>
+							<div class='col-sm-2'>
+								<label class='control-label' for='ratelimitth'>TIER1</label>
+							</div>
+							<div class='col-sm-2'>
+								Duration(s)</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxratelimit_TIER1_seconds' id='fpbxratelimit_TIER1_seconds' value=60 >
+							</div>
+							<div class='col-sm-2'>
+								Count</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxratelimit_TIER1_hitcount' id='fpbxratelimit_TIER1_hitcount' value=50 >
+							</div>
+							<div class='col-sm-2'>	
+									SHORTBLOCK									<input type='hidden' name='fpbxratelimit_TIER1_type' id='fpbxratelimit_TIER1_type' value=SHORTBLOCK >
+							</div>
+						</div>
+					</div>
+				</div>
+								<div class="element-container">
+					<div class='row'>
+						<div class='form-horizontal '>
+							<div class='col-sm-2'>
+								<label class='control-label' for='ratelimitth'>TIER2</label>
+							</div>
+							<div class='col-sm-2'>
+								Duration(s)</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxratelimit_TIER2_seconds' id='fpbxratelimit_TIER2_seconds' value=300 >
+							</div>
+							<div class='col-sm-2'>
+								Count</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxratelimit_TIER2_hitcount' id='fpbxratelimit_TIER2_hitcount' value=100 >
+							</div>
+							<div class='col-sm-2'>	
+									BLOCK									<input type='hidden' name='fpbxratelimit_TIER2_type' id='fpbxratelimit_TIER2_type' value=BLOCK >
+							</div>
+						</div>
+					</div>
+				</div>
+								<div class="element-container">
+					<div class='row'>
+						<div class='form-horizontal '>
+							<div class='col-sm-2'>
+								<label class='control-label' for='ratelimitth'>TIER3</label>
+							</div>
+							<div class='col-sm-2'>
+								Duration(s)</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxratelimit_TIER3_seconds' id='fpbxratelimit_TIER3_seconds' value=86400 >
+							</div>
+							<div class='col-sm-2'>
+								Count</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxratelimit_TIER3_hitcount' id='fpbxratelimit_TIER3_hitcount' value=200 >
+							</div>
+							<div class='col-sm-2'>	
+									BLOCK									<input type='hidden' name='fpbxratelimit_TIER3_type' id='fpbxratelimit_TIER3_type' value=BLOCK >
+							</div>
+						</div>
+					</div>
+				</div>
+							</div>
+			<div class="section-title" data-for="block"><h3><i class="fa fa-minus"></i> Block threshold</h3></div>
+				<div class="section" data-id="block">
+									<div class="element-container">
+						<div class='row'>
+							<div class='form-horizontal '>
+								<div class='col-sm-2'>
+									<label class='control-label' for='fpbxrfwth'>TIERA</label>
+								</div>
+								<div class='col-sm-2'>
+									Duration(s)</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxrfw_TIERA_seconds' id='fpbxrfw_TIERA_seconds' value=10 >
+								</div>
+								<div class='col-sm-2'>	
+									Count</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxrfw_TIERA_hitcount' id='fpbxrfw_TIERA_hitcount' value=50 >
+								</div>
+								<div class='col-sm-2'>	
+									BLOCK									<input type='hidden' name='fpbxrfw_TIERA_type' id='fpbxrfw_TIERA_type' value=BLOCK >
+								</div>
+							</div>
+						</div>
+					</div>
+										<div class="element-container">
+						<div class='row'>
+							<div class='form-horizontal '>
+								<div class='col-sm-2'>
+									<label class='control-label' for='fpbxrfwth'>TIERB</label>
+								</div>
+								<div class='col-sm-2'>
+									Duration(s)</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxrfw_TIERB_seconds' id='fpbxrfw_TIERB_seconds' value=60 >
+								</div>
+								<div class='col-sm-2'>	
+									Count</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxrfw_TIERB_hitcount' id='fpbxrfw_TIERB_hitcount' value=10 >
+								</div>
+								<div class='col-sm-2'>	
+									SHORTBLOCK									<input type='hidden' name='fpbxrfw_TIERB_type' id='fpbxrfw_TIERB_type' value=SHORTBLOCK >
+								</div>
+							</div>
+						</div>
+					</div>
+										<div class="element-container">
+						<div class='row'>
+							<div class='form-horizontal '>
+								<div class='col-sm-2'>
+									<label class='control-label' for='fpbxrfwth'>TIERC</label>
+								</div>
+								<div class='col-sm-2'>
+									Duration(s)</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxrfw_TIERC_seconds' id='fpbxrfw_TIERC_seconds' value=86400 >
+								</div>
+								<div class='col-sm-2'>	
+									Count</div><div class='col-sm-2'><input type='number' min='0' class='form-control' name='fpbxrfw_TIERC_hitcount' id='fpbxrfw_TIERC_hitcount' value=100 >
+								</div>
+								<div class='col-sm-2'>	
+									BLOCK									<input type='hidden' name='fpbxrfw_TIERC_type' id='fpbxrfw_TIERC_type' value=BLOCK >
+								</div>
+							</div>
+						</div>
+					</div>
+									</div>
+			
+			<input type="button" id="submitbutton" value="Save settings">
+			<input type="button" id="reponsivereset" value="Reset to Default">
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+<br>
+<div class='container-fluid'>
+<p>By default, Fail2Ban remains active even when responsive firewall is enabled.  This provides additional protection against attackers with access to an IP with a registered device or comprimised SIP credentials.</p>
+<p>In some situations, it may be desirable to have Responsive Firewall whitelist known registrations from Fail2Ban, so that an incorrectly configured device doesn't trip the firewall and cause legitimate devices behind the same public IP to be blocked.</p>
+<p>By enabling the bypass below, an exemption will be added to Fail2Ban for any IP that has successfully registered through the Responsive Firewall.</p>
+<div class='row'>
+  <div class='form-horizontal clearfix'>
+    <div class='col-sm-4'>
+      <label class='control-label' for='fail2banbypass'>Fail2Ban Bypass</label>
+    </div>
+    <div class='col-sm-8'>
+      <span class='radioset'>
+	<input type='radio' class='f2bmode' name='fail2banbypass' id='fail2banbypass1' value='true'  disabled><label for='fail2banbypass1'>Включено</label>
+	<input type='radio' class='f2bmode' name='fail2banbypass' id='fail2banbypass2' value='false' checked disabled><label for='fail2banbypass2'>Выключено</label>
+      </span>
+    </div>
+  </div>
+</div>
+</div>
+      </div>
+      <div role="tabpanel" id="networks" class="tab-pane ">
+        
+<div class='container-fluid'>
+	<h3>Known Network Definitions</h3>
+
+	<p>You can add individual hosts and networks to override the default permission for an interface.</p>
+	<p>Example: Interface eth0 is assigned to the 'Internet' zone, and you then add '203.55.66.77' to the 'Local' zone on this page. Any traffic arriving from 203.55.66.77 will be granted access to services usable by 'Local' zone.</p>
+	<p>Any traffic arriving at eth0 from 203.55.66.88 (or any other undefined host or network) will only have access to services available to the 'Internet' zone, as that has been set to be the default zone for traffic arriving at that interface.</p>
+	<p>You may also enter hostnames here (including Dynamic DNS hosts), which will be automatically monitored and updated.</p>
+
+	<table class="table" id='networkstable'>
+		<thead>
+			<tr>
+			<th><input type='checkbox' id='toggleall'></th>
+			<th>Network/Host</th>
+			<th>Assigned Zone</th>
+			</tr>
+		</thead>
+
+<tr class='net-1 netzone' zone='trusted' data-counter='1'><td><input data-counter='1' type='checkbox' class='checkbox'></td><td><tt counter='1'>192.168.25.177/32</tt></td><td><select class='form-control' name='zone-1' data-rowid='1' data-type='net'><option value='external' >Internet (Default Firewall)</option><option value='internal' >Local (Local trusted traffic)</option><option value='other' >Другое (Other Traffic)</option><option value='trusted' selected>Trusted (Excluded from Firewall)</option></select></tr></td><tr id='description-1' zone='trusted' class='net-1 descrow'><td></td><td colspan=2><input counter='1' class='description  form-control' type='text' name='netdescr-1' placeholder='You can enter a short description for this network here.' value=''></td></tr><tr class='net-2 netzone' zone='internal' data-counter='2'><td><input data-counter='2' type='checkbox' class='checkbox'></td><td><tt counter='2'>192.168.25.0/21</tt></td><td><select class='form-control' name='zone-2' data-rowid='2' data-type='net'><option value='external' >Internet (Default Firewall)</option><option value='internal' selected>Local (Local trusted traffic)</option><option value='other' >Другое (Other Traffic)</option><option value='trusted' >Trusted (Excluded from Firewall)</option></select></tr></td><tr id='description-2' zone='internal' class='net-2 descrow'><td></td><td colspan=2><input counter='2' class='description  form-control' type='text' name='netdescr-2' placeholder='You can enter a short description for this network here.' value=''></td></tr><tr class='net-3 netzone' zone='internal' data-counter='3'><td><input data-counter='3' type='checkbox' class='checkbox'></td><td><tt counter='3'>192.168.26.0/24</tt></td><td><select class='form-control' name='zone-3' data-rowid='3' data-type='net'><option value='external' >Internet (Default Firewall)</option><option value='internal' selected>Local (Local trusted traffic)</option><option value='other' >Другое (Other Traffic)</option><option value='trusted' >Trusted (Excluded from Firewall)</option></select></tr></td><tr id='description-3' zone='internal' class='net-3 descrow'><td></td><td colspan=2><input counter='3' class='description  form-control' type='text' name='netdescr-3' placeholder='You can enter a short description for this network here.' value=''></td></tr><tr class='net-4 netzone' zone='internal' data-counter='4'><td></td><td><input class='form-control newentry' type='text' name='newentry' data-counter='4' placeholder='Enter new IP or Hostname here'></input></td><td><select class='form-control form-inline newnetsel' name='newnetworke' data-rowid='4' data-type='net'><option value='external' >Internet (Default Firewall)</option><option value='internal' selected>Local (Local trusted traffic)</option><option value='other' >Другое (Other Traffic)</option><option value='trusted' >Trusted (Excluded from Firewall)</option></select><button data-counter='4' class='addnetwork btn x-btn btn-success pull-right' title='Add New'><i data-counter='4' class='glyphicon glyphicon-plus'></i></button></tr></td><tr id='description-4' zone='internal' class='net-4 descrow'><td></td><td colspan=2><input counter='4' class='description newentry form-control' type='text' name='netdescr-4' placeholder='You can enter a short description for this network here.' value=''></td></tr>	</table>
+</div>
+      </div>
+            <div role="tabpanel" id="intrusion_detection" class="tab-pane ">
+        <script type="text/javascript" src="modules/sysadmin/assets/js/views/intrusion_detection.js"></script><div class="element-container">
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-6">
+				<h1>Intrusion Detection</h1>
+			</div>
+			<div class="col-md-6 text-right">
+							</div>
+		</div>
+	</div>
+</div>
+<div class="well">
+	When the service is running, attempts to compromise your system are logged. If the attempts exceed the
+Max Retry limit, the remote IP is blocked from accessing the system for the length of Ban Time.  The number
+of attempts are reset after the Find Time is exceeded.<br />
+We recommend this service always run.</div>
+
+<form class="fpbx-submit" method="post" action="">
+<!--Status-->
+<div class="element-container">
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="control-label" for="sw">Состояние</label>
+			</div>
+			<div class="col-md-9">
+				<span class="label label-success">running</span>			</div>
+		</div>
+	</div>
+</div>
+<!--END Status-->
+<!--Intrusion Detection-->
+<div class="element-container">
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="control-label" for="idwrap">Intrusion Detection</label>
+				<i class="fa fa-question-circle fpbx-help-icon" data-for="idwrap"></i>
+			</div>
+			<div class="col-md-9">
+									<input type="submit" name="idaction" id="id_stop" value="Stop">
+					<input type="submit" name="idaction" id="id_restart" value="Restart">
+									<span id="doing"></span>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<span id="idwrap-help" class="help-block fpbx-help-block">Control intrusion detection.</span>
+		</div>
+	</div>
+</div>
+</form>
+<!--END Intrusion Detection-->
+<!--Ban Time-->
+<div class="element-container" >
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="control-label" for="ban_time">Ban Time</label>
+				<i class="fa fa-question-circle fpbx-help-icon" data-for="ban_time"></i>
+			</div>
+			<div class="col-md-9">
+				<input type="text" class="form-control" id="ban_time" name="ban_time" value="86400" placeholder="ban_time">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<span id="ban_time-help" class="help-block fpbx-help-block">Length of time in seconds a remote IP is banned before being reset.</span>
+		</div>
+	</div>
+</div>
+<!--END Ban Time-->
+<!--Max Retry-->
+<div class="element-container" >
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="control-label" for="max_retry">Max Retry</label>
+				<i class="fa fa-question-circle fpbx-help-icon" data-for="max_retry"></i>
+			</div>
+			<div class="col-md-9">
+				<input type="text" class="form-control" id="max_retry" name="max_retry" value="8" placeholder="max_retry">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12" >
+			<span id="max_retry-help" class="help-block fpbx-help-block">How many times a remote IP can try to connect during the find time.</span>
+		</div>
+	</div>
+</div>
+<!--END Max Retry-->
+<!--Find Time-->
+<div class="element-container" >
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="control-label" for="find_time">Find Time</label>
+				<i class="fa fa-question-circle fpbx-help-icon" data-for="find_time"></i>
+			</div>
+			<div class="col-md-9">
+				<input type="text" class="form-control" id="find_time" name="find_time" value="600" placeholder="find_time">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<span id="find_time-help" class="help-block fpbx-help-block">Number of seconds before attempts are reset.</span>
+		</div>
+	</div>
+</div>
+<!--END Find Time-->
+<!--E-mail-->
+<div class="element-container" >
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="control-label" for="email">E-mail:</label>
+				<i class="fa fa-question-circle fpbx-help-icon" data-for="email"></i>
+			</div>
+			<div class="col-md-9">
+				<input type="text" class="form-control" id="email" name="email" value="" placeholder="email">
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<span id="email-help" class="help-block fpbx-help-block">Email Address to send Notifications to. The 'From' address that emails appear to come from is configured in 'Notification Settings'</span>
+		</div>
+	</div>
+</div>
+<!--END E-mail:-->
+<!-- Sync -->
+<div class="element-container" style='display: none;'  >
+	<div class="row">
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="control-label" for="import">Import:</label>
+				<i class="fa fa-question-circle fpbx-help-icon" data-for="import"></i>
+			</div>
+			<div class="col-md-9">
+				<div class="btn-group btn-group-md" role="group">
+					<button id="idrefresh" class="btn btn-info" type="button" >
+						<i class="fa fa-refresh" title="Updates the whitelist according to the options chosen."></i>
+					</button> 				 
+					<button id="idregextip" class="btn btn-secondary" type="button" >
+						Registered Ext. IPs
+					</button> 
+					<button id="idtrustedzone" class="btn btn-secondary" type="button" >
+						Trusted Zone
+					</button> 
+					<button id="idlocalzone" class="btn btn-secondary" type="button" >
+						Local Zone
+					</button> 
+					<button id="idotherzone" class="btn btn-secondary" type="button" >
+						Other Zone
+					</button>
+					<button id="clearall" class="btn btn-secondary" type="button">
+						Clear All
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<span id="import-help" class="help-block fpbx-help-block">Import all IP addresses from all source types. You can select Registered Extension IPs, and various zones at once. Also, you can select Clear All to remove all entries from the whitelist.'</span>
+		</div>
+	</div>
+</div>
+<!-- End of Sync -->
+<div class="element-container" >
+</div>
+	<!--Whitelist-->
+	<div class="element-container" >
+		<div class="row">
+			<div class="form-group">
+				<div class="col-md-3">
+					<label class="control-label" for="whitelist">Whitelist</label>
+					<i class="fa fa-question-circle fpbx-help-icon" data-for="whitelist"></i>
+				</div>
+				<div class="col-md-9">
+					<textarea class="form-control" pattern="^(\b(?:\d{1,3}\.){3}\d{1,3}\b)$|^(\b(?:\d{1,3}\.){3}\d{1,3}\b)\/\d{1,2}$|^((\w|\d|[-\.]){1,})+(\w|\d|[-])$|^()$|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$" id="whitelist" name="whitelist" rows="3"">127.0.0.1
+192.168.26.36/24
+192.168.24.247
+192.168.24.103/32
+192.168.24.236/32</textarea>
+				</div>
+			</div>
+		</div>
+		<p></p>
+		<div class="row">
+			<div class="col-md-12">
+				<span id="whitelist-help" class="help-block fpbx-help-block">List of IPv4/6 addresses that will never be banned by Intrusion Detection. One address per line with no separators.</span>
+			</div>
+		</div>
+	</div>
+	<!--END Whitelist-->	
+	<div class="panel panel-default" >
+	<div class="panel-heading">
+		<h3 class="panel-title">IPs that are currently banned.</h3>
+	</div>
+	<div class="panel-body" id="banned-area">
+		192.168.25.235/32 (PBX-GUI), 192.168.24.74/32 (SSH)
+	</div>
+	</div>
+	
+<script>
+  window.actionEvents = {
+    'click .unban': function (e, value, row) {
+		console.log("sdsds");
+		var d = { command: 'unban', module: 'firewall', ip: row.ip};
+		$.ajax({
+			url: window.FreePBX.ajaxurl,
+			data: d,
+			async: false,
+			success: function(data) {
+				// Do something if necessary
+			}
+		});	 
+		$('#banlisttable').bootstrapTable('refresh');
+	},
+	'click .move-to-whitelist': function (e, value, row) {
+		var d = { command: 'move_to_whitelist', module: 'firewall', ip: row.ip};
+		$.ajax({
+			url: window.FreePBX.ajaxurl,
+			data: d,
+			async: false,
+			success: function(data) {
+				// Do something if necessary
+			}
+		});	 
+		$('#banlisttable').bootstrapTable('refresh');
+		$('#whitelisttable').bootstrapTable('refresh');
+	},
+  }
+
+  window.actionwlEvents = {
+	'click .del-custom': function (e, value, row) {
+		var d = { command: 'del_custom', module: 'firewall', ip: row.source};
+		$.ajax({
+			url: window.FreePBX.ajaxurl,
+			data: d,
+			async: false,
+			success: function(data) {
+				// Do something if necessary
+			}
+		});	 
+		$("#needApply").show();
+		$('#whitelisttable').bootstrapTable('refresh');
+	}
+  }
+
+  function actionFormatter(value, row, index) {
+    return [
+      '<i class="fa fa-trash unban" title="'+_("Remove this one.")+'" > <i class="fa fa-share move-to-whitelist" title="'+_("Move this one to the custom whitelist.")+'"></i>'
+    ].join('')
+  }
+
+  function actionwlFormatter(value, row, index) {
+	if(row.type == "Unresolved!!"){
+		fpbxToast('Hostname "'+row.source+'", IP address not resolved.','Error','error');
+		return [''].join('');
+	}
+	if(row.type == "Custom"){
+		return [
+		'<i class="fa fa-trash del-custom" title="'+_("Delete this one")+'">'
+		].join('')
+	}
+    return [
+      ''
+    ].join('')
+  }
+
+    function rowStyleBan(row, index) {
+
+	switch(row.type){
+		case "(SIP)":
+			return {
+				css: {
+						background: '#FCDBDB',
+					}
+			}
+		case "(SSH)":
+			return {
+				css: {
+						background: '#FFCECE',
+					}
+			}
+		case "(apache-auth)":
+			return {
+				css: {
+						background: '#FCB9BC',
+					}
+			}
+		case "(FTP)":
+			return {
+				css: {
+						background: '#FFA7AD',
+					}
+			}
+		case "(BadBots)":
+			return {
+				css: {
+						background: '#FF8B90',
+					}
+			}	
+		default:
+			return {
+				css: {
+					background: '#FCCACA'
+				}
+			}
+	}
+
+  }
+
+  function rowStyle(row, index) {
+
+	switch(row.type){
+		case "Hosts":
+		case "Trusted":
+			return {
+				css: {
+						background: '#A2EDBF',
+					}
+			}
+		case "Local":
+			return {
+				css: {
+						background: '#B4F0C6',
+					}
+			}
+		case "Other":
+			return {
+				css: {
+						background: '#71F098',
+					}
+			}
+		case "Custom":
+			return {
+				css: {
+						background: '#3EE871',
+					}
+			}
+		case "Ext. Registered":
+			return {
+				css: {
+						background: '#BCF071',
+					}
+			}
+		default:
+			return {
+				css: {
+					background: '#F08174'
+				}
+			}
+	}
+
+  }
+</script>
+<style>
+:invalid, .error {
+    background-color: #F2DEDE;
+}
+</style>
+      </div>
+          </div>
+  </div>
+</div>
+
+</form>
+		</div>
+	</div> <!-- /row -->
+</div> <!-- /container-fluid -->
+
+<script>
+var timezone = 'Asia/Tashkent';
+var language = 'ru_RU';
+var UIDEFAULTLANG = 'ru_RU';
+var PHPTIMEZONE = 'Asia/Tashkent';
+var datetimeformat = 'llll';
+var dateformat = 'l';
+var timeformat = 'LT';
+</script>
+</div></div><div id="footer"><hr /><div id="floating-nav-bar" class="col-xs-6"><button id="fixed-list-button" type="button" class="btn btn-primary"><i class="fa fa-list"></i></button><div class="floating-nav-bar-contents"><div class="bootnav">
+	<div class='list-group'>
+		<a href='?display=firewall&page=about' class='list-group-item active'>Main</a><a href='?display=firewall&page=status' class='list-group-item '>Состояние</a><a href='?display=firewall&page=services' class='list-group-item '>Services</a><a href='?display=firewall&page=advanced' class='list-group-item '>Расширенный</a>	</div>
+</div></div></div><div id="action-bar"><div id="action-buttons"><button id="action-bar-hide" class="btn"><i class="fa fa-angle-double-right"></i></button><input  name="saveids" type="submit" value="Save Intrusion Detection" id="saveids" style="display: none" ><input  name="delsel" type="submit" value="Удалить выбранный" id="delsel" style="display: none" ><input  name="saveints" type="submit" value="Update Interfaces" id="saveints" style="display: none" ><input  name="savenets" type="submit" value="Сохранить" id="savenets" style="display: none" ></div></div><div id="footer_content" class="row"><div class="col-md-4">
+	<a target="_blank" href="http://www.freepbx.org" ><img id="footer_logo1" src="/admin/images/freepbx_small.png?load_version=16.0.40.7" alt="FreePBX&reg;"/>
+	</a>
+	</div><div class="col-md-4" id="footer_text"><a href="http://www.freepbx.org" target="_blank">FreePBX</a> is a registered trademark of<br /><a href="http://www.freepbx.org/copyright.html" target="_blank"> Sangoma Technologies Inc.</a><br />FreePBX 16.0.40.7 is licensed under the <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank"> GPL</a><br /><a href="http://www.freepbx.org/copyright.html" target="_blank">Copyright&copy; 2007-2026</a></div><div class="col-md-4">
+	<a target="_blank" href="http://www.sangoma.com" ><img id="footer_logo" src="/admin/images/sangoma-horizontal_thumb.png" alt="www.sangoma.com"/>
+	</a>
+	</div></div></div>
+<script type="text/javascript">var fpbx={"conf":{"AS_DISPLAY_FRIENDLY_NAME":1,"AS_DISPLAY_HIDDEN_SETTINGS":0,"AS_DISPLAY_READONLY_SETTINGS":0,"AS_OVERRIDE_READONLY":0,"HTTPENABLESTATIC":0,"HTTPENABLED":1,"HTTPTLSENABLE":1,"HTTPWEBSOCKETMODE":"pjsip","HTTPBINDADDRESS":"::","HTTPBINDPORT":8088,"HTTPPREFIX":"","HTTPTLSBINDADDRESS":"::","HTTPTLSBINDPORT":8089,"TLSDISABLEV1":1,"TLSDISABLEV11":0,"TLSDISABLEV12":0,"HTTPTLSCERTFILE":"\/etc\/asterisk\/keys\/integration\/certificate.pem","HTTPTLSPRIVATEKEY":"\/etc\/asterisk\/keys\/integration\/webserver.key","HTTPSESSIONINACTIVITY":30000,"HTTPSESSIONKEEPALIVE":15000,"HTTPSESSIONLIMIT":100,"ASTMGRWRITETIMEOUT":5000,"ENABLE_ARI":1,"FPBX_ARI_USER":"freepbxuser","ARI_ALLOWED_ORIGINS":"localhost:8088","FPBX_ARI_PASSWORD":"7b03433753791139e2d6c4c66a62b015","ENABLE_ARI_PP":0,"ARI_WS_WRITE_TIMEOUT":100,"CA_CALL_DECK_PRIORITY":"Trunks","DAYNIGHTTCHOOK":0,"CALLREC_BEEP_PERIOD":"","CALL_REC_OPTION":1,"CDR_BATCH_ENABLE":1,"CDR_BATCH":0,"CDR_BATCH_SIZE":200,"CDR_BATCH_TIME":300,"CDR_BATCH_SCHEDULE_ONLY":0,"CDR_BATCH_SAFE_SHUT_DOWN":1,"TRANSIENTCDR":1,"CEL_ENABLED":1,"CELDBNAME":"","CELDBTABLENAME":"","CERT_DAYS_VAL":"730","FORCEALLOWCONFRECORDING":0,"ENABLE_FAVORITE_CONTACTS":0,"CONTACTMANLOOKUPLENGTH":7,"JOBSRANDOMSLEEP":0,"FWJOBS_LOGS":0,"DAHDISHOWDIGITALCHANS":0,"DAHDIEXEC":"\/etc\/init.d\/dahdi","DAHDIMODULESLOC":"\/etc\/dahdi\/modules","DAHDIDISABLEWRITE":1,"DAHDIMODPROBELOC":"\/etc\/modprobe.d\/dahdi.conf","DAHDIECHOCAN":"oslec","DAHDISYSTEMLOC":"\/etc\/dahdi\/system.conf","DAHDIMOCKHW":0,"SYS_STATS_DISABLE":0,"VIEW_FW_STATUS":1,"SYS_STATS_MAXAGE":50,"FORCE_JS_CSS_IMG_DOWNLOAD":0,"AMPLOCALBIN":"","FPBXDBUGFILE":"\/var\/log\/asterisk\/freepbx_dbug","DEVEL":0,"FPBXDBUGDISABLE":1,"DISABLE_CSS_AUTOGEN":0,"MODULEADMIN_SKIP_CACHE":0,"DISPLAY_MONITOR_TRUNK_FAILURES_FIELD":0,"JQMIGRATE":1,"ENABLE_MIRROR_LOG":0,"FPBXPERFLOGGING":0,"DEVELRELOAD":0,"POST_RELOAD_DEBUG":0,"POST_RELOAD":"","PRE_RELOAD":"","DIE_FREEPBX_VERBOSE":0,"USE_PACKAGED_JS":1,"DEVICE_STRONG_SECRETS":1,"DEVICE_REMOVE_MAILBOX":0,"DEVICE_SIP_CANREINVITE":"no","DEVICE_SIP_DTMF":"rfc2833","DEVICE_SIP_TRUSTRPID":"yes","DEVICE_SIP_SENDRPID":"pai","DEVICE_SIP_NAT":"yes","DEVICE_SIP_ENCRYPTION":"no","DEVICE_SIP_QUALIFYFREQ":60,"DEVICE_QUALIFY":"yes","DEVICE_ALLOW":"","DEVICE_DISALLOW":"","DEVICE_CALLGROUP":"","DEVICE_PICKUPGROUP":"","TRANSFER_CONTEXT":"from-internal-xfer","ATTTRANSALERTINFO":"inherit","BLINDTRANSALERTINFO":"inherit","BLOCK_OUTBOUND_TRUNK_CNAM":0,"CFRINGTIMERDEFAULT":"0","REC_POLICY":"caller","ASTCONFAPP":"app_confbridge","ZAP2DAHDICOMPAT":1,"TONEZONE":"us","ENABLECW":1,"DISABLECUSTOMCONTEXTS":0,"DITECH_VQA_INBOUND":"7","DITECH_VQA_OUTBOUND":"7","DYNAMICHINTS":0,"RFC7462":1,"CONCURRENCYLIMITDEFAULT":"3","FCBEEPONLY":0,"FORCE_INTERNAL_AUTO_ANSWER_ALL":0,"DIVERSIONHEADER":0,"INTERNALALERTINFO":"inherit","DEFAULT_INTERNAL_AUTO_ANSWER":"disabled","NOOPTRACE":"0","CWINUSEBUSY":1,"CID_PREPEND_REPLACE":1,"ASTSTOPPOLLINT":"2","ASTSIPDRIVER":"chan_sip","TIMEFORMAT":"12 Hour Format","TRUNK_RING_TIMER":300,"AMPBADNUMBER":1,"USEGOOGLEDNSFORENUM":0,"ASTSTOPTIMEOUT":"120","ASTAGIDIR":"\/var\/lib\/asterisk\/agi-bin","ASTVARLIBDIR":"\/var\/lib\/asterisk","ASTETCDIR":"\/etc\/asterisk","ASTLOGDIR":"\/var\/log\/asterisk","ASTMODDIR":"\/usr\/lib64\/asterisk\/modules","ASTRUNDIR":"\/var\/run\/asterisk","ASTSPOOLDIR":"\/var\/spool\/asterisk","AMPPLAYBACK":"\/var\/lib\/asterisk\/playback","CERTKEYLOC":"\/etc\/asterisk\/keys","AMPCGIBIN":"\/var\/www\/cgi-bin","AMPBIN":"\/var\/lib\/asterisk\/bin","AMPSBIN":"\/usr\/sbin","AMPWEBROOT":"\/var\/www\/html","MOHDIR":"moh","FOPWEBROOT":"cxpanel","FOLLOWME_AUTO_CREATE":0,"FOLLOWME_DISABLED":1,"FOLLOWME_TIME":"20","FOLLOWME_PRERING":"7","FOLLOWME_RG_STRATEGY":"ringallv2-prim","FPBXOPMODE":"advanced","BADDESTABORT":0,"XTNCONFLICTABORT":0,"CHECKREFERER":1,"ENABLEOLDDIALPATTERNS":0,"SERVERINTITLE":0,"CUSTOMASERROR":1,"RELOADCONFIRM":1,"MODULEADMINEDGE":0,"SHOWLANGUAGE":1,"SIPSECRETSIZE":32,"USE_FREEPBX_MENU_CONF":0,"MODULEADMINWGET":0,"AST_APP_VQA":"","ASTVERSION":"16.30.0","CACHE_CLEANUP_DAYS":30,"NOTICE_BROWSER_STATS":1,"mainstyle_css_generated":"","MODULE_REPO":"https:\/\/mirror.freepbx.org","SESSION_TIMEOUT":2592000,"SIPUSERAGENT":"FPBX","VIEW_ZEND_CONFIG":"views\/zend_config.php","BLACKLIST_DISABLE_GRID_COUNT":0,"ALLOW_MODULE_HOOK_IN":0,"PAGINGMAXPARTICIPANTS":40,"PAGING_D_P_AlertInfo":"ring-answer","DPMAapps_LOG":0,"ENABLE_RESTAPPS_TOKEN_SEC":0,"PM2DISABLELOG":0,"PM2PROXY":"http:\/\/mirror.freepbx.org:6767\/","PM2SHELL":"\/bin\/bash","PM2USECACHE":1,"PM2USEPROXY":0,"PROXY_ENABLED":0,"PROXY_ADDRESS":"","PROXY_USERNAME":"","PROXY_PASSWORD":"","DASHBOARD_OVERRIDE":"","DASHBOARD_OVERRIDE_BASIC":"","VQPLUSRETENTION":"20","QSTATSDATARETENTION":30,"QSTATSSYNCCUTOFF":"1 week","QUEUES_PESISTENTMEMBERS":1,"QUEUES_SHARED_LASTCALL":1,"QUEUES_UPDATECDR":0,"QUEUES_MIX_MONITOR":1,"QUEUES_EVENTS_WHEN_CALLED_DEFAULT":0,"QUEUES_EVENTS_MEMEBER_STATUS_DEFAULT":0,"QXACTDATARETENTION":90,"QLOGDATARETENTION":0,"QXACTREMOTEDBTABLENAME":"","CDRUSEGMT":0,"EXTENSION_LIST_RINGGROUPS":0,"CRM_CACHE_EXPIRE":300,"CRM_CUSTOM_URL":"","CRM_LOG":1,"CRM_AUTH_URL":"https:\/\/api.sangoma.com\/crmauth","SANGOMA_RTAPI_ENABLE_LOGS":0,"RTAPI_FEATURE_LOGS_INTERCOM":0,"RTAPI_FEATURE_LOGS_QUEUE_APP":0,"RTAPI_FEATURE_LOGS_CONFERENCE":0,"RTAPI_FEATURE_LOGS_MAKING_CALLS_WITH":0,"SANGOMACONNECTBINDADDRESS":"127.0.0.1","SANGOMACONNECTENABLED":0,"SANGOMACONNECTCLOUDTOKEN":"","SANGOMACONNECTCOMMANDTOKEN":"7c425e03aad3da19b14e0fb8ddc3a00f39fcb146","SANGOMACONNECTDOMAIN":"","SANGOMACONNECTLICENSE":"{\"org_id\":null,\"org_name\":null}","SANGOMACONNECTBINDPORT":8443,"SANGOMACONNECTTLSCERTFILE":"","SANGOMACONNECTTLSPRIVATEKEY":"","SS_API_URL":"https:\/\/push2.schmoozecom.com\/sipstation","ENABLE_SS_PJSIP":1,"IOTENABLED":1,"IOTEXPOSEWEB":0,"IOTCLOUDTOKEN":"","IOTCOMMANDTOKEN":"61ba437a51fdb4e61daf34babdead02275106bba","IOTDOMAIN":"","IOTLICENSE":"{\"location_limit\":100,\"zone_limit\":100,\"scene_limit\":100,\"group_limit\":1000,\"door_limit\":100,\"org_id\":null,\"org_name\":null}","IOTBINDPORT":8100,"IOTDISPLAYNAME":"SmartOffice","IOTTLSCERTFILE":"","IOTTLSPRIVATEKEY":"","PDFAUTHOR":"www.freepbx.org","BRAND_IMAGE_FAVICON":"images\/favicon.ico","BRAND_IMAGE_TANGO_LEFT":"images\/tango.png","BRAND_TITLE":"FreePBX Administration","BRAND_IMAGE_FREEPBX_FOOT":"images\/freepbx_small.png","BRAND_IMAGE_SPONSOR_FOOT":"images\/sangoma-horizontal_thumb.png","BRAND_FREEPBX_ALT_LEFT":"FreePBX","BRAND_FREEPBX_ALT_FOOT":"FreePBX&reg;","BRAND_SPONSOR_ALT_FOOT":"www.sangoma.com","BRAND_IMAGE_FREEPBX_LINK_LEFT":"http:\/\/www.freepbx.org","BRAND_IMAGE_FREEPBX_LINK_FOOT":"http:\/\/www.freepbx.org","BRAND_IMAGE_SPONSOR_LINK_FOOT":"http:\/\/www.sangoma.com","BRAND_CSS_ALT_MAINSTYLE":"","BRAND_CSS_ALT_POPOVER":"","BRAND_CSS_CUSTOM":"","VIEW_FREEPBX_ADMIN":"views\/freepbx_admin.php","VIEW_FREEPBX":"views\/freepbx.php","VIEW_FREEPBX_RELOAD":"views\/freepbx_reload.php","VIEW_FREEPBX_RELOADBAR":"views\/freepbx_reloadbar.php","VIEW_WELCOME":"views\/welcome.php","VIEW_WELCOME_NONMANAGER":"views\/welcome_nomanager.php","VIEW_MENUITEM_DISABLED":"views\/menuitem_disabled.php","VIEW_NOACCESS":"views\/noaccess.php","VIEW_UNAUTHORIZED":"views\/unauthorized.php","VIEW_BAD_REFFERER":"views\/bad_refferer.php","VIEW_LOGGEDOUT":"views\/loggedout.php","VIEW_PANEL":"views\/panel.php","VIEW_REPORTS":"views\/reports.php","VIEW_MENU":"views\/menu.php","VIEW_OBE":"views\/obe.php","VIEW_BETA_NOTICE":"views\/beta_notice.php","JQUERY_CSS":"assets\/css\/jquery-ui.css","VIEW_LOGIN":"views\/login.php","VIEW_HEADER":"views\/header.php","VIEW_FOOTER":"views\/footer.php","VIEW_POPOVER_JS":"views\/popover_js.php","VIEW_UCP_FOOTER_CONTENT":"views\/dashfootercontent.php","VIEW_UCP_ICONS_FOLDER":"assets\/icons","VIEW_UCP_IMAGE_FOLDER":"assets\/images","BRAND_ALT_JS":"","DASHBOARD_FREEPBX_BRAND":"FreePBX","VIEW_FOOTER_CONTENT":"views\/footer_content.php","FREEI221":1,"WHICH_asterisk":"\/usr\/sbin\/asterisk","WHICH_at":"\/usr\/bin\/at","WHICH_ffmpeg":"\/usr\/bin\/ffmpeg","WHICH_fwconsole":"\/usr\/sbin\/fwconsole","WHICH_gs":"\/usr\/bin\/gs","WHICH_ipset":"\/usr\/sbin\/ipset","WHICH_lame":"\/usr\/bin\/lame","WHICH_mailq":"\/usr\/bin\/mailq","WHICH_mpg123":"\/usr\/bin\/mpg123","WHICH_mysqldump":"\/usr\/bin\/mysqldump","WHICH_netstat":"\/usr\/bin\/netstat","WHICH_openssl":"\/usr\/bin\/openssl","WHICH_route":"\/usr\/sbin\/route","WHICH_rsync":"\/usr\/bin\/rsync","WHICH_sox":"\/usr\/bin\/sox","WHICH_tail":"\/usr\/bin\/tail","WHICH_tiff2pdf":"\/usr\/bin\/tiff2pdf","WHICH_tiffinfo":"\/usr\/bin\/tiffinfo","WHICH_touch":"\/usr\/bin\/touch","AMPSYSLOGLEVEL":"FILE","AMPDISABLELOG":0,"LOG_OUT_MESSAGES":1,"AUTOMODULEUPDATESANDRELOAD":0,"AMPSHOWUPDATESONSSH":0,"LOG_NOTIFICATIONS":1,"MDATETIMEFORMAT":"llll","MDATEFORMAT":"l","FPBX_LOG_FILE":"\/var\/log\/asterisk\/freepbx.log","MTIMEFORMAT":"LT","PHP_CONSOLE":0,"PHP_CONSOLE_PASSWORD":"batteryhorsestaple","PHP_ERROR_HANDLER_OUTPUT":"freepbxlog","PHP_ERROR_LEVEL":"ALL_NOSTRICTNOTICE","AGGRESSIVE_DUPLICATE_CHECK":0,"AMPEXTENSIONS":"extensions","EXPOSE_ALL_FEATURE_CODES":0,"AUTHTYPE":"usermanager","AMP_ACCESS_DB_CREDS":0,"FORCED_ASTVERSION":"","BROWSER_STATS":1,"CACHERTCLASSES":1,"UIDEFAULTLANG":"ru_RU","SIGNATURECHECK":1,"AMPTRACKENABLE":1,"REMOTEUNLOCK":0,"AMPWEBADDRESS":"","PHPTIMEZONE":"Asia\/Tashkent","FREEPBX_SYSTEM_IDENT_REM_DASHBOARD_HELP":"no","RSSFEEDS":"http:\/\/www.freepbx.org\/rss.xml\r\nhttp:\/\/feeds.feedburner.com\/InsideTheAsterisk","FREEPBX_SYSTEM_IDENT":"VoIP Server","AMPENGINE":"asterisk","USE_GOOGLE_CDN_JS":0,"TCMAINT":1,"TCINTERVAL":"60","NODEJSENABLED":1,"NODEJSTLSENABLED":1,"NODEJSBINDADDRESS":"::","NODEJSBINDPORT":8001,"NODEJSHTTPSBINDADDRESS":"::","NODEJSHTTPSBINDPORT":8003,"NODEJSTLSCERTFILE":"\/etc\/asterisk\/keys\/integration\/certificate.pem","NODEJSTLSPRIVATEKEY":"\/etc\/asterisk\/keys\/integration\/webserver.key","UCPCHANGEPASSWORD":1,"UCPCHANGEUSERNAME":1,"UCPRSSFEEDS":"","UCPSESSIONTIMEOUT":"30","AMPUSERMANEMAILFROM":"","USERMAN_ENABLE_CALL_ACTIVITY_GROUPS":0,"USERMAN_CALL_ACTIVITY_GRP_USER_LIMIT":30,"VMX_LOOPDEST_EXT":"dovm","VMX_TIMEDEST_EXT":"dovm","VMX_CONTEXT":"from-internal","VMX_LOOPDEST_CONTEXT":"","VMX_TIMEDEST_CONTEXT":"","VMX_PRI":1,"VMX_LOOPDEST_PRI":1,"VMX_TIMEDEST_PRI":1,"USERESMWIBLF":1,"VM_SHOW_IMAP":0,"UCP_MESSAGE_LIMIT":3000,"ENABLE_VI_PJSIP":1,"VI_API_URL":"https:\/\/backoffice.voipinnovations.com\/sipstation","ZULUENABLED":1,"ZULUMAXVIDEOSTREAMS":8,"ZULURTCMAXPORT":59999,"ZULURTCMINPORT":40000,"ZULUBINDADDRESS":"0.0.0.0","ZULUBINDPORT":8002,"ZULUCOMMANDBINDPORT":7999,"ZULUCOMMANDTOKEN":"c9edfa1db608b4d025a913e3b129dca4c885c643","ZULUCONFERENCEPREFIX":"*89","ZULUTLSCERTFILE":"\/etc\/asterisk\/keys\/integration\/certificate.pem","ZULUTLSPRIVATEKEY":"\/etc\/asterisk\/keys\/integration\/webserver.key","MIXMON_DIR":"","TRUNK_OPTIONS":"T","CLEARGLOBALVARS":0,"INBOUND_NOTRANS":1,"CONNECTEDLINE_PRESENCESTATE":1,"LAUNCH_AGI_AS_FASTAGI":1,"RINGTIMER":"15","DIALPARTIESDIALPLAN":0,"DIAL_OPTIONS":"HhTtr","OUTBOUND_CID_UPDATE":1,"OUTBOUND_DIAL_UPDATE":1,"MIXMON_POST":"","MIXMON_FORMAT":"wav","USEDEVSTATE":1,"USEQUEUESTATE":1,"ALWAYS_SHOW_DEVICE_DETAILS":1,"AST_FUNC_DEVICE_STATE":"DEVICE_STATE","AST_FUNC_EXTENSION_STATE":"EXTENSION_STATE","AST_FUNC_PRESENCE_STATE":"PRESENCE_STATE","AST_FUNC_SHARED":"SHARED","AST_FUNC_CONNECTEDLINE":"CONNECTEDLINE","AST_FUNC_MASTER_CHANNEL":"MASTER_CHANNEL","datasource":"","text_dir":"ltr","uniqueid":"1717683d-e661-4179-8ffe-2ceeb06a13b0","dist":{"pbx_type":"freepbxdistro","pbx_version":"12.7.8-2306-1.sng7"},"ver":"16.0.40.7","reload_needed":false,"brandid":"freepbxdistro","modules":{"sysadmin":{"deployment_id":"96377919","zendid":null,"machineid":"B8:97:5A:CC:F3:AC"}}},"msg":{"framework":{"reload_unidentified_error":" error(s) occurred, you should view the notification log on the dashboard or main screen to check for more details.","close":"Close","continuemsg":"Continue","cancel":"\u041e\u0442\u043c\u0435\u043d\u0430","retry":"Retry","update":"Update","save":"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c","bademail":"Invalid email address","updatenotifications":"Update Notifications","securityissue":"Security Issue","validation":{"duplicate":" extension number already in use by: ","delete":"Are you sure you want to delete this?"},"noupdates":"Are you sure you want to disable automatic update notifications? This could leave your system at risk to serious security vulnerabilities. Enabling update notifications will NOT automatically install them but will make sure you are informed as soon as they are available.","noupemail":"Are you sure you don't want to provide an email address where update notifications will be sent. This email will never be transmitted off the PBX. It is used to send update and security notifications when they are detected.","invalid_responce":"Error: Did not receive valid response from server","invalid_response":"Error: Did not receive valid response from server","validateSingleDestination":{"required":"Please select a \"Destination\"","error":"Custom Goto contexts must contain the string \"custom-\".  ie: custom-app,s,1"},"weakSecret":{"length":"The secret must be at minimum six characters in length.","types":"The secret must contain at least two numbers and two letters."}}}};
+var extmap={"100":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Viktoriya_resepshen","101":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Janna_Sokolova_Rukovodstvo","105":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Sergey_Klimenko_pom_menedjer","107":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Yuliya_Romanik_pom_Menedjera","110":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Artur_Shegay_pom_menedjera","111":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Muslim_Kushaev_Menedjer","112":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Abdumalik_Axmedv_Logist","113":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Saydulla_Xidoyatov_pom_menedjera","114":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Aleksandr_Mixaylov_Menedjer","115":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Aziz_Radjabov_Menedjer","116":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Karina_Panteleeva_pom_menedjer","117":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Liliya_Mixalyova_Menedjer","118":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Anna_Buyanova_Menedjer","120":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Alina_Fokina_pom_menedjera","121":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Irina_Moseva_Menedjer","123":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Nurmuhammad_Hasanov","125":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Suren_Abramyan_Logist","127":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Gayrat_Sabirov_Logist","130":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ludmila","131":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Timur_Burhanov_Menedjer","132":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ekaterina_Pakkert_zavsklad","133":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Dmitriy_Jukov_Menedjer","134":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Rumiya_Podmaryova_pom_menedjera_Ira","138":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Angelina_Mun","140":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Mixail_Chin_Yuy_Li_Gruzchik","141":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Sobir_Toshtemirov_Gruzchik","142":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Otabek_Saparov_Gruzchik","147":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Shaxnoza_Juraeva_cleaning_lady","155":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ramil_Hozin_VED","158":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Gofur_Umarov_Logist","159":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Evgeniy_Admin","200":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Bahodir_Razikov_VED","201":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ravshan_Ismailov_Menedjer","203":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ikrom_Ibrogimov_pom_menedjera","204":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Arsen_Pogosyan_Menedjer","205":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Lyudmila_Tadjihanova_Zavsklad","206":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Romesh_Razikov_Logist","210":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Farruh_Razikov_Zavsklad","211":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Muzoffar_Xadjaev_Gruzchik","243":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Kaxramon_Xasanov_Gruzchik","244":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Abror_Raximdjanov_Gruzchik","246":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Nishonboy_Niyazov_Gruzchik","247":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Olga_Ivachyova_cleaning_lady","248":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ilhom_Baratov_Gruzchik","249":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Timur_Razikov_Gruzchik","301":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Bux","302":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ekaterina_Charegorodcheva_Buhgalter","303":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ekaterina_Isaeva_Buhgalter","304":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Tsarevskaya Elena Grigoryevna","305":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Alina_Bakieva_Buhgalter","307":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Diana_Shvets_Buhgalter","308":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Irina_Kamilova_O_K","309":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ismailova_Sevda_Buhgalter","311":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Galina_Buhgalter","312":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Sevda_Buhgalter","313":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Kristina_Negievich_Buhgalter","401":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ekaterina_Tsareva_Secretary","402":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Guzalya_Kushaeva_Secretary","501":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Aleksandra_Trashakova_VED","502":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Aziz_Fayzimuratov_VED","503":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Viktoriya_Ogay_VED","561":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Romanik_Ulia","601":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Pulat_Xalikov_Zam_Direktor","602":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Aziz_Shaimov_Zavsklad","611":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Feruza_Ismatova_cleaning_lady","612":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Mihail_Karkaev_Security","613":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Nikolay_Petrov_Security","614":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Valera_Popov_Security","615":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Ilxomjon_Xidirov_Gruzchik","616":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Nikolay_Melkonyan_Nalogoviy_Konsultant","708":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Rishat_Xozin_Direktor","787":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Vadim_Shegay_Direktor","888":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Amal","900":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Natalia_Suprunova","911":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: 911","999":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Jenya","1008":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: test1008","1229":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Custom 1129","1500":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: test-mobile","2201":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Custom 201","2203":"\u0412\u043d\u0443\u0442\u0440\u0435\u043d\u043d\u0438\u0439 \u043d\u043e\u043c\u0435\u0440: Custom 203","*38":"Featurecode: allowlist_add (allowlist:Add a number to the allowlist)","*40":"Featurecode: allowlist_last (allowlist:Add the last caller to the allowlist)","*41":"Featurecode: allowlist_pause_toggle (allowlist:Pause or unpause Allowlist checking)","*39":"Featurecode: allowlist_remove (allowlist:Remove a number from the allowlist)","*30":"Featurecode: blacklist_add (blacklist:Blacklist a number)","*32":"Featurecode: blacklist_last (blacklist:Blacklist the last caller)","*31":"Featurecode: blacklist_remove (blacklist:Remove a number from the blacklist)","*72":"Featurecode: cfon (callforward:Call Forward All Activate)","*73":"Featurecode: cfoff (callforward:Call Forward All Deactivate)","*93":"Featurecode: cfpon (callforward:Call Forward All Prompting Activate)","*74":"Featurecode: cfoff_any (callforward:Call Forward All Prompting Deactivate)","*90":"Featurecode: cfbon (callforward:Call Forward Busy Activate)","*91":"Featurecode: cfboff (callforward:Call Forward Busy Deactivate)","*94":"Featurecode: cfbpon (callforward:Call Forward Busy Prompting Activate)","*92":"Featurecode: cfboff_any (callforward:Call Forward Busy Prompting Deactivate)","*52":"Featurecode: cfuon (callforward:Call Forward No Answer\/Unavailable Activate)","*53":"Featurecode: cfuoff (callforward:Call Forward No Answer\/Unavailable Deactivate)","*95":"Featurecode: cfupon (callforward:Call Forward No Answer\/Unavailable Prompting Activate)","*96":"Featurecode: cf_toggle (callforward:Call Forward Toggle)","*70":"Featurecode: cwon (callwaiting:Call Waiting - Activate)","*71":"Featurecode: cwoff (callwaiting:Call Waiting - Deactivate)","*87":"Featurecode: conf_status (conferences:Conference Status)","*10":"Featurecode: app-contactmanager-sd (contactmanager:Contact Manager Speed Dials)","*3":"Featurecode: atxferabort (core:In-Call Asterisk Attended Transfer Aborting)","*4":"Featurecode: atxfercomplete (core:In-Call Asterisk Attended Transfer Completing)","*5":"Featurecode: atxferthreeway (core:In-Call Asterisk Attended Transfer Completing as a three-way bridge)","*6":"Featurecode: atxferswap (core:In-Call Asterisk Attended Transfer Swapping between the transferee and destination)","*11":"Featurecode: userlogon (core:\u0417\u0430\u043b\u043e\u0433\u0438\u043d\u0438\u0442\u044c\u0441\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044e)","*1":"Featurecode: automon (core:\u0417\u0430\u043f\u0438\u0441\u044c \u0432\u0445\u043e\u0434\u044f\u0449\u0435\u0433\u043e \u0437\u0432\u043e\u043d\u043a\u0430 \u043f\u043e \u043d\u0435\u043e\u0431\u0445\u043e\u0434\u0438\u043c\u043e\u0441\u0442\u0438)","**":"Featurecode: disconnect (core:\u0421\u0431\u0440\u043e\u0441 \u0432\u0445\u043e\u0434\u044f\u0449\u0435\u0433\u043e \u0437\u0432\u043e\u043d\u043a\u0430)","*8":"Featurecode: pickupexten (core:\u041e\u0441\u043d\u043e\u0432\u043d\u043e\u0439 \u043f\u0435\u0440\u0435\u0445\u0432\u0430\u0442 \u0437\u0432\u043e\u043d\u043a\u0430)","##":"Featurecode: blindxfer (core:\u041f\u0435\u0440\u0435\u0432\u043e\u0434 \u0432\u0445\u043e\u0434\u044f\u0449\u0435\u0433\u043e \u0437\u0432\u043e\u043d\u043a\u0430 \u0431\u0435\u0437 \u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f)","*2":"Featurecode: atxfer (core:\u041f\u0435\u0440\u0435\u0432\u043e\u0434 \u0432\u0445\u043e\u0434\u044f\u0449\u0435\u0433\u043e \u0437\u0432\u043e\u043d\u043a\u0430 \u0441 \u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u0435\u043c)","*12":"Featurecode: userlogoff (core:\u0420\u0430\u0437\u043b\u043e\u0433\u0438\u043d\u0438\u0442\u044c\u0441\u044f \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044e)","7777":"Featurecode: simu_pstn (core:\u0421\u0438\u043c\u0443\u043b\u044f\u0446\u0438\u044f \u0432\u0445\u043e\u0434\u043d\u043e\u0433\u043e \u0437\u0432\u043e\u043d\u043a\u0430)","555":"Featurecode: chanspy (core:\u0428\u043f\u0438\u043e\u043d\u0441\u043a\u0438\u0439 \u043a\u0430\u043d\u0430\u043b)","*35":"Featurecode: senddictate (dictate:Email completed dictation)","*34":"Featurecode: dodictate (dictate:Perform dictation)","*78":"Featurecode: dnd_on (donotdisturb:DND Activate)","*79":"Featurecode: dnd_off (donotdisturb:DND Deactivate)","*76":"Featurecode: dnd_toggle (donotdisturb:DND Toggle)","666":"Featurecode: simu_fax (fax:Dial System FAX)","*21":"Featurecode: fmf_toggle (findmefollow:Findme Follow Toggle)","*68":"Featurecode: hotelwakeup (hotelwakeup:Wake Up Calls)","*69":"Featurecode: calltrace (infoservices:Call Trace)","*43":"Featurecode: echotest (infoservices:Echo Test)","*65":"Featurecode: speakextennum (infoservices:Speak Your Exten Number)","*60":"Featurecode: speakingclock (infoservices:Speaking Clock)","*56":"Featurecode: missedcall_on (missedcall:Missed Call Notification Activate)","*57":"Featurecode: missedcall_off (missedcall:Missed Call Notification Deactivate)","*58":"Featurecode: missedcall_toggle (missedcall:Missed Call Notification Toggle)","*80":"Featurecode: intercom-prefix (paging:Intercom prefix)","*54":"Featurecode: intercom-on (paging:User Intercom Allow)","*55":"Featurecode: intercom-off (paging:User Intercom Disallow)","*88":"Featurecode: parkto (parking:Park to your Assigned Lot)","*85":"Featurecode: parkedcall (parking:Pickup ParkedCall Prefix)","*86":"Featurecode: park (parkpro:Force Park into Private Lot)","*37":"Featurecode: Mini-bar (PMS:Add a product from mini-bar for a room.)","*36":"Featurecode: clean (PMS:Change status to clean for a room.)","*44":"Featurecode: Housekeeping Service (PMS:Send a message number to the receptionist.)","*45":"Featurecode: que_toggle (queues:Allow Dynamic Members of a Queue to login or logout. See the Queues Module for how to assign a Dynamic Member to a Queue.)","*47":"Featurecode: que_callers (queues:Playback Queue Caller Count)","*46":"Featurecode: que_pause_toggle (queues:Queue Pause Toggle)","*992":"Featurecode: restapphint (restapps:Phone App Hints)","*272":"Featurecode: toggle-mode-2 (timeconditions:2: 781503920)","*273":"Featurecode: toggle-mode-3 (timeconditions:3: 781503945)","*274":"Featurecode: toggle-mode-4 (timeconditions:4: 555118282)","*275":"Featurecode: toggle-mode-5 (timeconditions:5: 555119494)","*276":"Featurecode: toggle-mode-6 (timeconditions:6: 555119797)","*277":"Featurecode: toggle-mode-7 (timeconditions:7: 781503996)","*278":"Featurecode: toggle-mode-8 (timeconditions:8: 781503997)","*279":"Featurecode: toggle-mode-9 (timeconditions:9: 555119696)","*98":"Featurecode: dialvoicemail (voicemail:Dial Voicemail)","*":"Featurecode: directdialvoicemail (voicemail:Direct Dial Prefix)","*97":"Featurecode: myvoicemail (voicemail:My Voicemail)","70":"ParkPlus: ParkCall Default Lot","71":"ParkPlus: PickupSlot Default Lot","72":"ParkPlus: PickupSlot Default Lot","73":"ParkPlus: PickupSlot Default Lot","74":"ParkPlus: PickupSlot Default Lot","75":"ParkPlus: PickupSlot Default Lot","76":"ParkPlus: PickupSlot Default Lot","77":"ParkPlus: PickupSlot Default Lot","78":"ParkPlus: PickupSlot Default Lot","6000":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: VED","6001":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Sekretary","6002":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Menedjera Vertex","6003":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Menedjera High","6004":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Buhgalteriya Vertex","6005":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Menedjera Imex","6006":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Buxgalteria imex","6007":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: buxgalteria high","6008":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: All menedjer","6009":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Test Debug","6010":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Test 999","6011":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: Test 888","6012":"\u041e\u0447\u0435\u0440\u0435\u0434\u044c: VED","949697":"\u0413\u0440\u0443\u043f\u043f\u0430 \u0432\u044b\u0437\u043e\u0432\u0430 buxgalteria","555118282":"\u0413\u0440\u0443\u043f\u043f\u0430 \u0432\u044b\u0437\u043e\u0432\u0430 555118282","555119494":"\u0413\u0440\u0443\u043f\u043f\u0430 \u0432\u044b\u0437\u043e\u0432\u0430 Vertex","555119696":"\u0413\u0440\u0443\u043f\u043f\u0430 \u0432\u044b\u0437\u043e\u0432\u0430 HighPower","555119797":"\u0413\u0440\u0443\u043f\u043f\u0430 \u0432\u044b\u0437\u043e\u0432\u0430 Imex","99812345678":"\u0413\u0440\u0443\u043f\u043f\u0430 \u0432\u044b\u0437\u043e\u0432\u0430 test pereadress","8282949496969797":"\u0413\u0440\u0443\u043f\u043f\u0430 \u0432\u044b\u0437\u043e\u0432\u0430 11"};$(document).click();</script><script type="text/javascript" src="assets/js/pbxlib_ef7655c7519e8ab6c90294d6fb9f6b7f1755cfd4.js?load_version=16.0.40.7"></script><script src="assets/js/bootstrap-table-locale/bootstrap-table-ru-RU.js?load_version=16.0.40.7"></script><script>$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ru-RU']);</script><script>moment.locale('ru_RU');</script><script type="text/javascript" src="assets/firewall/js/firewall.js?load_version=16.0.57.6"></script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-1862516-7', 'auto');ga('set', 'dimension1', fpbx.conf.dist.pbx_type);ga('set', 'dimension2', fpbx.conf.dist.pbx_version);ga('set', 'dimension3', fpbx.conf.ASTVERSION);ga('set', 'dimension4', fpbx.conf.ver);ga('set', 'dimension5', $.urlParam('display'));ga('set', 'dimension6', fpbx.conf.uniqueid);ga('send', 'pageview');</script><script type='text/javascript' src='modules/sysadmin/assets/js/activation.js'></script>
+<script src='modules/sysadmin/assets/js/module-purchasing.js?v=1774338397' onload='freepbxModulePurchasing("https://katanafpbx.schmoozecom.com")' async></script>
+<script type="text/javascript">
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+//call plugin function after DOM ready
+addLoadEvent(function(){
+  outdatedBrowser({
+    bgColor: '#f25648',
+    color: '#ffffff',
+    lowerThan: 'IE10',
+    languagePath: ''
+  })
+});
+</script>
+<div id="outdated">
+  <h6>Your browser is out-of-date!</h6>
+  <p>FreePBX requires a new browser to function correctly. You can still use FreePBX with the browser you currently have but your experience may be diminished and is not supported<a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update my browser now</a></p>
+  <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+  
+  <script>
+  $(window.console).ready(function(){
+    console.log(("%c%s"), "color: green; font-size: large","FreePBX");
+    console.log(("Thankyou for using %s"),"FreePBX");
+    
+    console.log("If you find bugs you may file a report at http://issues.freepbx.org");
+    console.log("For developer resources visit: http://wiki.freepbx.org/x/BAAQ");
+    
+    console.log(("Framework: %s"),"16.0.40.7");
+    console.log(("Module Name: %s"),"firewall");
+    console.log(("Module Version: %s"),"16.0.57.6");
+    
+  });
+  </script></body>
+</html>

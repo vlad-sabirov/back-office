@@ -81,6 +81,7 @@ export class CronCalendarEventService extends PrismaService {
 			where: {
 				dateStart: { lte: in1Day, gt: lowerBound }, // только окно 2ч–24ч
 				reminderSent1Day: false,
+				status: { notIn: ['cancelled', 'completed'] },
 				type: { in: ['meeting', 'call'] },
 				// Пропускаем события с пользовательским напоминанием
 				NOT: { reminders: { some: {} } },
@@ -103,6 +104,20 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 
 			if (await this.sendToUser(event.assigneeId, message)) {
 				sentCount++;
+			}
+
+			// Уведомить автора (если событие создано для другого)
+			if (event.authorId && event.authorId !== event.assigneeId) {
+				const assignee = event.assignee as any;
+				const assigneeName = `${assignee?.firstName || ''} ${assignee?.lastName || ''}`.trim();
+				const authorMessage = `⏰ <b>${this.formatEventType(event.type)} — ${dayLabel}</b>
+<b>Для:</b> ${assigneeName}
+<b>Название:</b> ${event.title}
+<b>Начало:</b> ${this.formatDate(new Date(event.dateStart))}, ${this.formatTime(new Date(event.dateStart))}
+${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}` : ''}`;
+				if (await this.sendToUser(event.authorId, authorMessage)) {
+					sentCount++;
+				}
 			}
 
 			await this.calendarEvent.update({
@@ -129,6 +144,7 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 			where: {
 				dateStart: { lte: in2Hours, gt: lowerBound }, // только окно 1ч–2ч
 				reminderSent2Hours: false,
+				status: { notIn: ['cancelled', 'completed'] },
 				type: 'meeting',
 				// Пропускаем события с пользовательским напоминанием
 				NOT: { reminders: { some: {} } },
@@ -156,6 +172,20 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 				}
 			}
 
+			// Уведомить автора (если встреча создана для другого)
+			if (event.authorId && event.authorId !== event.assigneeId) {
+				const assignee = event.assignee as any;
+				const assigneeName = `${assignee?.firstName || ''} ${assignee?.lastName || ''}`.trim();
+				const authorMessage = `⏰ <b>${this.formatEventType(event.type)} через 2 часа</b>
+<b>Для:</b> ${assigneeName}
+<b>Название:</b> ${event.title}
+<b>Начало:</b> ${this.formatTime(new Date(event.dateStart))} — ${this.formatTime(new Date(event.dateEnd))}
+${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}` : ''}`;
+				if (await this.sendToUser(event.authorId, authorMessage)) {
+					sentCount++;
+				}
+			}
+
 			await this.calendarEvent.update({
 				where: { id: event.id },
 				data: { reminderSent2Hours: true },
@@ -178,6 +208,7 @@ ${event.location ? `📍 ${event.location}\n` : ''}${event.organization ? `🏢 
 			where: {
 				dateStart: { lte: in1Hour, gt: now },
 				reminderSent1Hour: false,
+				status: { notIn: ['cancelled', 'completed'] },
 				type: 'call',
 				// Пропускаем события с пользовательским напоминанием
 				NOT: { reminders: { some: {} } },
@@ -194,6 +225,20 @@ ${event.organization ? `🏢 ${event.organization.nameRu || event.organization.n
 
 			if (await this.sendToUser(event.assigneeId, message)) {
 				sentCount++;
+			}
+
+			// Уведомить автора (если звонок создан для другого)
+			if (event.authorId && event.authorId !== event.assigneeId) {
+				const assignee = event.assignee as any;
+				const assigneeName = `${assignee?.firstName || ''} ${assignee?.lastName || ''}`.trim();
+				const authorMessage = `⏰ <b>${this.formatEventType(event.type)} через 1 час</b>
+<b>Для:</b> ${assigneeName}
+<b>Название:</b> ${event.title}
+<b>Начало:</b> ${this.formatTime(new Date(event.dateStart))}
+${event.organization ? `🏢 ${event.organization.nameRu || event.organization.nameEn}\n` : ''}${event.contact ? `👤 Контакт: ${event.contact.name}` : ''}`;
+				if (await this.sendToUser(event.authorId, authorMessage)) {
+					sentCount++;
+				}
 			}
 
 			await this.calendarEvent.update({
@@ -305,7 +350,7 @@ ${task.deadline ? `📅 Дедлайн: ${this.formatDate(new Date(task.deadline
 	 * Сводка — все напоминания по событиям календаря
 	 * Запускается автоматически каждые 5 минут с 7:00 до 22:00
 	 */
-	@Cron('*/5 7-22 * * *', { timeZone: 'Asia/Tashkent' })
+	@Cron('*/5 7-22 * * 1-6', { timeZone: 'Asia/Tashkent' })
 	async checkAllEventReminders(): Promise<{
 		reminder1Day: number;
 		reminder2Hours: number;

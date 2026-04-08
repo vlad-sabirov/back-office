@@ -4,6 +4,7 @@ import { IActionsProps, IActionsTab } from "./actions.props";
 import { CommentList, CommentPanel } from "./comment/Comment";
 import { TaskList, TaskPanel } from "./task/Task";
 import { CalendarEventList, CalendarEventPanel } from "./calendar-event";
+import { OrgNotes } from '@fsd/features/crm-organization-card-info/ui/notes/Notes';
 import css from './actions.module.scss';
 import { useStateSelector } from "@fsd/shared/lib/hooks";
 import { Skeleton } from "./skeleton/Skeleton";
@@ -32,9 +33,10 @@ export const Actions: FC<IActionsProps> = () => {
 	}
 	
 	return (
-		<Tabs 
-			defaultValue={firstTab?.list.props.index} 
-			className={css.wrapper}
+		<div className={css.wrapper}>
+		<OrgNotes />
+		<Tabs
+			defaultValue={firstTab?.list.props.index}
 		>
 			<Tabs.List>
 				{tabs.map((tab) => {
@@ -48,5 +50,6 @@ export const Actions: FC<IActionsProps> = () => {
 				return <Panel key={props.index} {...props} />;
 			})}
 		</Tabs>
+		</div>
 	);
 }

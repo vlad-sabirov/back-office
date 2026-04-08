@@ -22,4 +22,5 @@ export interface QueryCalendarEventRangeDto {
 	from: string | Date;
 	to: string | Date;
 	userId?: number | string;
+	includeAuthored?: boolean;
 }

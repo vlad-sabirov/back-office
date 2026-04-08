@@ -30,7 +30,7 @@ const getDayCellStyle = (events?: CalendarPropsEvent[]): React.CSSProperties | u
 
 	if (colors.length === 0) return undefined;
 
-	const unique = [...new Set(colors)];
+	const unique = Array.from(new Set(colors));
 
 	if (unique.length === 1) {
 		return { backgroundColor: unique[0] + '30' }; // 30 = ~19% opacity hex

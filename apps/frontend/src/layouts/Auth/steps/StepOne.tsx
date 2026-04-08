@@ -75,7 +75,13 @@ export const AuthLayoutStopOne = observer((): JSX.Element => {
 
 			setIsLoading(false);
 
-			appActions.setAuthData({ ...auth, step: 2, username, password });
+			appActions.setAuthData({
+				...auth,
+				step: 2,
+				username,
+				password,
+				pinCode: apiResponse.botDisabled ? apiResponse.pinCode : 0,
+			});
 		}
 	};
 

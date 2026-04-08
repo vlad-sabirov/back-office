@@ -121,13 +121,26 @@ export class RealizationMonthService {
 				month,
 			});
 
+		// Набор ID уволенных сотрудников
+		const firedUserIds = new Set(
+			foundUsers.filter((u) => u.isFired).map((u) => u.id),
+		);
+
+		// Матчинг по ФИО или алиасу name1c
+		const matchUser = (name: string) =>
+			foundUsers.find(
+				(u) =>
+					name === `${u.lastName} ${u.firstName}` ||
+					(u.name1c && name === u.name1c),
+			);
+
 		// Создание hashmap для команд с ID, именем и кодом 1С
 		const hashTeams: Map<number, IHashTeamTypes> = new Map();
 		for (const team of foundTeams.data) {
-			const foundUser = foundUsers.find(
-				({ lastName, firstName }) =>
-					team.name === `${lastName} ${firstName}`,
-			);
+			const foundUser = matchUser(team.name);
+			if (!foundUser || firedUserIds.has(foundUser.id)) {
+				continue;
+			}
 			const teamHash: IHashTeamTypes = {
 				userId: foundUser.id,
 				name: team.name,
@@ -135,17 +148,22 @@ export class RealizationMonthService {
 				employees: [],
 			};
 			for (const employee of team.emloyees) {
-				const foundUser = foundUsers.find(
-					({ lastName, firstName }) =>
-						employee.name === `${lastName} ${firstName}`,
-				);
+				const foundEmployee = matchUser(employee.name);
 
-				if (!foundUser?.id) {
+				// Код сотрудника нужен для подсчёта реализации команды,
+				// даже если он уволен — его последние продажи должны учитываться
+				if (!foundEmployee?.id) {
+					// Сотрудник не найден в бэкофисе — добавляем только код
+					teamHash.employees.push({
+						userId: 0,
+						name: employee.name,
+						code: employee.code,
+					});
 					continue;
 				}
 
 				teamHash.employees.push({
-					userId: foundUser.id,
+					userId: foundEmployee.id,
 					name: employee.name,
 					code: employee.code,
 				});
@@ -167,7 +185,13 @@ export class RealizationMonthService {
 			},
 		};
 		for (const team of foundReport.teams) {
+			if (firedUserIds.has(team.userId)) {
+				continue;
+			}
 			const foundTeam = hashTeams.get(team.userId);
+			if (!foundTeam) {
+				continue;
+			}
 			const foundTeamReport = foundReport.teams.find(
 				({ userId }) => foundTeam.userId == userId,
 			);
@@ -215,8 +239,15 @@ export class RealizationMonthService {
 			newTeam.customerShipment = report.data[0].customer_shipment;
 			newTeam.employees = foundTeamReport.employees;
 
+			newTeam.employees = newTeam.employees.filter(
+				(e) => !firedUserIds.has(e.userId),
+			);
+
 			if (team.employees && team.employees.length) {
 				for (const employee of team.employees) {
+					if (firedUserIds.has(employee.userId)) {
+						continue;
+					}
 					const foundEmployee = hashTeams.get(employee.userId);
 					const report = await this.ms1cService.getRealization({
 						date_start,

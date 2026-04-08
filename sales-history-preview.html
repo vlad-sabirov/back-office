@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Back Office — превью история сделок</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neutral-bg:        #f5f6fd;
+      --neutral-white:     #fff;
+      --neutral-50:        #eaf3ff;
+      --neutral-100:       #d0d7e4;
+      --neutral-200:       #b3bdcc;
+      --neutral-300:       #96a2b6;
+      --neutral-400:       #7988a0;
+      --neutral-500:       #5f6e86;
+      --neutral-main:      #475366;
+      --neutral-mainD:     #394251;
+      --primary:           #755dff;
+      --primary-light:     #e9e4ff;
+      --success:           #99d962;
+      --success-dark:      #75c530;
+      --error:             #f9515a;
+      --warning:           #ffc859;
+      --info:              #4f7ff0;
+    }
+
+    body {
+      font-family: 'Fira Sans', sans-serif;
+      background: var(--neutral-bg);
+      color: var(--neutral-mainD);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ── Боковая навигация ── */
+    .aside {
+      width: 56px;
+      background: var(--neutral-white);
+      border-right: 1px solid var(--neutral-100);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .aside-logo {
+      width: 32px; height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .aside-item {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--neutral-300);
+    }
+    .aside-item.active { background: var(--primary-light); color: var(--primary); }
+    .aside-item svg { width: 18px; height: 18px; }
+
+    /* ── Основная область ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Шапка */
+    .topbar {
+      height: 56px;
+      background: var(--neutral-white);
+      border-bottom: 1px solid var(--neutral-100);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .topbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--neutral-mainD);
+    }
+    .topbar-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--neutral-200); }
+
+    /* Контент */
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-content: flex-start;
+    }
+    .org-row {
+      background: var(--neutral-white);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: border-color 0.15s;
+      font-size: 13px;
+    }
+    .org-row:hover { border-color: var(--primary-light); }
+    .org-row.selected { border-color: var(--primary); background: #fdfcff; }
+    .org-row-name { font-weight: 500; color: var(--neutral-mainD); flex: 1; }
+    .org-row-meta { color: var(--neutral-300); font-size: 12px; }
+    .badge-verified {
+      font-size: 11px; padding: 2px 8px; border-radius: 20px;
+      background: #effce2; color: #559023; font-weight: 500;
+    }
+
+    /* ── Дровер карточки ── */
+    .drawer-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 50;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .drawer {
+      width: 860px;
+      background: var(--neutral-white);
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      overflow: hidden;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+    }
+
+    /* Левая панель дровера */
+    .drawer-left {
+      padding: 24px 20px 20px;
+      border-right: 1px solid var(--neutral-100);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .drawer-left::-webkit-scrollbar { display: none; }
+
+    .drawer-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none;
+      cursor: pointer;
+      color: var(--neutral-300);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    /* Заголовок карточки */
+    .card-header {
+      margin-bottom: 20px;
+    }
+    .card-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--neutral-mainD);
+      margin-bottom: 4px;
+    }
+    .card-name-en {
+      font-size: 13px;
+      color: var(--neutral-400);
+    }
+
+    /* Поля карточки */
+    .card-field {
+      font-size: 13px;
+      color: var(--neutral-300);
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    .card-field span {
+      color: var(--neutral-mainD);
+    }
+    .card-field span.clickable {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .card-field span.clickable:hover { color: var(--primary); }
+
+    .card-tag {
+      display: inline-flex; align-items: center;
+      font-size: 11px; padding: 2px 8px; border-radius: 20px;
+      background: var(--primary-light); color: var(--primary);
+      font-weight: 500; margin-right: 4px;
+    }
+
+    /* Раздел действий */
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .card-action {
+      font-size: 13px;
+      color: var(--neutral-300);
+      text-decoration: underline;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+      background: none; border: none; font-family: inherit;
+      transition: color 0.15s;
+    }
+    .card-action:hover { color: var(--neutral-500); }
+    .card-action.danger:hover { color: var(--error); }
+    .card-action.highlight { color: var(--primary); }
+    .card-action.highlight:hover { color: #5e42ff; }
+    .card-action svg { width: 12px; height: 12px; }
+
+    /* Реквизиты */
+    .divider {
+      height: 1px; background: var(--neutral-100);
+      margin: 24px 0;
+    }
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--neutral-300);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .requisite-item {
+      background: var(--neutral-bg);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .requisite-name { font-weight: 500; color: var(--neutral-mainD); margin-bottom: 4px; }
+    .requisite-meta { color: var(--neutral-400); font-size: 12px; }
+
+    /* Правая панель дровера */
+    .drawer-right {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 12px;
+      overflow-y: auto;
+    }
+    .history-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neutral-200);
+      font-size: 13px;
+    }
+
+    /* ── Модал истории сделок ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal {
+      background: var(--neutral-white);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+      animation: fadeIn 0.18s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      padding: 20px 24px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--neutral-100);
+      flex-shrink: 0;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--neutral-mainD); }
+    .modal-sub { font-size: 12px; color: var(--neutral-300); margin-top: 3px; }
+    .modal-x {
+      background: none; border: none; cursor: pointer;
+      color: var(--neutral-300); font-size: 18px;
+      padding: 2px 6px; border-radius: 6px;
+      transition: color 0.15s;
+    }
+    .modal-x:hover { color: var(--neutral-mainD); }
+
+    /* Фильтр дат */
+    .modal-filters {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 24px 12px;
+      border-bottom: 1px solid var(--neutral-bg);
+      flex-shrink: 0;
+    }
+    .filter-label { font-size: 12px; color: var(--neutral-300); white-space: nowrap; }
+    .filter-input {
+      border: 1.5px solid var(--neutral-100);
+      border-radius: 6px; padding: 5px 10px;
+      font-size: 13px; font-family: inherit;
+      color: var(--neutral-mainD); background: var(--neutral-white);
+      outline: none; transition: border-color 0.15s;
+    }
+    .filter-input:focus { border-color: var(--primary); }
+    .filter-sep { color: var(--neutral-200); }
+
+    /* Сводка */
+    .modal-summary {
+      display: flex; gap: 12px;
+      padding: 12px 24px 0;
+      flex-shrink: 0;
+    }
+    .sum-card {
+      flex: 1; background: var(--neutral-bg);
+      border-radius: 8px; padding: 10px 14px;
+    }
+    .sum-label {
+      font-size: 11px; color: var(--neutral-300);
+      text-transform: uppercase; letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+    .sum-value {
+      font-size: 18px; font-weight: 700;
+      color: var(--neutral-mainD);
+    }
+    .sum-value.green { color: #559023; }
+
+    /* Таблица */
+    .modal-body { overflow-y: auto; padding: 14px 24px 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left; padding: 6px 8px;
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--neutral-300);
+      font-weight: 600; border-bottom: 1.5px solid var(--neutral-100);
+    }
+    tbody tr { transition: background 0.1s; }
+    tbody tr:hover { background: var(--neutral-bg); }
+    tbody td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--neutral-bg);
+      color: var(--neutral-main);
+      vertical-align: top;
+    }
+    .td-date { color: var(--neutral-mainD); font-weight: 500; white-space: nowrap; }
+    .td-time { font-size: 11px; color: var(--neutral-300); margin-top: 2px; }
+    .td-amount { color: #559023; font-weight: 600; white-space: nowrap; }
+    .td-manager { color: var(--neutral-main); }
+    .td-manager-pos { font-size: 11px; color: var(--neutral-300); margin-top: 2px; }
+    .tr-total td {
+      border-top: 2px solid var(--neutral-100);
+      border-bottom: none;
+      padding-top: 11px;
+      font-weight: 700;
+      color: var(--neutral-mainD);
+    }
+    .tr-total .td-amount { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <!-- Боковая навигация -->
+  <aside class="aside">
+    <div class="aside-logo"></div>
+    <div class="aside-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+      </svg>
+    </div>
+    <div class="aside-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </div>
+    <div class="aside-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.82 19a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 3.1 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 23 17z"/>
+      </svg>
+    </div>
+  </aside>
+
+  <!-- Основная область -->
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title">CRM</span>
+      <div class="topbar-dot"></div>
+      <span style="font-size:13px;color:var(--neutral-400)">Организации</span>
+    </div>
+    <div class="content">
+      <div class="org-row" onclick="openDrawer()">
+        <div class="org-row-name">ООО «Альфа Трейд»</div>
+        <div class="org-row-meta">+7 (495) 123-45-67</div>
+        <span class="badge-verified">Верифицирован</span>
+      </div>
+      <div class="org-row selected" onclick="openDrawer()">
+        <div class="org-row-name">Imex Group</div>
+        <div class="org-row-meta">+7 (495) 987-65-43</div>
+        <span class="badge-verified">Верифицирован</span>
+      </div>
+      <div class="org-row" onclick="openDrawer()">
+        <div class="org-row-name">ЗАО «СтройКомплект»</div>
+        <div class="org-row-meta">+7 (812) 456-78-90</div>
+        <span class="badge-verified">Верифицирован</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Дровер карточки организации -->
+  <div class="drawer-overlay" id="drawer" style="display:none" onclick="handleDrawerOverlay(event)">
+    <div class="drawer" id="drawerInner">
+
+      <!-- Левая панель -->
+      <div class="drawer-left">
+
+        <div class="card-header">
+          <div class="card-name">Imex Group</div>
+          <div class="card-name-en">Imex Group International</div>
+        </div>
+
+        <div class="card-field">
+          Последнее действие в 1С: <span>15 марта 2025</span>
+        </div>
+        <div class="card-field">
+          Ответственный: <span class="clickable">Иванов Дмитрий</span>
+        </div>
+        <div class="card-field">
+          Тип: <span>Поставщик</span>
+        </div>
+        <div class="card-field">
+          Телефоны: <span>+7 (495) 987-65-43</span>
+        </div>
+        <div class="card-field">
+          Email: <span>info@imex-group.ru</span>
+        </div>
+        <div class="card-field">
+          Вебсайт: <span>imex-group.ru</span>
+        </div>
+        <div class="card-field">
+          Теги:
+          <span class="card-tag">ВЭД</span>
+          <span class="card-tag">Приоритет</span>
+        </div>
+
+        <!-- Действия — здесь добавляется новая кнопка -->
+        <div class="card-actions">
+          <button class="card-action">изменить</button>
+          <button class="card-action danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/>
+              <path d="M9 6V4h6v2"/>
+            </svg>
+            отправить в архив
+          </button>
+
+          <!-- НОВАЯ КНОПКА -->
+          <button class="card-action highlight" onclick="openModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            история сделок
+          </button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title">Реквизиты</div>
+        <div class="requisite-item">
+          <div class="requisite-name">ООО «Имэкс Груп»</div>
+          <div class="requisite-meta">ИНН: 7701234567 · Код 1С: 00123456</div>
+        </div>
+        <div class="requisite-item">
+          <div class="requisite-name">ООО «Имэкс Логистик»</div>
+          <div class="requisite-meta">ИНН: 7709876543 · Код 1С: 00123457</div>
+        </div>
+
+      </div>
+
+      <!-- Правая панель (история, задачи) -->
+      <div class="drawer-right" style="position:relative">
+        <button class="modal-x" style="position:absolute;top:12px;right:12px" onclick="closeDrawer()">✕</button>
+        <div class="history-placeholder">История взаимодействий</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Модал истории сделок -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none" onclick="handleModalOverlay(event)">
+    <div class="modal" id="modalInner">
+
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">История сделок</div>
+          <div class="modal-sub">Imex Group</div>
+        </div>
+        <button class="modal-x" onclick="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-filters">
+        <span class="filter-label">Период:</span>
+        <input class="filter-input" type="date" id="dateFrom" value="2025-01-01" onchange="renderTable()" />
+        <span class="filter-sep">—</span>
+        <input class="filter-input" type="date" id="dateTo" value="2025-03-26" onchange="renderTable()" />
+      </div>
+
+      <div class="modal-summary">
+        <div class="sum-card">
+          <div class="sum-label">Итого за период</div>
+          <div class="sum-value green" id="sumTotal">—</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-label">Сделок</div>
+          <div class="sum-value" id="sumCount">—</div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Сумма</th>
+              <th>Менеджер</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Отдельные сделки — каждая своей строкой
+    const deals = [
+      { date: '2025-03-21', amount: 487000,  manager: 'Иванов Дмитрий',   pos: 'Менеджер по продажам' },
+      { date: '2025-03-14', amount: 312000,  manager: 'Петрова Анна',      pos: 'Старший менеджер' },
+      { date: '2025-03-07', amount: 651000,  manager: 'Иванов Дмитрий',   pos: 'Менеджер по продажам' },
+      { date: '2025-02-28', amount: 198000,  manager: 'Сидоров Игорь',    pos: 'Менеджер по продажам' },
+      { date: '2025-02-19', amount: 430000,  manager: 'Петрова Анна',      pos: 'Старший менеджер' },
+      { date: '2025-02-11', amount: 352000,  manager: 'Иванов Дмитрий',   pos: 'Менеджер по продажам' },
+      { date: '2025-01-30', amount: 275000,  manager: 'Сидоров Игорь',    pos: 'Менеджер по продажам' },
+      { date: '2025-01-22', amount: 540000,  manager: 'Петрова Анна',      pos: 'Старший менеджер' },
+      { date: '2025-01-10', amount: 385000,  manager: 'Иванов Дмитрий',   pos: 'Менеджер по продажам' },
+      { date: '2024-12-26', amount: 720000,  manager: 'Петрова Анна',      pos: 'Старший менеджер' },
+      { date: '2024-12-15', amount: 310000,  manager: 'Сидоров Игорь',    pos: 'Менеджер по продажам' },
+      { date: '2024-12-03', amount: 350000,  manager: 'Иванов Дмитрий',   pos: 'Менеджер по продажам' },
+      { date: '2024-11-19', amount: 463000,  manager: 'Петрова Анна',      pos: 'Старший менеджер' },
+      { date: '2024-11-07', amount: 229000,  manager: 'Иванов Дмитрий',   pos: 'Менеджер по продажам' },
+    ];
+
+    const MONTHS = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+
+    function fmtDate(str) {
+      const d = new Date(str);
+      return `${String(d.getDate()).padStart(2,'0')} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    const fmt = n => n.toLocaleString('ru-RU') + ' ₽';
+
+    function renderTable() {
+      const from = document.getElementById('dateFrom').value;
+      const to   = document.getElementById('dateTo').value;
+
+      const filtered = deals.filter(d => (!from || d.date >= from) && (!to || d.date <= to));
+
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = '';
+
+      let total = 0;
+      filtered.forEach(d => {
+        total += d.amount;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div class="td-date">${fmtDate(d.date)}</div>
+          </td>
+          <td class="td-amount">${fmt(d.amount)}</td>
+          <td>
+            <div class="td-manager">${d.manager}</div>
+            <div class="td-manager-pos">${d.pos}</div>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+
+      if (filtered.length) {
+        const tf = document.createElement('tr');
+        tf.className = 'tr-total';
+        tf.innerHTML = `
+          <td>Итого</td>
+          <td class="td-amount">${fmt(total)}</td>
+          <td></td>`;
+        tbody.appendChild(tf);
+      }
+
+      document.getElementById('sumTotal').textContent = filtered.length ? fmt(total) : '—';
+      document.getElementById('sumCount').textContent = filtered.length || '—';
+    }
+
+    function openDrawer() {
+      document.getElementById('drawer').style.display = 'flex';
+    }
+    function closeDrawer() {
+      document.getElementById('drawer').style.display = 'none';
+    }
+    function handleDrawerOverlay(e) {
+      if (e.target === document.getElementById('drawer')) closeDrawer();
+    }
+
+    function openModal() {
+      document.getElementById('modalOverlay').style.display = 'flex';
+      renderTable();
+    }
+    function closeModal() {
+      document.getElementById('modalOverlay').style.display = 'none';
+    }
+    function handleModalOverlay(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+  </script>
+</body>
+</html>

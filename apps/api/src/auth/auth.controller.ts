@@ -64,16 +64,18 @@ export class AuthController {
 		// Генерация PIN кода
 		const pinCode = await this.pinCodeService.generatePinCode(authUser.id);
 
-		// Отправка PIN кода в Telegram
-		const message =
-			'🔒 <b>Код активации</b>\n' +
-			`\nТолько что была осуществлена попытка входа в Ваш аккаунт, для того что-бы завершить авторизацию введите на сайте следующий код:` +
-			`\n\n${pinCode}` +
-			`\n\n<i>Если это не Вы пытаетесь войти в систему, то обязательно напишите в IT отдел о попытке взлома Вашего аккаунта.</i>` +
-			``;
-		if (!authUser.isFirstLogin) await this.telegramService.sendMessage(Number(authUser.telegramId), message);
+		// Отправка PIN кода в Telegram (если бот включён)
+		if (this.telegramService.isBotEnabled()) {
+			const message =
+				'🔒 <b>Код активации</b>\n' +
+				`\nТолько что была осуществлена попытка входа в Ваш аккаунт, для того что-бы завершить авторизацию введите на сайте следующий код:` +
+				`\n\n${pinCode}` +
+				`\n\n<i>Если это не Вы пытаетесь войти в систему, то обязательно напишите в IT отдел о попытке взлома Вашего аккаунта.</i>` +
+				``;
+			if (!authUser.isFirstLogin) await this.telegramService.sendMessage(Number(authUser.telegramId), message);
+		}
 
-		return { ...authUser, pinCode };
+		return { ...authUser, pinCode, botDisabled: !this.telegramService.isBotEnabled() };
 	}
 
 	@Post('/login/stepTwo')

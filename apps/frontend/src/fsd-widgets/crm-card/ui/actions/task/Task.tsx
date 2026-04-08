@@ -21,7 +21,7 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const currentOrganization = useStateSelector((state) => state.crm_organization.data.current);
 	const currentUserRoles = useStateSelector((state) => state.app.auth.roles) || [];
-	const { userId } = useUserDeprecated();
+	const { userId, children } = useUserDeprecated();
 	const historyActions = useCrmHistoryActions();
 
 	// ID организации
@@ -36,13 +36,15 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 
 	// Проверка прав на создание задачи
 	// Можно если: ты менеджер организации ИЛИ имеешь роль boss/admin/developer/crmAdmin
+	// ИЛИ менеджер организации — твой подчинённый
 	const canCreate = useMemo(() => {
 		const isManager = currentOrganization?.userId === Number(userId);
 		const hasAdminRole = currentUserRoles.some((role: string) =>
 			['boss', 'admin', 'developer', 'crmAdmin'].includes(role)
 		);
-		return isManager || hasAdminRole;
-	}, [currentOrganization?.userId, userId, currentUserRoles]);
+		const isChildManager = children?.includes(currentOrganization?.userId) || false;
+		return isManager || hasAdminRole || isChildManager;
+	}, [currentOrganization?.userId, userId, currentUserRoles, children]);
 
 	const form = useForm({
 		initialValues: {
@@ -118,7 +120,7 @@ export const TaskPanel: FC<ITaskPanelProps> = ({ index, disabled }) => {
 		return (
 			<Tabs.Panel value={index} className={css.panel}>
 				<div className={css.noAccess}>
-					Вы можете создавать задачи только в организациях, где вы являетесь ответственным менеджером
+					Вы можете создавать задачи только в своих организациях или организациях ваших подчинённых
 				</div>
 			</Tabs.Panel>
 		);

@@ -8,6 +8,7 @@ import { CronLatenessService } from './services/cron/lateness';
 import { CronTaskReminderService } from './services/cron/task-reminder';
 import { CronOrganizationPowerService } from './services/cron/organization-power';
 import { CronCalendarEventService } from './services/cron/calendar-event';
+import { CronDailySummaryService } from './services/cron/daily-summary';
 import { CronController } from './controllers/cron.controller';
 import { UserModule } from 'src/user/user.module';
 import { ProductionCalendarModule } from '../production-calendar/production-calendar.module';
@@ -22,9 +23,10 @@ import { VacationCalendarModule } from '../vacation-calendar/vacation-calendar.m
 		CronTaskReminderService,
 		CronOrganizationPowerService,
 		CronCalendarEventService,
+		CronDailySummaryService,
 	],
 	controllers: [NotificationController, TelegramController, CronController],
-	exports: [TelegramService],
+	exports: [TelegramService, CronDailySummaryService],
 	imports: [forwardRef(() => UserModule), ProductionCalendarModule, VacationCalendarModule],
 })
 export class NotificationModule {}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useAppActions } from '@fsd/entities/app';
 import { useStateSelector } from '@fsd/shared/lib/hooks';
@@ -23,9 +23,19 @@ export const AuthLayoutStopTwo = observer((): JSX.Element => {
 	const appActions = useAppActions();
 	const login = useLogin();
 	const { skipLateness } = useClient();
+	const autoSubmitted = useRef(false);
 
-	const handleSubmit = async () => {
-		const { pinCode } = form.values;
+	// Авто-заполнение и авто-отправка при отключённом боте
+	useEffect(() => {
+		if (auth.pinCode && auth.pinCode !== 0 && !autoSubmitted.current) {
+			autoSubmitted.current = true;
+			form.setFieldValue('pinCode', String(auth.pinCode));
+			setTimeout(() => handleSubmit(String(auth.pinCode)), 100);
+		}
+	}, [auth.pinCode]);
+
+	const handleSubmit = async (overridePinCode?: string) => {
+		const pinCode = overridePinCode || form.values.pinCode;
 		setIsLoading(true);
 
 		if (pinCode.length < 6) {
@@ -71,7 +81,7 @@ export const AuthLayoutStopTwo = observer((): JSX.Element => {
 	};
 
 	return (
-		<form onSubmit={form.onSubmit(handleSubmit)} className={css.stepTwoWrapper} ref={focusTrapRef}>
+		<form onSubmit={form.onSubmit(() => handleSubmit())} className={css.stepTwoWrapper} ref={focusTrapRef}>
 			<TextField className={css.stepTwoDescription}>
 				На Ваш Telegram бы отправлен код подтверждения авторизации, состоящий из 6 цифр. Для того, чтобы войти в
 				систему введите полученный код в форму ниже.

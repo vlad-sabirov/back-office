@@ -105,6 +105,12 @@ export const data: INavigationData[] = [
 				route: '/voip/incoming',
 				access: ['developer', 'crmAdmin', 'boss', 'crm'],
 			},
+			{
+				title: 'Исходящие',
+				alias: 'outgoing',
+				route: '/voip/outgoing',
+				access: ['developer', 'boss', 'voipOutgoing'],
+			},
 		],
 	},
 

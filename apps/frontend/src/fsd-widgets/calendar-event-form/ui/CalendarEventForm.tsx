@@ -148,8 +148,12 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 	const isLoading = isCreating || isUpdating || isCreatingTask;
 
 	// Состояние для отслеживания текущего assigneeId (для фильтрации участников)
+	// null = исполнитель ещё не переключался вручную → показываем организации всей команды
 	const [currentAssigneeId, setCurrentAssigneeId] = useState<number>(
 		event?.assigneeId || assigneeId || user?.id || 0
+	);
+	const [assigneeManuallyChanged, setAssigneeManuallyChanged] = useState<boolean>(
+		!!event?.assigneeId || !!assigneeId
 	);
 	const [customReminderTime, setCustomReminderTime] = useState<string>('');
 
@@ -220,7 +224,7 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 				roles.push(role, CHILD_TO_HEAD[role]);
 			}
 		}
-		return [...new Set(roles)];
+		return Array.from(new Set(roles));
 	}, [currentRoles]);
 
 	// Опции для выбора участников (только из своего отдела, исключаем исполнителя)
@@ -315,31 +319,38 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 		},
 	});
 
-	// Загрузка организаций (для задач/звонков — по исполнителю, для остальных — по роли)
-	const isAssigneeFilteredType = form.values.type === 'task' || form.values.type === EnCalendarEventType.Call;
+	// ID команды: свой + подчинённые
+	const teamUserIds = useMemo(() => {
+		if (!user?.id) return [];
+		return [user.id, ...Array.from(directChildIds)];
+	}, [user?.id, directChildIds]);
 
+	// Загрузка организаций: до выбора исполнителя — вся команда, после — конкретный
 	useEffect(() => {
 		const isPrivileged = currentRoles?.some((r) => ['boss', 'crmAdmin', 'admin', 'developer'].includes(r));
 
-		const effectiveUserId = isAssigneeFilteredType
-			? currentAssigneeId
-			: (isPrivileged ? null : user?.id);
+		let whereUserId: any;
+		if (!assigneeManuallyChanged && teamUserIds.length > 1) {
+			// Ещё не переключали исполнителя — показать организации всей команды
+			whereUserId = { in: teamUserIds };
+		} else if (currentAssigneeId) {
+			// Показать организации исполнителя + свои (руководитель может поручить задачу по своей организации)
+			const ids = user?.id && currentAssigneeId !== user.id
+				? [currentAssigneeId, user.id]
+				: [currentAssigneeId];
+			whereUserId = { in: ids };
+		} else if (!isPrivileged && user?.id) {
+			whereUserId = user.id;
+		}
 
 		fetchOrganizations({
 			where: {
 				isArchive: false,
-				...(effectiveUserId ? { userId: { in: [effectiveUserId] } } : {}),
+				...(whereUserId ? { userId: whereUserId } : {}),
 			},
 			filter: { orderBy: { nameEn: 'asc' }, take: 1000 },
 		});
-	}, [user?.id, currentRoles, currentAssigneeId, isAssigneeFilteredType]);
-
-	// Сбрасываем организацию при переключении типа на задачу/звонок
-	useEffect(() => {
-		if (isAssigneeFilteredType) {
-			form.setFieldValue('organizationId', null);
-		}
-	}, [isAssigneeFilteredType]);
+	}, [user?.id, currentRoles, currentAssigneeId, assigneeManuallyChanged, teamUserIds]);
 
 	// Обновляем форму при изменении event
 	useEffect(() => {
@@ -683,6 +694,7 @@ export const CalendarEventForm: FC<CalendarEventFormProps> = ({
 							const newAssigneeId = value && value.length > 0 ? Number(value[0]) : 0;
 							form.setFieldValue('assigneeId', newAssigneeId);
 							setCurrentAssigneeId(newAssigneeId);
+							setAssigneeManuallyChanged(newAssigneeId > 0);
 							form.setFieldValue('organizationId', null);
 						}}
 					/>

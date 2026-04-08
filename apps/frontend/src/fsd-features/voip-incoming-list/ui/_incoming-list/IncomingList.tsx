@@ -20,13 +20,18 @@ export const IncomingList: FC<IIncomingListProps> = (props) => {
 	const page = useStateSelector((state) => state.voip.config.incoming.page);
 	const limit = useStateSelector((state) => state.voip.config.incoming.limit);
 
+	const incomingAnswered = useMemo(() => answered.filter((c) => c.caller.length > 6), [answered]);
+
 	const data = useMemo<IAnalyticsItemWithStage[]>(() => {
-		if (activeTab === 'answered') return answered.length > 0 ? answered.toReversed() : [];
+		if (activeTab === 'answered') return incomingAnswered.length > 0 ? incomingAnswered.toReversed() : [];
 		if (activeTab === 'missed') return missed.length > 0 ? missed.toReversed() : [];
 		return [];
-	}, [activeTab, answered, missed]);
+	}, [activeTab, incomingAnswered, missed]);
 
-	const crmEntities = useGetCrmEntities(activeTab === 'answered' ? answered : activeTab === 'missed' ? missed : []);
+	const crmEntities = useGetCrmEntities(
+		activeTab === 'answered' ? incomingAnswered : activeTab === 'missed' ? missed : [],
+		'caller',
+	);
 
 	const voipActions = useVoipActions();
 
@@ -44,7 +49,7 @@ export const IncomingList: FC<IIncomingListProps> = (props) => {
 			>
 				<Tabs.List>
 					<Tabs.Tab value={'answered'} icon={<Icon name={'call-answered'} />}>
-						Отвеченные
+						Входящие
 					</Tabs.Tab>
 					<Tabs.Tab value={'missed'} icon={<Icon name={'call-missed'} />}>
 						Пропущенные
@@ -62,42 +67,45 @@ export const IncomingList: FC<IIncomingListProps> = (props) => {
 					<TextField className={css.head}>Дата</TextField>
 					<TextField className={css.head}>Звонящий</TextField>
 					<TextField className={css.head}>Номер компании</TextField>
-					{activeTab === 'answered' && <TextField className={css.head}>Запись звонка</TextField>}
+					{activeTab === 'answered' && (
+						<TextField className={css.head}>Запись звонка</TextField>
+					)}
 					<TextField className={css.head}>Ответственный</TextField>
 				</div>
+
 				{data
 					.filter((_, i) => {
 						const start = limit * (page - 1);
 						const end = limit * (page - 1) + (limit - 1);
 						return i >= start && i <= end;
 					})
-					.map((dataItem) => {
-						return (
-							<div
-								key={dataItem.call_id}
-								className={cn({
-									[css.rowAnswered]: activeTab === 'answered',
-									[css.rowMissed]: activeTab === 'missed',
-								})}
-							>
-								<Date timestamp={dataItem.timestamp} />
-								<Caller caller={dataItem.caller} crmEntity={crmEntities[dataItem.caller]} />
-								<OfficePhone phone={dataItem.did} stages={dataItem.stages} />
-								{activeTab === 'answered' && <Audio file={dataItem.file} />}
-								<Staff
-									stages={dataItem.stages}
-									callMark={dataItem.call_mark}
-									did={dataItem.did}
-									receiver={dataItem.receiver}
-									tab={activeTab}
-								/>
-							</div>
-						);
-					})}
+					.map((dataItem) => (
+						<div
+							key={dataItem.call_id}
+							className={cn({
+								[css.rowAnswered]: activeTab === 'answered',
+								[css.rowMissed]: activeTab === 'missed',
+							})}
+						>
+							<Date timestamp={dataItem.timestamp} />
+							<Caller caller={dataItem.caller} crmEntity={crmEntities[dataItem.caller]} />
+							<OfficePhone phone={dataItem.did} stages={dataItem.stages} />
+							{activeTab === 'answered' && (
+								<Audio file={dataItem.file} />
+							)}
+							<Staff
+								stages={dataItem.stages}
+								callMark={dataItem.call_mark}
+								did={dataItem.did}
+								receiver={dataItem.receiver}
+								tab={activeTab}
+							/>
+						</div>
+					))}
 
 				<Pagination
 					page={page}
-					total={activeTab === 'answered' ? answered.length : activeTab === 'missed' ? missed.length : 0}
+					total={activeTab === 'answered' ? incomingAnswered.length : missed.length}
 					limit={limit}
 					onChangePage={handleChangePage}
 					onChangeLimit={handleChangeLimit}
@@ -138,6 +146,11 @@ const Caller: FC<{ caller: string; crmEntity: IStaffEntity | undefined }> = ({ c
 		showContact({ id: crmEntity.id });
 	}, [crmEntity, showContact]);
 
+	const handleShowOrg = useCallback(() => {
+		if (!crmEntity?.orgId) return;
+		showOrganization({ id: crmEntity.orgId });
+	}, [crmEntity, showOrganization]);
+
 	return (
 		<div>
 			<TextField className={css.callerPhone}>{formattedPhone}</TextField>
@@ -151,6 +164,11 @@ const Caller: FC<{ caller: string; crmEntity: IStaffEntity | undefined }> = ({ c
 					}}
 				>
 					{crmEntity.name}
+				</TextField>
+			)}
+			{crmEntity?.type === 'contact' && crmEntity.orgName && (
+				<TextField className={css.callerOrgName} size={'small'} onClick={handleShowOrg}>
+					{crmEntity.orgName}
 				</TextField>
 			)}
 		</div>

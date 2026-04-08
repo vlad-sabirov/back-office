@@ -1,0 +1,57 @@
+.root {
+  @apply mt-20;
+}
+
+.row {
+  @apply grid py-16 px-20 grid-flow-col gap-12 items-center;
+  grid-template-columns: 100px 200px 200px 1fr 200px;
+
+  &:nth-child(even) {
+    @apply bg-neutral-bg;
+  }
+}
+
+.head {
+  @apply m-0 uppercase text-neutral-800;
+}
+
+.filter {
+  @apply px-20 pt-16;
+}
+
+.date {
+  @apply m-0 text-neutral-500;
+}
+
+.time {
+  @apply m-0 text-neutral-400;
+}
+
+.phone {
+  @apply m-0 text-neutral-500;
+}
+
+.name {
+  @apply m-0 text-neutral-400 cursor-pointer underline;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 180px;
+}
+
+.orgName {
+  @apply m-0 text-neutral-300 cursor-pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 180px;
+  font-size: 10px;
+}
+
+.staffCell {
+  @apply flex items-center gap-8;
+}
+
+.pagination {
+  @apply p-20;
+}

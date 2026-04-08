@@ -268,7 +268,7 @@ export const EventDetailModal: FC<EventDetailModalProps> = ({ event, opened, onC
 								<Group spacing="xs">
 									<Text size="sm" color="dimmed">Организация:</Text>
 									<Text size="sm">
-										{(event.organization as any).nameRu || (event.organization as any).nameEn || event.organization.name}
+										{(event.organization as any).nameRu || (event.organization as any).nameEn}
 									</Text>
 								</Group>
 							)}

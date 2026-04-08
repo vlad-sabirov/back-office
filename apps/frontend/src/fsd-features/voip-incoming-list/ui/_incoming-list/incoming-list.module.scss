@@ -44,6 +44,15 @@
 	width: 180px;
 }
 
+.callerOrgName {
+	@apply m-0 text-neutral-300 cursor-pointer;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 180px;
+	font-size: 10px;
+}
+
 .departmentPhone {
 	@apply m-0 text-neutral-500;
 }

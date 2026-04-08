@@ -1,27 +1,82 @@
 .block {
 	@apply m-0;
-
-	& > div {
-		min-height: 160px;
-		max-height: 160px;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-		padding-top: 15px !important;
-	}
-}
-
-.blockMany {
-	@apply m-0;
+	transition: all 0.3s ease;
 
 	& > div {
 		min-height: 160px;
 		display: flex;
 		flex-direction: column;
 		padding-top: 15px !important;
+		transition: all 0.3s ease;
 	}
 }
 
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 4px;
+	position: relative;
+}
+
+.tabs {
+	display: flex;
+	gap: 4px;
+}
+
+.expandBtn {
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	padding: 4px;
+	border-radius: 4px;
+	transition: all 0.15s;
+	display: flex;
+	align-items: center;
+	opacity: 0.4;
+
+	& svg, & img {
+		width: 16px;
+		height: 16px;
+	}
+
+	&:hover {
+		background: var(--color-neutral-100);
+		opacity: 1;
+	}
+}
+
+.tab {
+	@apply rounded-small;
+	border: none;
+	background: transparent;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: 500;
+	cursor: pointer;
+	color: var(--color-neutral-400);
+	transition: all 0.15s;
+
+	&:hover {
+		background: var(--color-neutral-50);
+		color: var(--color-neutral-black);
+	}
+}
+
+.tabActive {
+	background: var(--color-primary-50);
+	color: var(--color-primary-main);
+
+	&:hover {
+		background: var(--color-primary-50);
+		color: var(--color-primary-main);
+	}
+}
 
 .loader {
 	display: flex;
@@ -46,35 +101,50 @@
 	margin-top: 2px;
 }
 
-.list {
-	display: grid;
-	grid-template-rows: repeat(2, auto);
-	grid-auto-flow: column;
-	grid-auto-columns: minmax(0, 1fr);
+.listScroll {
+	display: flex;
+	flex-direction: column;
 	gap: 0;
+	overflow-y: auto;
+	max-height: 250px;
+	animation: fadeSlide 0.25s ease;
+}
+
+@keyframes fadeSlide {
+	from {
+		opacity: 0;
+		transform: translateX(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.section {
+	min-width: 0;
+}
+
+.sectionTitle {
+	padding: 8px 8px 2px;
+	margin: 0;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.3px;
 }
 
 .item {
 	display: flex;
-	align-items: center;
-	gap: 12px;
-	padding: 8px;
-	border-bottom: 1px solid var(--color-neutral-50);
+	align-items: flex-start;
+	gap: 8px;
+	padding: 4px 8px;
 	min-width: 0;
-
-	&:nth-child(2n) {
-		border-bottom: none;
-	}
-
-	&:nth-child(n+3) {
-		border-left: 1px solid var(--color-neutral-50);
-	}
+	border-radius: 6px;
+	transition: background-color 0.15s ease;
 }
 
 .itemClickable {
 	cursor: pointer;
-	border-radius: 4px;
-	transition: background-color 0.15s ease;
 
 	&:hover {
 		background-color: var(--color-neutral-50);
@@ -82,16 +152,36 @@
 }
 
 .itemTime {
-	width: 80px;
+	width: 40px;
 	flex-shrink: 0;
-	font-size: 12px;
-	text-align: center;
-	color: var(--color-neutral-300);
+	font-size: 11px;
+	text-align: right;
+	color: var(--color-neutral-400);
+	padding-top: 2px;
 }
 
 .itemContent {
 	flex: 1;
 	min-width: 0;
+}
+
+.itemTitle {
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.3;
+	color: var(--color-neutral-black);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.itemSub {
+	font-size: 11px;
+	color: var(--color-neutral-400);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-top: 1px;
 }
 
 .badge {

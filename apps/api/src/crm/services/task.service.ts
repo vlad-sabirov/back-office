@@ -5,6 +5,7 @@ import { ru } from 'date-fns/locale';
 import { utcToZonedTime } from 'date-fns-tz';
 import { PrismaService } from '../../common';
 import { TelegramService } from '../../notification/services/telegram.service';
+import { CronDailySummaryService } from '../../notification/services/cron/daily-summary';
 import { MutationTaskDto } from '../dto/mutation-task.dto';
 import { QueryTaskDto } from '../dto/query-task.dto';
 import { TaskEntity } from '../entity/task.entity';
@@ -33,7 +34,10 @@ export class TaskService extends PrismaService {
 		cancelled: '❌ Отменена',
 	};
 
-	constructor(private readonly telegramService: TelegramService) {
+	constructor(
+		private readonly telegramService: TelegramService,
+		private readonly dailySummaryService: CronDailySummaryService,
+	) {
 		super();
 	}
 
@@ -78,6 +82,9 @@ export class TaskService extends PrismaService {
 		if (data.authorId !== data.assigneeId && task.assignee?.telegramId) {
 			await this.sendTaskAssignedNotification(task);
 		}
+
+		// Обновить утреннюю сводку исполнителя
+		this.dailySummaryService.refreshSummaryForUser(data.assigneeId).catch(() => {});
 
 		return task;
 	};
@@ -607,6 +614,29 @@ export class TaskService extends PrismaService {
 
 		if (organization && organization.userId === userId) {
 			return true;
+		}
+
+		// Старший менеджер может создавать задачи в организациях своих подчинённых
+		if (organization && organization.userId) {
+			// Проверка через _user_child (прямой подчинённый)
+			if (user.child?.some((child) => child.id === organization.userId)) {
+				return true;
+			}
+
+			// Проверка через ROLE_HIERARCHY (head role → child role)
+			const orgUser = await this.user.findUnique({
+				where: { id: organization.userId },
+				include: { roles: true },
+			});
+			if (orgUser?.roles) {
+				const orgUserRoleAliases = orgUser.roles.map((r) => r.alias);
+				for (const headRole of userRoleAliases) {
+					const childRole = ROLE_HIERARCHY[headRole];
+					if (childRole && orgUserRoleAliases.includes(childRole)) {
+						return true;
+					}
+				}
+			}
 		}
 
 		return false;

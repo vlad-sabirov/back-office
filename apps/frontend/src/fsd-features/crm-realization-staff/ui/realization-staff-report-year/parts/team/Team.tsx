@@ -16,25 +16,15 @@ export const Team: FC<ITeamProps> = ({ teamReport, diff, withDiff, isFullAccess,
 		text: `${teamReport.user?.lastName[0]}${teamReport.user?.firstName[0]}`,
 		src: teamReport.user?.photo,
 	});
-	if (teamReport.user?.child)
-		if (teamReport.employees && teamReport.employees.length) {
-			teamReport.employees.forEach((employee) => {
-				const foundUser = staffHashMap.get(employee.userId);
-				avatarHashMap.set(employee.userId, {
-					color: foundUser?.color,
-					text: `${foundUser?.lastName[0]}${foundUser?.firstName[0]}`,
-					src: foundUser?.photo,
+	if (teamReport.user?.child && teamReport.user.child.length) {
+		teamReport.user.child.forEach((child: any) => {
+			if (!child.isFired) {
+				avatarHashMap.set(child.id, {
+					color: child.color,
+					text: `${child.lastName[0]}${child.firstName[0]}`,
+					src: child.photo,
 				});
-			});
-		}
-	if (teamReport.staffIds && teamReport.staffIds.length) {
-		teamReport.staffIds.map((staffId) => {
-			const foundUser = staffHashMap.get(staffId);
-			avatarHashMap.set(staffId, {
-				color: foundUser?.color,
-				text: `${foundUser?.lastName[0]}${foundUser?.firstName[0]}`,
-				src: foundUser?.photo,
-			});
+			}
 		});
 	}
 	const avatarData = Array.from(avatarHashMap).map((item) => item[1]);
@@ -196,17 +186,7 @@ export const Team: FC<ITeamProps> = ({ teamReport, diff, withDiff, isFullAccess,
 				)}
 			</div>
 
-			{!!teamReport.employees?.length &&
-				teamReport.employees.map((employeeReport) => (
-					<Employee
-						key={`employee_${employeeReport.userId}`}
-						employeeReport={employeeReport}
-						diff={diff?.employees.find(({ userId }) => userId === employeeReport.userId)}
-						staffHashMap={staffHashMap}
-						isFullAccess={isFullAccess}
-						withDiff={withDiff}
-					/>
-				))}
+			{/* Младшие менеджеры отображаются только как аватарки в AvatarGroup */}
 		</>
 	);
 };

@@ -20,25 +20,15 @@ export const Team: FC<ITeamProps> = (props) => {
 		text: `${foundUser?.lastName[0]}${foundUser?.firstName[0]}`,
 		src: foundUser?.photo,
 	});
-	if (foundUser?.child)
-		if (teamReport.employees && teamReport.employees.length) {
-			teamReport.employees.forEach((employee) => {
-				const foundUser = staffHashMap.get(employee.userId);
-				avatarHashMap.set(employee.userId, {
-					color: foundUser?.color,
-					text: `${foundUser?.lastName[0]}${foundUser?.firstName[0]}`,
-					src: foundUser?.photo,
+	if (foundUser?.child && foundUser.child.length) {
+		foundUser.child.forEach((child) => {
+			if (!child.isFired) {
+				avatarHashMap.set(child.id, {
+					color: child.color,
+					text: `${child.lastName[0]}${child.firstName[0]}`,
+					src: child.photo,
 				});
-			});
-		}
-	if (teamReport.staffIds && teamReport.staffIds.length) {
-		teamReport.staffIds.map((staffId) => {
-			const foundUser = staffHashMap.get(staffId);
-			avatarHashMap.set(staffId, {
-				color: foundUser?.color,
-				text: `${foundUser?.lastName[0]}${foundUser?.firstName[0]}`,
-				src: foundUser?.photo,
-			});
+			}
 		});
 	}
 	const avatarData = Array.from(avatarHashMap).map((item) => item[1]);
@@ -302,24 +292,7 @@ export const Team: FC<ITeamProps> = (props) => {
 				)}
 			</div>
 
-			{!!teamReport.employees?.length &&
-				JSON.parse(JSON.stringify(teamReport.employees))
-					?.sort(
-						(a: ICrmRealizationMonthResEmployee, b: ICrmRealizationMonthResEmployee) =>
-							(b.realization ?? 0) - (a.realization ?? 0)
-					)
-					.map((employeeReport: ICrmRealizationMonthResEmployee) => (
-						<Employee
-							key={`employee_${employeeReport.userId}`}
-							employeeReport={employeeReport}
-							dataReport={dataReport}
-							staffHashMap={staffHashMap}
-							isFullAccess={isFullAccess}
-							withDiff={withDiff}
-							setIsShowWhatIf={setIsShowWhatIf}
-							setCurrentReport={setCurrentReport}
-						/>
-					))}
+			{/* Младшие менеджеры отображаются только как аватарки в AvatarGroup */}
 		</>
 	);
 };

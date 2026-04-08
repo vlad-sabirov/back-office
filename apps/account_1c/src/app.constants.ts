@@ -1,4 +1,4 @@
-export const URL_CRM = `http://${process.env.API_CONTAINER_NAME}:3000`;
+export const URL_CRM = `http://${process.env.API_CONTAINER_NAME || 'api'}:3000`;
 export const URL_1C = process.env.ACCOUNT_1C_HOST;
 
 export const CONFIG_1C = {

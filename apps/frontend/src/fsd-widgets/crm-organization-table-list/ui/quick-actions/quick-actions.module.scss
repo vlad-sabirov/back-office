@@ -1,0 +1,47 @@
+.root {
+  @apply flex items-center gap-4;
+  opacity: 0.3;
+  transition: opacity 0.15s;
+}
+
+tr:hover .root {
+  opacity: 1;
+}
+
+.btn {
+  @apply cursor-pointer rounded-small p-4;
+  font-size: 16px;
+  line-height: 1;
+  border: none;
+  background: transparent;
+
+  &:hover {
+    @apply bg-neutral-100;
+  }
+
+  &_disabled {
+    @apply cursor-default opacity-30;
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.noteIcon {
+  font-size: 14px;
+  cursor: default;
+}
+
+.taskPopup {
+  @apply grid gap-8;
+  padding: 8px 0;
+}
+
+.taskRow {
+  @apply grid grid-flow-col gap-8 items-end;
+}
+
+.notePopup {
+  @apply grid gap-8;
+  padding: 8px 0;
+}

@@ -9,6 +9,8 @@ import { useUser } from '@fsd/shared/lib/hooks';
 import { TablePropsData } from '@fsd/shared/ui-kit';
 import { useTableTransformText, useTableTransformUser } from '@fsd/shared/ui/table-transform';
 import { IDateToTableProps } from '../types/data-to-table.props';
+import { createElement } from 'react';
+import { QuickActions } from '../ui/quick-actions/QuickActions';
 
 const resultNull = { output: null, index: '' };
 
@@ -34,11 +36,12 @@ export const useDataToTable = (data: IDateToTableProps): TablePropsData | null =
 	if (!data || !data.length) return null;
 	return {
 		header: [
-			{ key: 'name', label: 'Компания', width: 400 },
-			{ key: 'user', label: 'Ответственный', width: 150 },
-			{ key: 'type', label: 'Сфера деятельности', width: 150 },
-			{ key: 'contacts', label: 'Контакты', width: 150 },
-			{ key: 'phones', label: 'Телефоны', width: 150 },
+			{ key: 'name', label: 'Компания', width: 370 },
+			{ key: 'user', label: 'Ответственный', width: 140 },
+			{ key: 'type', label: 'Сфера деятельности', width: 140 },
+			{ key: 'contacts', label: 'Контакты', width: 140 },
+			{ key: 'phones', label: 'Телефоны', width: 140 },
+			{ key: 'actions', label: '', width: 100 },
 		],
 		sortKeys: ['name', 'user', 'type'],
 		sortDefault: 'asc',
@@ -64,6 +67,10 @@ export const useDataToTable = (data: IDateToTableProps): TablePropsData | null =
 							name: `${organizationItem.nameEn} (${organizationItem.nameRu})`,
 					  })
 					: resultNull,
+				actions: {
+					output: createElement(QuickActions, { organization: organizationItem }),
+					index: '',
+				},
 			};
 		}),
 	};

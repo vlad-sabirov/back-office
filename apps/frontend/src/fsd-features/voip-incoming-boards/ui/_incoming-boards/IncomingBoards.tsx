@@ -27,7 +27,7 @@ export const IncomingBoards: FC<IIncomingBoardsProps> = memo((props) => {
 			<ContentBlock className={css.item}>
 				<Icon name={'call-answered'} className={css.icon} style={{ color: TailwindColors.success[400] }} />
 				<div>
-					<TextField className={css.title}>Отвечено</TextField>
+					<TextField className={css.title}>Входящие</TextField>
 					<TextField className={css.value} mode={'heading'} size={'small'}>
 						{answeredCount}
 					</TextField>
